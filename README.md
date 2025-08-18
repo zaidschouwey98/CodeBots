@@ -29,6 +29,7 @@ Repeat:
 - Les ressources peuvent être stockées dans des coffres.
 - Les technologies débloquées permettent d’améliorer les robots et outils.
 - Une interface permet de gérer les robots et leurs actions.
+- Créer un interpréteur simple permettant d'exécuter les actions du robot
 
 ### Requirements non-fonctionnels
 - Jeu accessible via navigateur (client web en JS).
