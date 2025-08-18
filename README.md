@@ -96,6 +96,8 @@ Repeat:
     - développement des features sur branches spécifiques puis merge dans dev une fois que les tests passent et finalement merge dans main une fois que la feature est stable.
 
     - Code reviews via pull requests.
+ 
+    - Push bloqués sur dev et main
 
 ## 6. Environnement de déploiement
 
