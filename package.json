@@ -9,7 +9,7 @@
         "build": "tsc",
         "dev": "tsx watch ./src/index.ts",
         "test": "tsx --test tests/**/*.test.ts",
-        "postinstall": "npm run build",
+        "postinstall": "npm run build"
     },
     "author": "",
     "license": "ISC",
