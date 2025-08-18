@@ -1,10 +1,10 @@
-import { Hono } from 'hono'
-import { serve } from '@hono/node-server'
-const app = new Hono()
+import {Hono} from 'hono';
+import {serve} from '@hono/node-server';
 
-app.get('/', (c) => c.text('Hono!'))
-
+const app = new Hono();
 serve({
     fetch: app.fetch,
-    port: 8787,
-  })
+    port: Number(process.env.PORT) || 8080,
+});
+
+app.get('/', (c) => c.text('Hono!'));

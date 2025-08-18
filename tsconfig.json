@@ -3,9 +3,10 @@
         "esModuleInterop": true,
         "outDir": "./dist",
         "resolveJsonModule": true,
-        "types": ["node"], 
+        "types": ["node"],
         "moduleResolution": "node",
-        "module": "ESNext", 
-        "target": "ES2022"
+        "module": "ESNext",
+        "target": "ES2022",
     },
+    "include": ["src"],
 }
