@@ -1,24 +1,25 @@
 {
-  "name": "codebots",
-  "version": "1.0.0",
-  "description": "CodeBots est un petit jeu 2D vu de dessus en JavaScript où le joueur récolte des ressources et construit des robots programmables capables d’automatiser certaines tâches (récolte, transport, stockage). Le jeu met l’accent sur la gestion, la programmation simple d’actions et la progression par crafting et technologies.",
-  "main": "index.js",
-  "scripts": {
-    "start": "node ./dist/index.js",
-    "build": "tsc",
-    "postinstall": "npm run build",
-    "dev": "tsx watch ./src/index.ts",
-    "test": "tsx --test tests/**/*.test.ts"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/node": "^24.3.0",
-    "typescript": "^5.9.2",
-    "tsx": "^4.20.4"
-  },
-  "dependencies": {
-    "@hono/node-server": "^1.19.0",
-    "hono": "^4.9.2"
-  }
+    "name": "codebots",
+    "version": "1.0.0",
+    "description": "CodeBots est un petit jeu 2D vu de dessus en JavaScript où le joueur récolte des ressources et construit des robots programmables capables d’automatiser certaines tâches (récolte, transport, stockage). Le jeu met l’accent sur la gestion, la programmation simple d’actions et la progression par crafting et technologies.",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node dist/index.js",
+        "build": "tsc",
+        "dev": "tsx watch ./src/index.ts",
+        "test": "tsx --test tests/**/*.test.ts",
+        "postinstall": "npm run build",
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/node": "^24.3.0",
+        "typescript": "^5.9.2",
+        "tsx": "^4.20.4"
+    },
+    "dependencies": {
+        "@hono/node-server": "^1.19.0",
+        "hono": "^4.9.2"
+    }
 }
