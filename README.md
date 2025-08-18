@@ -73,3 +73,17 @@ Repeat:
 - CI/CD : GitHub Actions (tests + déploiement automatique).
 
 - Déploiement : Netlify.
+
+## 5. Description du processus de travail
+
+- Méthodologie agile (Kanban) : tâches visibles dans GitHub Projects
+
+- Git flow simplifié :
+
+    - main = version stable.
+
+    - dev = branche d’intégration.
+
+    - features sur branche -> merge dans dev si tests passé -> merge stable dans main.
+
+    - Code reviews via pull requests.
