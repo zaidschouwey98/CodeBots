@@ -81,7 +81,7 @@ Repeat:
 
 - CI/CD : GitHub Actions (tests + déploiement automatique).
 
-- Déploiement : Netlify.
+- Déploiement : Azure Web App Service.
 
 ## 5. Description du processus de travail
 
