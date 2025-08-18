@@ -1,7 +1,7 @@
 # CodeBots
 ## 1. Description du projet
 
-CodeBots est un petit jeu 2D vu de dessus en JavaScript où le joueur récolte des ressources et construit des robots programmables capables d’automatiser certaines tâches (récolte, transport, stockage). Le jeu met l’accent sur la gestion, la programmation simple d’actions et la progression par crafting et technologies.
+CodeBots est un petit jeu 2D vu de dessus en JavaScript où le joueur récolte des ressources et construit des robots programmables capables d’automatiser certaines tâches (récolte, transport, stockage, fabrication). Le jeu met l’accent sur la gestion, la programmation simple d’actions et la progression par crafting et technologies.
 
 ### Requirements fonctionnels
 - Le joueur peut se déplacer et récolter des ressources (bois, pierre, etc.).
@@ -25,7 +25,10 @@ CodeBots est un petit jeu 2D vu de dessus en JavaScript où le joueur récolte d
 
     - Langage : TypeScript
 
-- Back-end : 100% client-side.
+- Back-end : 
+    - Authentification
+
+    - Sauvegarde de la progression
 
 - Organisation logique :
 
@@ -35,4 +38,4 @@ CodeBots est un petit jeu 2D vu de dessus en JavaScript où le joueur récolte d
 
     - UI : affichage HUD, inventaire, gestion des robots.
 
-    - Persistence : sauvegarde locale (localStorage).
+    - Persistence : sauvegarde locale ou en ligne
