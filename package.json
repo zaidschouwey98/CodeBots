@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx watch ./src/index.ts",
-    "test": "tsx --test tests/test.test.ts"
+    "test": "tsx --test tests/**/*.test.ts"
   },
   "author": "",
   "license": "ISC",
