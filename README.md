@@ -6,7 +6,24 @@ CodeBots est un petit jeu 2D vu de dessus en JavaScript où le joueur récolte d
 ### Requirements fonctionnels
 - Le joueur peut se déplacer et récolter des ressources (bois, pierre, etc.).
 - Le joueur peut crafter des objets (outils, robots, coffres).
-- Les robots peuvent recevoir des instructions (ex. séquences conditionnelles simples).
+- Les robots peuvent recevoir des instructions (ex. séquences conditionnelles simples).Ces instructions sont directement données par le joueur.
+
+Ex. 1
+```
+Repeat:
+    go to zone 1
+    cut wood
+    go to chest 1
+    drop wood to chest 1
+```
+Ex. 2
+```
+Repeat:
+    go to chest 2
+    pick birch seed
+    go to zone 1
+    plant birch seed
+```
 - Les ressources peuvent être stockées dans des coffres.
 - Les technologies débloquées permettent d’améliorer les robots et outils.
 - Une interface permet de gérer les robots et leurs actions.
