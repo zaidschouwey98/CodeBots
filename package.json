@@ -6,17 +6,17 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx watch ./src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tsx --test tests/test.test.ts"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^24.3.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "tsx": "^4.20.4"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.0",
-    "hono": "^4.9.2",
-    "tsx": "^4.20.4"
+    "hono": "^4.9.2"
   }
 }
