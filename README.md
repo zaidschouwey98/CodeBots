@@ -33,8 +33,6 @@ Repeat:
 
 ### Requirements non-fonctionnels
 - Jeu accessible via navigateur (client web en JS).
-- Interface claire et intuitive.
-- Performance fluide sur des machines standard.
 - Code modulaire et extensible (facile d’ajouter de nouveaux outils/robots).
 - Déploiement simple via un serveur web (hébergement Netlify).
 
