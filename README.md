@@ -1,4 +1,13 @@
 # CodeBots
+## Livrables S1
+- [X] Description du projet (objectif, requirements fonctionnels, requirements non-fonctionnels). 
+- [X] Description préliminaire de l’architecture 
+- [ ] Mockups (Figma, papier-crayon, etc.) / Landing page 
+- [X] Description des choix techniques • Description du processus de travail (p.ex.: git flow, devops, etc.) 
+- [ ] Mise en place des outils de développement (Issue tracker … etc.) 
+- [ ] Mise en place d’un environnement de déploiement 
+- [ ] Mise en place d’un pipeline de livraison et de déploiement (CI/CD) 
+- [ ] Démonstration du déploiement d’une modification
 ## 1. Description du projet
 
 CodeBots est un petit jeu 2D vu de dessus en JavaScript où le joueur récolte des ressources et construit des robots programmables capables d’automatiser certaines tâches (récolte, transport, stockage, fabrication). Le jeu met l’accent sur la gestion, la programmation simple d’actions et la progression par crafting et technologies.
