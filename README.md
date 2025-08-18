@@ -1,4 +1,5 @@
 # CodeBots
+*Künzli Christophe, Jouve Léonard, Schouwey Zaïd*
 ## Livrables S1
 - [X] Description du projet (objectif, requirements fonctionnels, requirements non-fonctionnels). 
 - [X] Description préliminaire de l’architecture 
