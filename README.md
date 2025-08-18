@@ -75,7 +75,9 @@ Repeat:
 
 - HTML/CSS pour l’UI.
 
-- Node.js  serveur de sauvegarde.
+- Node.js serveur de sauvegarde.
+
+- Hono simple web framework
 
 - GitHub pour le versioning et gestion des issues.
 
