@@ -59,3 +59,19 @@ Repeat:
     - UI : affichage HUD, inventaire, gestion des robots.
 
     - Persistence : sauvegarde locale ou en ligne
+## 3. Mockup
+## 4. Description des choix techniques
+
+- PixiJS: librairie pour gérer le rendu 2D.
+
+- TypeScript.
+
+- HTML/CSS pour l’UI.
+
+- Node.js  serveur de sauvegarde.
+
+- GitHub pour le versioning et gestion des issues.
+
+- CI/CD : GitHub Actions (tests + déploiement automatique).
+
+- Déploiement : Netlify.
