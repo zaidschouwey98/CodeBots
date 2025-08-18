@@ -84,6 +84,6 @@ Repeat:
 
     - dev = branche d’intégration.
 
-    - features sur branche -> merge dans dev si tests passé -> merge stable dans main.
+    - développement des features sur branches spécifiques puis merge dans dev une fois que les tests passent et finalement merge dans main une fois que la feature est stable.
 
     - Code reviews via pull requests.
