@@ -8,7 +8,7 @@ CodeBots est un petit jeu 2D vu de dessus en JavaScript où le joueur récolte d
 - Le joueur peut crafter des objets (outils, robots, coffres).
 - Le joueur peut définir des zones et les nommer.
 - Le joueur peut nommer des coffres
-- Les robots peuvent recevoir des instructions (ex. séquences conditionnelles simples).Ces instructions sont directement données par le joueur.
+- Les robots peuvent recevoir des instructions (ex. séquences conditionnelles simples). Ces instructions sont directement données par le joueur.
 
 Ex. 1
 ```
