@@ -2,11 +2,13 @@
     "compilerOptions": {
         "esModuleInterop": true,
         "outDir": "./dist",
+        "rootDir": "./src",
         "resolveJsonModule": true,
         "types": ["node"],
         "moduleResolution": "node",
-        "module": "ESNext",
-        "target": "ES2022",
+        "module": "CommonJS", 
+        "target": "ES2022"
     },
-    "include": ["src"],
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "dist"]
 }

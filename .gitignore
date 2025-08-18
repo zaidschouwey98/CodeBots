@@ -143,3 +143,6 @@ terraform.tfvars
 *.tfstate.*
 .terraform
 .terraform.*
+
+# IDE stuff
+.idea/
