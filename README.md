@@ -38,7 +38,7 @@ Repeat:
 - Les ressources peuvent être stockées dans des coffres.
 - Les technologies débloquées permettent d’améliorer les robots et outils.
 - Une interface permet de gérer les robots et leurs actions.
-- Créer un interpréteur simple permettant d'exécuter les actions du robot
+- Créer un [interpréteur](https://github.com/LeonardJouve/CodeBotsInterpreter) simple permettant d'exécuter les actions du robot
 
 ### Requirements non-fonctionnels
 - Jeu accessible via navigateur (client web en JS).
@@ -81,7 +81,9 @@ Repeat:
 
 - CI/CD : GitHub Actions (tests + déploiement automatique).
 
-- Déploiement : Netlify.
+- Déploiement : 
+    - application: Netlify.
+    - interpreteur: package NPM
 
 ## 5. Description du processus de travail
 
@@ -96,3 +98,17 @@ Repeat:
     - développement des features sur branches spécifiques puis merge dans dev une fois que les tests passent et finalement merge dans main une fois que la feature est stable.
 
     - Code reviews via pull requests.
+
+## 6. Environnement de déploiement
+
+### Application
+
+2 environnements de déploiement sur Azure App Service:
+- dev
+- stable
+
+Après un push passant les tests sur la branche associée à l'environnement, le code est automatiquement déployé.
+
+### Interpréteur
+
+Déploiement automatique sur [NPM](https://www.npmjs.com/) après un push passant les tests sur main.
