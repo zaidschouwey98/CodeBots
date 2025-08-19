@@ -5,9 +5,9 @@
 - [X] Description préliminaire de l’architecture 
 - [ ] Mockups (Figma, papier-crayon, etc.) / Landing page 
 - [X] Description des choix techniques • Description du processus de travail (p.ex.: git flow, devops, etc.) 
-- [ ] Mise en place des outils de développement (Issue tracker … etc.) 
+- [X] Mise en place des outils de développement (Issue tracker … etc.) 
 - [ ] Mise en place d’un environnement de déploiement 
-- [ ] Mise en place d’un pipeline de livraison et de déploiement (CI/CD) 
+- [X] Mise en place d’un pipeline de livraison et de déploiement (CI/CD) 
 - [ ] Démonstration du déploiement d’une modification
 ## 1. Description du projet
 
