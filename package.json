@@ -7,6 +7,8 @@
         "dev:server": "tsx src/server/index.ts",
         "dev:client": "vite --config src/client/vite.config.ts",
         "build:client": "vite build --config src/client/vite.config.ts",
+        "build:server": "tsc --project src/server",
+        "build": "npm run build:client && npm run build:server",
         "start": "node dist/server/index.js"
     },
     "author": "",
