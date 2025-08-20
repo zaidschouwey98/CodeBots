@@ -95,13 +95,26 @@ export default class WaveFunctionCollapse {
                     return;
                 }
 
-                const oppositeDirection = this.getOppositeDirection(direction);
+                const neighbor = this.waves[validNeighborIndex];
+                const validNeighborPossibilities = this.getValidNeighborPossibilities(currentIndex, validNeighborIndex, direction);
 
-                // filter valid possibilities (reversed edge array on opposite edge)
+                if (validNeighborPossibilities.length < neighbor.possibilities.length) {
+                    neighbor.possibilities = validNeighborPossibilities;
+                    if (!stack.some((index) => index === validNeighborIndex)) {
+                        stack.push(validNeighborIndex);
+                    }
+                }
 
-                // if changed and not in stack -> push to stack
             });
         }
+    }
+
+    getValidNeighborPossibilities(currentIndex: number, neighborIndex: number, direction: number): Texture[] {
+        const oppositeDirection = this.getOppositeDirection(direction);
+        // check if reversed edge array on opposite edge for each neighbor possibilities
+
+        // TODO
+        return [];
     }
 
     getValidNeighborIndex(index: number, direction: number): number|null {
