@@ -96,7 +96,7 @@ export default class WaveFunctionCollapse {
                 }
 
                 const neighbor = this.waves[validNeighborIndex];
-                const validNeighborPossibilities = this.getValidNeighborPossibilities(currentIndex, validNeighborIndex, direction);
+                const validNeighborPossibilities = this.getValidNeighborPossibilities(currentIndex, direction, validNeighborIndex);
 
                 if (validNeighborPossibilities.length < neighbor.possibilities.length) {
                     neighbor.possibilities = validNeighborPossibilities;
@@ -108,7 +108,8 @@ export default class WaveFunctionCollapse {
         }
     }
 
-    getValidNeighborPossibilities(currentIndex: number, neighborIndex: number, direction: number): Texture[] {
+    getValidNeighborPossibilities(currentIndex: number, direction: number, neighborIndex: number): Texture[] {
+        const currentWave = this.waves[currentIndex];
         const oppositeDirection = this.getOppositeDirection(direction);
         // check if reversed edge array on opposite edge for each neighbor possibilities
 
