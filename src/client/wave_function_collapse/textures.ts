@@ -7,7 +7,10 @@ export type Texture = {
     name: TextureName;
     weight: number;
     edges: Edge[];
+    rotation: number;
 };
+
+export const getTextureAssetName = (name: TextureName) => `/sprites/${name}.png`;
 
 export const rotate = (texture: Texture, rotation: number) => {
     const newTexture = {...texture, edges: [...texture.edges]};
@@ -15,6 +18,8 @@ export const rotate = (texture: Texture, rotation: number) => {
     for (let i = 0; i < rotation % texture.edges.length; ++i) {
         newTexture.edges.splice(0, 0, ...newTexture.edges.splice(newTexture.edges.length - 1, 1));
     }
+
+    newTexture.rotation = newTexture.rotation + rotation % texture.edges.length;
 
     return newTexture;
 };
@@ -30,6 +35,7 @@ const textures: Texture[] = [
     {
         name: "grass",
         weight: 10,
+        rotation: 0,
         edges: [
             ["grass", "grass"],
             ["grass", "grass"],
@@ -40,6 +46,7 @@ const textures: Texture[] = [
     {
         name: "rock",
         weight: 4,
+        rotation: 0,
         edges: [
             ["rock", "rock"],
             ["rock", "rock"],
@@ -50,6 +57,7 @@ const textures: Texture[] = [
     {
         name: "grass_rock",
         weight: 4,
+        rotation: 0,
         edges: [
             ["grass", "rock"],
             ["rock", "rock"],
@@ -60,6 +68,7 @@ const textures: Texture[] = [
     {
         name: "grass_corner_rock",
         weight: 4,
+        rotation: 0,
         edges: [
             ["grass", "rock"],
             ["rock", "grass"],
@@ -70,6 +79,7 @@ const textures: Texture[] = [
     {
         name: "rock_corner_grass",
         weight: 4,
+        rotation: 0,
         edges: [
             ["rock", "grass"],
             ["grass", "rock"],

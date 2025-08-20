@@ -1,47 +1,45 @@
-import { Application, Assets, Container, Sprite } from 'pixi.js';
-import Parser from 'codebotsinterpreter';
+import {Application, Assets, Sprite, Texture} from "pixi.js";
+import Parser from "codebotsinterpreter";
+import WaveFunctionCollapse from "./wave_function_collapse";
+import textures, {getTextureAssetName} from "./wave_function_collapse/textures";
+
+
+const parser = new Parser();
+console.log(parser.test());
 
 (async () => {
-  // Create a new application
-  let t = new Parser();
-  console.log(t.test());
-  const app = new Application();
+    const app = new Application();
 
-  // Initialize the application
-  await app.init({ background: '#1099bb', resizeTo: window });
+    await app.init({
+        background: "white",
+        resizeTo: window,
+    });
 
-  // Append the application canvas to the document body
-  document.body.appendChild(app.canvas);
+    document.body.appendChild(app.canvas);
 
-  // Create and add a container to the stage
-  const container = new Container();
+    await Assets.load(textures.map(({name}) => getTextureAssetName(name)));
 
-  app.stage.addChild(container);
+    const gridSize = {
+        width: 8,
+        height: 8,
+    };
+    const wfc = new WaveFunctionCollapse(textures, gridSize);
+    const result = wfc.run();
 
-  // Load the bunny texture
-  const texture = await Assets.load('https://pixijs.com/assets/bunny.png');
+    const cellSize = 64;
 
-  // Create a 5x5 grid of bunnies in the container
-  for (let i = 0; i < 25; i++) {
-    const bunny = new Sprite(texture);
+    result.forEach(({name, rotation}, i) => {
+        const x = i % gridSize.width;
+        const y = Math.floor(i / gridSize.width);
 
-    bunny.x = (i % 5) * 40;
-    bunny.y = Math.floor(i / 5) * 40;
-    container.addChild(bunny);
-  }
+        const sprite = new Sprite(Texture.from(getTextureAssetName(name)));
+        sprite.width = cellSize;
+        sprite.height = cellSize;
+        sprite.x = x * cellSize;
+        sprite.y = y * cellSize;
+        sprite.anchor.set(0.5);
+        sprite.rotation = (Math.PI / 2) * rotation;
 
-  // Move the container to the center
-  container.x = app.screen.width / 2;
-  container.y = app.screen.height / 2;
-
-  // Center the bunny sprites in local container coordinates
-  container.pivot.x = container.width / 2;
-  container.pivot.y = container.height / 2;
-
-  // Listen for animate update
-  app.ticker.add((time) => {
-    // Continuously rotate the container!
-    // * use delta to create frame-independent transform *
-    container.rotation -= 0.01 * time.deltaTime;
-  });
+        app.stage.addChild(sprite);
+    });
 })();

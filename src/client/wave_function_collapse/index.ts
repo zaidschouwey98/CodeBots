@@ -1,8 +1,13 @@
-import {directions, rotate, type Texture} from "./textures";
+import {directions, Edge, rotate, type Texture} from "./textures";
 
 type Dimensions = {
     width: number;
     height: number;
+};
+
+type NeighborWithDirection = {
+    index: number;
+    direction: number;
 };
 
 type Wave = {
@@ -12,13 +17,16 @@ type Wave = {
 
 export default class WaveFunctionCollapse {
     private waves: Wave[];
+    private dimensions: Dimensions;
 
-    constructor(textures: Texture[], {width, height}: Dimensions) {
+    constructor(textures: Texture[], dimensions: Dimensions) {
+        this.dimensions = dimensions;
+
         const possibilities: Texture[] = textures.flatMap((texture) => {
             return Array.from({length: texture.edges.length}, (_, i) => rotate(texture, i));
         });
 
-        this.waves = Array.from({length: width * height}, () => ({
+        this.waves = Array.from({length: dimensions.width * dimensions.height}, () => ({
             possibilities: [...possibilities],
             isCollapsed: false,
         }));
@@ -80,6 +88,10 @@ export default class WaveFunctionCollapse {
             return randomWeight < acc;
         });
 
+        if (!chosenPossibility) {
+            throw new Error("no possibility");
+        }
+
         wave.possibilities = [chosenPossibility];
         wave.isCollapsed = true;
     }
@@ -87,42 +99,90 @@ export default class WaveFunctionCollapse {
     private propagate(index: number): void {
         const stack = [index];
         while (stack.length) {
-            const currentIndex = stack.pop();
+            const currentIndex = stack.pop()!;
 
-            Object.values(directions).forEach((direction) => {
-                const validNeighborIndex = this.getValidNeighborIndex(currentIndex, direction);
-                if (!validNeighborIndex) {
-                    return;
-                }
-
-                const neighbor = this.waves[validNeighborIndex];
-                const validNeighborPossibilities = this.getValidNeighborPossibilities(currentIndex, direction, validNeighborIndex);
+            const validNeighbors = this.getValidNeighbors(currentIndex);
+            validNeighbors.forEach(({index, direction}) => {
+                const neighbor = this.waves[index];
+                const validNeighborPossibilities = this.getValidNeighborPossibilities(currentIndex, direction, index);
 
                 if (validNeighborPossibilities.length < neighbor.possibilities.length) {
                     neighbor.possibilities = validNeighborPossibilities;
-                    if (!stack.some((index) => index === validNeighborIndex)) {
-                        stack.push(validNeighborIndex);
+                    if (!stack.some((i) => i === index)) {
+                        stack.push(index);
                     }
                 }
             });
         }
     }
 
-    getValidNeighborPossibilities(currentIndex: number, direction: number, neighborIndex: number): Texture[] {
+    private getValidNeighborPossibilities(currentIndex: number, direction: number, neighborIndex: number): Texture[] {
         const currentWave = this.waves[currentIndex];
+        const neighborWave = this.waves[neighborIndex];
         const oppositeDirection = this.getOppositeDirection(direction);
-        // check if reversed edge array on opposite edge for each neighbor possibilities
 
-        // TODO
-        return [];
+        return neighborWave.possibilities.filter((neighborPossibility) => {
+            const neighborEdge = neighborPossibility.edges[oppositeDirection];
+
+            return currentWave.possibilities.some((currentPossibility) => {
+                const currentEdge = currentPossibility.edges[direction];
+
+                return this.areEdgesMatching(currentEdge, neighborEdge);
+            });
+        });
     }
 
-    getValidNeighborIndex(index: number, direction: number): number|null {
-        // TODO
+    private areEdgesMatching(first: Edge, second: Edge): boolean {
+        for (let i = 0; i < first.length; i++) {
+            if (first[i] !== second[second.length - 1 - i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private getValidNeighborIndex(index: number, direction: number): number|null {
+        switch (direction) {
+        case directions.UP:
+            if (index < this.dimensions.width) {
+                break;
+            }
+
+            return index - this.dimensions.width;
+        case directions.RIGHT:
+            if ((index + 1) % this.dimensions.width === 0) {
+                break;
+            }
+
+            return index + 1;
+        case directions.DOWN:
+            if (index >= this.dimensions.width * (this.dimensions.height - 1)) {
+                break;
+            }
+
+            return index + this.dimensions.width;
+        case directions.LEFT:
+            if (index % this.dimensions.width === 0) {
+                break;
+            }
+
+            return index - 1;
+        }
+
         return null;
     }
 
-    getOppositeDirection(direction: number): number {
+    private getValidNeighbors(index: number): NeighborWithDirection[] {
+        return Object.values(directions)
+            .map((direction) => ({
+                direction,
+                index: this.getValidNeighborIndex(index, direction)
+            }))
+            .filter(({index}) => index !== null) as NeighborWithDirection[];
+    }
+
+    private getOppositeDirection(direction: number): number {
         const directionIndices = Object.values(directions);
         const half = Math.floor(directionIndices.length / 2);
 
