@@ -7,6 +7,12 @@ export default defineConfig({
     },
   },
   build: {
+    rollupOptions: {
+        input: {
+            landing: 'src/client/index.html',
+            game: 'src/client/game.html',
+        },
+    },
     outDir: 'dist/client', // build ira dans client/dist
   },
 })
