@@ -104,7 +104,6 @@ export default class WaveFunctionCollapse {
                         stack.push(validNeighborIndex);
                     }
                 }
-
             });
         }
     }
