@@ -1,13 +1,13 @@
 Checklist des sprites/textures à trouver.
 
 ### Sols
-- [ ] herbe
-- [ ] pierre
+- [x] herbe
+- [x] pierre
 - [ ] sable ?
 
-### Minerais / ressources
+### Minerais / Ressources
 
-- [] pierre
+- [ ] pierre
 - [x] charbon
 - [x] fer
 - [x] diamant ?
