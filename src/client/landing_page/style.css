@@ -1,0 +1,93 @@
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+code {
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.bg-primary {
+  background-color: #73946b !important;
+}
+
+.bg-secondary {
+  background-color: #7a7a73 !important;
+}
+
+.bg-body {
+  background-color: #dddad0 !important;
+}
+
+.btn-primary {
+  background-color: hsl(140, 20%, 40%);
+  &:hover,
+  &:active {
+    background-color: hsl(140, 20%, 30%);
+  }
+}
+
+.codebot-animation {
+  display: block;
+  max-width: 100%;
+  position: absolute;
+  transition: all 0.9s ease-out;
+  /* transform: translate(0%); */
+  overflow-y: hidden;
+}
+
+.background-image {
+    margin: 0;
+    padding: 0;
+    height: 80vh;
+    overflow: hidden;
+    background: url("/assets/background.png") no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+}
+
+.robot-path {
+    background: url("/assets/road.png") repeat-x;
+    background-size: auto 100%;
+    position: relative;
+    height: 20vh; /* Hauteur relative à la hauteur de l'écran */
+    min-height: 120px; /* Hauteur minimale pour les petits écrans */
+    width: 100%;
+}
+
+.codebot {
+    padding: 0;
+    width: 160px;
+    image-rendering: pixelated;
+}
+
+.code {
+    background-color: #b8b8aa;
+    font-size: larger;
+}
+
+.discover-btn {
+    position: sticky;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    margin-top: -60px;
+    opacity: 70%;
+    &:hover {
+    opacity: 100%;
+    }
+}
+
+#pathBot {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+#imgBot {
+    right: 0;
+}

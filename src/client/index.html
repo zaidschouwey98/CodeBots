@@ -1,0 +1,185 @@
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Jersey+10&display=swap"
+        rel="stylesheet"
+    />
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+        crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" type="text/css" href="./landing_page/style.css"/>
+
+    <title>CodeBots - Heig</title>
+
+</head>
+
+<body class="bg-body">
+<div class="row text-center background-image align-items-center" data-rellax-speed="3">
+    <img id="imgBot" src="/assets/codebot.gif" class="codebot-animation codebot"/>
+    <div class="title-header" data-rellax-speed="-3">
+        <h1 class="h1 title jersey-10-regular">CodeBots</h1>
+        <p class="lead">Récolte. Programme. Construis ton armée de robots intelligents.</p>
+    </div>
+</div>
+<a class="btn btn-primary discover-btn border-0" href="/game">
+    <p class="p-0 m-0">Découvrir le jeu</p>
+</a>
+<div class="container-fluid main bg-body">
+    <div class="p-2">
+        <div class="row">
+            <div class="card bg-primary text-light mt-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <h2 class="card-title fw-bold">
+                                Un monde où chaque ressource compte
+                            </h2>
+                            <p class="card-text lead">
+                                CodeBots est un jeu 2D où stratégie et créativité se
+                                rencontrent. Explore ton environnement, récolte des ressources
+                                précieuses et programme tes robots pour automatiser les
+                                tâches. Chaque décision compte : tes robots obéissent… mais
+                                seulement si tu leur donnes les bons ordres.
+                            </p>
+                        </div>
+                        <div class="col-4 d-flex justify-content-center align-items-center">
+                            <img src="/assets/codebot.gif" class="codebot codebot-animation"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row mt-5 m-1">
+        <div class="col-8">
+            <h2 class="mb-3">🎮 Style rétro, gameplay moderne</h2>
+            <p class="text-justify">
+                Un <strong>pixel-art minimaliste mais expressif</strong>. Chaque
+                élément du jeu est pensé pour rappeler les classiques des années 90,
+                tout en intégrant des mécaniques modernes qui gardent l’expérience
+                captivante.
+            </p>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-2">
+            <div class="card p-2 code">
+                <code>
+                    Repeat:
+                    <br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;go to zone 1
+                    <br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;cut wood
+                    <br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;go to chest 1
+                    <br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;drop wood
+                </code>
+            </div>
+        </div>
+        <div class="col-1"></div>
+    </div>
+    <hr class="my-4"/>
+
+    <div class="robot-path">
+        <img id="pathBot" src="/assets/codebot.gif" class="codebot-animation codebot"/>
+    </div>
+    <hr class="my-4"/>
+    <div class="row mt-5 d-flex justify-content-center">
+        <h2 class="mb-4">✨ Fonctionnalités clés</h2>
+        <div class="row">
+            <div class="col-4">
+                <div class="card bg-secondary text-light h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">⛏️ Récolte de ressources</h5>
+                        <p class="card-text">
+                            Bois, minerais... tout ce qu’il faut pour construire et
+                            progresser.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card bg-secondary text-light h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">🤖 Robots programmables</h5>
+                        <p class="card-text">
+                            Définis leurs actions pour automatiser la récolte, le transport
+                            et le stockage.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card bg-secondary text-light h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">🏗️ Craft & technologies</h5>
+                        <p class="card-text">
+                            Construis ton camp et débloque de nouvelles améliorations pour
+                            tes robots.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr class="my-4"/>
+    <div class="row m-1 mt-4">
+        <div class="card">
+            <div class="card-body">
+                <figure>
+                    <blockquote class="blockquote">
+                        <p>
+                            « Un bon robot travaille sans relâche… mais un robot bien
+                            programmé change le monde. »
+                        </p>
+                    </blockquote>
+                    <figcaption class="blockquote-footer">
+                        <cite>Devise des CodeBots</cite>
+                    </figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+    <hr class="my-5"/>
+
+    <div class="row my-5 text-center">
+        <h2 class="fw-bold mb-3">🚀 Rejoins l'aventure CodeBots</h2>
+        <p class="lead mb-4">
+            Découvre l'univers, participe à la communauté et prépare-toi à
+            construire ton armée de robots !
+        </p>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/game" class="btn btn-primary btn-lg border-0">Jouer</a>
+            <a href="https://discord.gg/" class="btn btn-outline-light btn-lg">
+                💬 Rejoindre la communauté
+            </a>
+            <a
+                href="https://github.com/zaidschouwey98/CodeBots"
+                class="btn btn-dark btn-lg"
+            >⭐ Voir sur GitHub</a>
+        </div>
+    </div>
+    <footer class="text-center text-muted py-3">
+        <p class="mb-0">© 2025 CodeBots - Un projet étudiant</p>
+    </footer>
+</div>
+</body>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"
+></script>
+
+<script type="module" src="landing_page/codebot_animation.js"></script>
