@@ -3,15 +3,16 @@ import $ from "jquery";
 
 new Rellax(".title-header");
 new Rellax(".background-image");
+new Rellax(".main");
 
 function animateCodebot(element, speed, leftToRight) {
-    let currentScroll = $(window).scrollTop()!;
-    const total = $(window).height()! - currentScroll;
+    let currentScroll = $(window).scrollTop();
+    const total = $(window).height() - currentScroll;
     const currPosition = 0;
     const offset = leftToRight ? element.offset().left : 0;
-    const trackLength = $(window).width()! - element.width() - 2 * offset;
+    const trackLength = $(window).width() - element.width() - 2 * offset;
     $(window).on("scroll", () => {
-        currentScroll = $(window).scrollTop()!;
+        currentScroll = $(window).scrollTop();
         const movement = Math.min(
             trackLength * (currentScroll / total) * speed,
             trackLength

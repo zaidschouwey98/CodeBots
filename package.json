@@ -23,7 +23,6 @@
         "@hono/node-server": "^1.19.0",
         "@types/jquery": "^3.5.32",
         "@types/rellax": "^1.7.7",
-        "bootstrap": "^5.3.7",
         "codebotsinterpreter": "^1.0.4",
         "hono": "^4.9.2",
         "jquery": "^3.7.1",
