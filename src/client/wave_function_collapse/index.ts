@@ -54,18 +54,29 @@ export default class WaveFunctionCollapse {
         return this.waves.every(({isCollapsed}) => isCollapsed);
     }
 
+    private getEntropy(wave: Wave): number {
+        const weightSum = wave.possibilities.reduce((acc, possibility) => {
+            return acc + possibility.weight;
+        }, 0);
+        const logSum = wave.possibilities.reduce((acc, possibility) => {
+            return acc + possibility.weight * Math.log(possibility.weight);
+        }, 0);
+
+        return Math.log(weightSum) - (logSum / weightSum)
+    }
+
     private getMinEntropyIndex(): number {
         const minEntropy = this.waves.reduce((acc, wave) => {
             if (wave.isCollapsed) {
                 return acc;
             }
 
-            return Math.min(acc, wave.possibilities.length)
+            return Math.min(acc, this.getEntropy(wave));
         }, Number.MAX_VALUE);
 
         const minEntropyWaves = this.waves
             .map((wave, index) => ({...wave, index}))
-            .filter((wave) => !wave.isCollapsed && wave.possibilities.length === minEntropy);
+            .filter((wave) => !wave.isCollapsed && this.getEntropy(wave) === minEntropy);
 
         if (minEntropyWaves.length === 0) {
             throw new Error("all waves are collapsed");

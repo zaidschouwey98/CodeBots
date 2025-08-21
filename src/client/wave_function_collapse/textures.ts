@@ -45,7 +45,7 @@ const textures: Texture[] = [
     },
     {
         name: "rock",
-        weight: 4,
+        weight: 10,
         rotation: 0,
         edges: [
             ["rock", "rock"],
@@ -56,7 +56,7 @@ const textures: Texture[] = [
     },
     {
         name: "grass_rock",
-        weight: 4,
+        weight: 10,
         rotation: 0,
         edges: [
             ["grass", "rock"],
@@ -67,7 +67,7 @@ const textures: Texture[] = [
     },
     {
         name: "grass_corner_rock",
-        weight: 4,
+        weight: 10,
         rotation: 0,
         edges: [
             ["grass", "rock"],
@@ -78,7 +78,7 @@ const textures: Texture[] = [
     },
     {
         name: "rock_corner_grass",
-        weight: 4,
+        weight: 10,
         rotation: 0,
         edges: [
             ["rock", "grass"],

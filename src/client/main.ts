@@ -14,7 +14,6 @@ console.log(parser.test());
         background: "white",
         resizeTo: window,
     });
-
     document.body.appendChild(app.canvas);
 
     await Assets.load(textures.map(({name}) => getTextureAssetName(name)));
