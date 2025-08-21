@@ -7,13 +7,13 @@ Checklist des sprites/textures à trouver.
 
 ### Minerais / ressources
 
-- [ ] pierre
-- [ ] charbon
-- [ ] fer
-- [ ] diamant
-- [ ] arbre
-- [ ] trou pour planter graine
-- [ ] trou avec graine d'arbre planté
+- [] pierre
+- [x] charbon
+- [x] fer
+- [x] diamant ?
+- [x] arbre
+- [ ] trou pour planter graine ?
+- [ ] trou avec graine d'arbre planté ?
 
 ### bloques interactifs
 
@@ -27,7 +27,7 @@ Checklist des sprites/textures à trouver.
 
 - [ ] pioche
 - [ ] hache
-- [ ] pelle
+- [ ] pelle ?
 
 - [ ] tuyau en fer
 - [ ] vis en fer
@@ -47,3 +47,8 @@ Checklist des sprites/textures à trouver.
 - [ ] interface core
 - [ ] interface coffre
 - [ ] interface craft
+
+- [ ] four
+- [ ] établi
+- [ ] coffre
+- [ ] robot
