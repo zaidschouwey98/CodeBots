@@ -78,7 +78,7 @@ code {
     margin-top: -60px;
     opacity: 70%;
     &:hover {
-    opacity: 100%;
+        opacity: 100%;
     }
 }
 
