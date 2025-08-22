@@ -24,6 +24,9 @@ sur la gestion, la programmation simple d’actions et la progression par crafti
 L'objectif final est de construire un core. Ce core nécessite une grande quantité de ressources, poussant le joueur à
 automatiser la récolte et le transport de celles-ci via des robots.
 
+Le jeu nécessite le développement d'un interpréteur simple permettant de comprendre et d'exécuter le code écrit par le
+joueur pour ses robots.
+
 ### Requirements fonctionnels
 
 - Le monde est généré procéduralement.
@@ -116,17 +119,12 @@ Repeat:
 - Méthodologie agile (Kanban) : tâches visibles dans GitHub Projects
 
 - Git flow simplifié :
-
     - main = version stable.
-
     - dev = branche d’intégration.
-
     - développement des features sur branches spécifiques puis merge dans dev une fois que les tests passent et
       finalement merge dans main une fois que la feature est stable.
-
-    - Code reviews via pull requests.
-
     - Push bloqués sur dev et main
+    - Code reviews via pull requests.
 
 ## 6. Environnement de déploiement
 
@@ -139,10 +137,15 @@ Repeat:
 
 Après un push passant les tests sur la branche associée à l'environnement, le code est automatiquement déployé.
 
+Avec ces deux environnements, nous pouvons d'abord tester les nouvelles fonctionnalités dans l'environnement de dev
+avant de les déployer dans l'environnement stable.
+
 ### Interpréteur
 
-L'interpréteur est développé dans un repo
-séparé : [CodeBotsInterpreter](https://github.com/LeonardJouve/CodeBotsInterpreter)
-
-Déploiement automatique sur [NPM](https://www.npmjs.com/package/codebotsinterpreter) après un push passant les tests sur
+Nous avons choisi de développer l'interpréteur dans un repo [repo](https://github.com/LeonardJouve/CodeBotsInterpreter)
+séparé car il pourrait être réutilisé dans d'autres projets. Nous avons aussi mis en place un pipeline CI/CD de
+déploiement automatique sur [NPM](https://www.npmjs.com/package/codebotsinterpreter) après un push passant les tests sur
 main.
+
+De cette manière, nous pouvons facilement l'intégrer dans notre projet principal en tant que dépendance NPM.
+
