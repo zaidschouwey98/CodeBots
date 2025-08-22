@@ -10,6 +10,8 @@ app.get("/api/hello", (c) => c.json({message: "Hello from Hono 🚀"}));
 // En production : servir le build de Vite
 app.use("/*", serveStatic({root: "./dist/client"}));
 
+app.get("/game", serveStatic({ path: "./dist/client/game.html"}));
+
 serve({
     fetch: app.fetch,
     port: Number(process.env.PORT) || 8080,
