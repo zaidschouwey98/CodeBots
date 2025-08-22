@@ -97,6 +97,9 @@ Repeat:
 Les mockups ont été réalisés
 sur [Figma](https://www.figma.com/design/tnGuliOxWSMdlvZOj1Epsm/Game?node-id=0-1&p=f&t=2IQgDc3RoBgWTm9V-0)
 
+Storyboards:
+
+![Mockup](./res/storyboard.png)
 
 ## 4. Description des choix techniques
 
@@ -144,7 +147,7 @@ avant de les déployer dans l'environnement stable.
 
 ### Interpréteur
 
-Nous avons choisi de développer l'interpréteur dans un repo [repo](https://github.com/LeonardJouve/CodeBotsInterpreter)
+Nous avons choisi de développer l'interpréteur dans un [repo](https://github.com/LeonardJouve/CodeBotsInterpreter)
 séparé car il pourrait être réutilisé dans d'autres projets. Nous avons aussi mis en place un pipeline CI/CD de
 déploiement automatique sur [NPM](https://www.npmjs.com/package/codebotsinterpreter) après un push passant les tests sur
 main.
