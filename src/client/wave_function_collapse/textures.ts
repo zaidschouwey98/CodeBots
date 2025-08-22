@@ -4,13 +4,13 @@ export type EdgeName = "grass" | "path";
 export type Edge = EdgeName[];
 
 export type Texture = {
-    name: TextureName;
+    names: TextureName[];
     weight: number;
     edges: Edge;
     rotation: number;
     overlays: {
         probability: number,
-        texture: TextureName,
+        names: TextureName[],
     }[];
 };
 
@@ -35,7 +35,7 @@ export const directions = {
 
 const textures: Texture[] = [
     {
-        name: "grass",
+        names: ["grass"],
         weight: 100,
         rotation: 0,
         edges: [
@@ -47,28 +47,16 @@ const textures: Texture[] = [
         overlays: [
             {
                 probability: 0.1,
-                texture: "flower",
+                names: ["flower_1", "flower_2", "flower_3"],
             },
             {
-                probability: 0.01,
-                texture: "tree_1",
-            },
-            {
-                probability: 0.01,
-                texture: "tree_2",
-            },
-            {
-                probability: 0.01,
-                texture: "tree_3",
-            },
-            {
-                probability: 0.01,
-                texture: "tree_4",
+                probability: 0.04,
+                names: ["tree_1", "tree_2", "tree_3", "tree_4"],
             },
         ],
     },
     {
-        name: "path_i",
+        names: ["path_i"],
         weight: 4,
         rotation: 0,
         edges: [
@@ -80,12 +68,12 @@ const textures: Texture[] = [
         overlays: [
             {
                 probability: 0.4,
-                texture: "iron",
+                names: ["iron"],
             }
         ],
     },
     {
-        name: "path_u",
+        names: ["path_u"],
         weight: 2,
         rotation: 0,
         edges: [
@@ -97,12 +85,12 @@ const textures: Texture[] = [
         overlays: [
             {
                 probability: 0.4,
-                texture: "iron",
+                names: ["iron"],
             }
         ],
     },
     {
-        name: "path_l_1",
+        names: ["path_l_1", "path_l_2"],
         weight: 3,
         rotation: 0,
         edges: [
@@ -114,29 +102,12 @@ const textures: Texture[] = [
         overlays: [
             {
                 probability: 0.4,
-                texture: "iron",
+                names: ["iron"],
             }
         ],
     },
     {
-        name: "path_l_2",
-        weight: 3,
-        rotation: 0,
-        edges: [
-            "grass",
-            "grass",
-            "path",
-            "path",
-        ],
-        overlays: [
-            {
-                probability: 0.4,
-                texture: "iron",
-            }
-        ],
-    },
-    {
-        name: "path_t",
+        names: ["path_t"],
         weight: 8,
         rotation: 0,
         edges: [
@@ -148,12 +119,12 @@ const textures: Texture[] = [
         overlays: [
             {
                 probability: 0.4,
-                texture: "iron",
+                names: ["iron"],
             }
         ],
     },
     {
-        name: "path_x",
+        names: ["path_x"],
         weight: 10,
         rotation: 0,
         edges: [
@@ -165,7 +136,7 @@ const textures: Texture[] = [
         overlays: [
             {
                 probability: 0.4,
-                texture: "iron",
+                names: ["iron"],
             }
         ],
     },

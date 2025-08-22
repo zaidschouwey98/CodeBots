@@ -13,15 +13,43 @@ export type TextureName =
     "path_l_2" |
     "path_t" |
     "path_x" |
-    "flower" |
     "furnace_off" |
-    "furnace_on" |
+    "furnace_on_1" |
+    "furnace_on_2" |
+    "furnace_on_3" |
     "workbench" |
+    "crate" |
     "core" |
     "stone" |
     "coal" |
     "copper" |
     "iron" |
+    "flower_1" |
+    "flower_2" |
+    "flower_3" |
+    "stone_ore" |
+    "coal_ore" |
+    "copper_ore" |
+    "copper_ingot" |
+    "iron_ore" |
+    "iron_ingot" |
+    "wood_log" |
+    "wood_plank" |
+    "seed" |
+    "pickaxe" |
+    "shovel" |
+    "axe" |
+    "iron_rod" |
+    "nail" |
+    "iron_frame" |
+    "iron_plate" |
+    "reinforced_iron_plate" |
+    "cement" |
+    "concrete" |
+    "codebot_1" |
+    "codebot_2" |
+    "codebot_3" |
+    "codebot_4" |
     "tree_1" |
     "tree_2" |
     "tree_3" |
@@ -63,9 +91,8 @@ const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: 
 };
 
 const atlas = [
-    generateAtlas("/assets/spritesheet.png", {w: 4, h: 4}, {w: 16, h: 16}, [
+    generateAtlas("/assets/spritesheet.png", {w: 7, h: 7}, {w: 16, h: 16}, [
         "grass",
-        "flower",
         "path_i",
         "path_u",
         "path_l_1",
@@ -73,13 +100,42 @@ const atlas = [
         "path_t",
         "path_x",
         "furnace_off",
-        "furnace_on",
+        "furnace_on_1",
+        "furnace_on_2",
+        "furnace_on_3",
         "workbench",
+        "crate",
         "core",
         "stone",
         "coal",
         "copper",
         "iron",
+        "flower_1",
+        "flower_2",
+        "flower_3",
+        "stone_ore",
+        "coal_ore",
+        "copper_ore",
+        "copper_ingot",
+        "iron_ore",
+        "iron_ingot",
+        "wood_log",
+        "wood_plank",
+        "seed",
+        "pickaxe",
+        "shovel",
+        "axe",
+        "iron_rod",
+        "nail",
+        "iron_frame",
+        "iron_plate",
+        "reinforced_iron_plate",
+        "cement",
+        "concrete",
+        "codebot_1",
+        "codebot_2",
+        "codebot_3",
+        "codebot_4",
     ]),
     generateAtlas("/assets/trees.png", {w: 2, h: 2}, {w: 16, h: 32}, [
         "tree_1",

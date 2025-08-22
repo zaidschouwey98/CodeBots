@@ -44,17 +44,17 @@ export default class WaveFunctionCollapse {
             this.iterate();
         }
 
-        return this.waves.map(({possibilities: [{name, rotation, overlays}]}) => {
+        return this.waves.map(({possibilities: [{names, rotation, overlays}]}) => {
             const random = Math.random();
             let sum = 0;
 
             return {
-                name,
+                name: names[this.getRandomIndex(names.length)],
                 rotation,
-                overlay: overlays.reduce<ResultTexture["overlay"]>((acc, {probability, texture}) => {
+                overlay: overlays.reduce<ResultTexture["overlay"]>((acc, {probability, names}) => {
                     sum += probability;
                     if (!acc && random < sum) {
-                        acc = texture;
+                        acc = names[this.getRandomIndex(names.length)];
                     }
 
                     return acc;
