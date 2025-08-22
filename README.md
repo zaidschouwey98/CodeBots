@@ -154,3 +154,21 @@ main.
 
 De cette manière, nous pouvons facilement l'intégrer dans notre projet principal en tant que dépendance NPM.
 
+## 7. Game art
+
+La plupart des assets graphiques ont été créés par Schouwey Zaid à l'aide de [Piskel](https://www.piskelapp.com/).
+
+<img src="./src/client/public/assets/spritesheet.png" alt="spritesheet" style="width: 30%">
+
+<img src="./src/client/public/assets/trees.png" alt="trees" style="width: 5%;" >
+
+Les éléments de GUI proviennent du pack
+gratuit : [Tiny Wonder GUI Pack](https://butterymilk.itch.io/tiny-wonder-gui-pack).
+
+![spirtesheet](./src/client/public/assets/gui.png)
+
+Le personnage vient du pack gratuit : [pixelrpg](https://snoblin.itch.io/pixel-rpg-free-npc).
+
+![spirtesheet](./src/client/public/assets/character.png)
+
+
