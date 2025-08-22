@@ -1,5 +1,8 @@
 # CodeBots
 *Künzli Christophe, Jouve Léonard, Schouwey Zaïd*
+
+You can find our Codebot interpreter package [here](https://github.com/LeonardJouve/CodeBotsInterpreter)
+
 ## Livrables S1
 - [X] Description du projet (objectif, requirements fonctionnels, requirements non-fonctionnels). 
 - [X] Description préliminaire de l’architecture 
@@ -107,11 +110,11 @@ Repeat:
 ### Application
 
 2 environnements de déploiement sur Azure App Service:
-- dev
-- stable
+- [dev](https://codebots-dev-web-app.azurewebsites.net/)
+- [stable](https://codebots-stable-web-app.azurewebsites.net/)
 
 Après un push passant les tests sur la branche associée à l'environnement, le code est automatiquement déployé.
 
 ### Interpréteur
 
-Déploiement automatique sur [NPM](https://www.npmjs.com/) après un push passant les tests sur main.
+Déploiement automatique sur [NPM](https://www.npmjs.com/package/codebotsinterpreter) après un push passant les tests sur main.
