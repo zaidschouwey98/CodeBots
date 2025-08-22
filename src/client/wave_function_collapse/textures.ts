@@ -35,7 +35,7 @@ export const directions = {
 
 const textures: Texture[] = [
     {
-        names: ["grass"],
+        names: ["grass_1", "grass_2", "grass_3", "grass_4"],
         weight: 100,
         rotation: 0,
         edges: [

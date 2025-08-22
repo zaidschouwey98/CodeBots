@@ -6,7 +6,10 @@ type Dimensions = {
 };
 
 export type TextureName =
-    "grass" |
+    "grass_1" |
+    "grass_2" |
+    "grass_3" |
+    "grass_4" |
     "path_i" |
     "path_u" |
     "path_l_1" |
@@ -92,7 +95,10 @@ const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: 
 
 const atlas = [
     generateAtlas("/assets/spritesheet.png", {w: 7, h: 7}, {w: 16, h: 16}, [
-        "grass",
+        "grass_1",
+        "grass_2",
+        "grass_3",
+        "grass_4",
         "path_i",
         "path_u",
         "path_l_1",
