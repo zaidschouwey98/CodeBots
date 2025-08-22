@@ -94,7 +94,9 @@ Repeat:
 
 ## 3. Mockup
 
-[figma](https://www.figma.com/design/tnGuliOxWSMdlvZOj1Epsm/Game?node-id=0-1&p=f&t=2IQgDc3RoBgWTm9V-0)
+Les mockups ont été réalisés
+sur [Figma] (https://www.figma.com/design/tnGuliOxWSMdlvZOj1Epsm/Game?node-id=0-1&p=f&t=2IQgDc3RoBgWTm9V-0)
+
 
 ## 4. Description des choix techniques
 
