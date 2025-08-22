@@ -17,6 +17,7 @@ You can find our Codebot interpreter package [here](https://github.com/LeonardJo
 CodeBots est un petit jeu 2D vu de dessus en JavaScript où le joueur récolte des ressources et construit des robots programmables capables d’automatiser certaines tâches (récolte, transport, stockage, fabrication). Le jeu met l’accent sur la gestion, la programmation simple d’actions et la progression par crafting et technologies.
 
 ### Requirements fonctionnels
+- Le monde est généré procéduralement.
 - Le joueur peut se déplacer et récolter des ressources (bois, pierre, etc.).
 - Le joueur peut crafter des objets (outils, robots, coffres).
 - Le joueur peut définir des zones et les nommer.
