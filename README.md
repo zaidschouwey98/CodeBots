@@ -158,7 +158,7 @@ De cette manière, nous pouvons facilement l'intégrer dans notre projet princip
 
 La plupart des assets graphiques ont été créés par Schouwey Zaid à l'aide de [Piskel](https://www.piskelapp.com/).
 
-![spirtesheet](./src/client/public/assets/spritesheet.png)
+<img src="./src/client/public/assets/spritesheet.png" alt="spritesheet" style="width: 30%">
 
 Les éléments de GUI proviennent du pack
 gratuit : [Tiny Wonder GUI Pack](https://butterymilk.itch.io/tiny-wonder-gui-pack).
