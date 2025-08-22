@@ -4,13 +4,13 @@
 You can find our Codebot interpreter package [here](https://github.com/LeonardJouve/CodeBotsInterpreter)
 
 ## Livrables S1
-- [X] Description du projet (objectif, requirements fonctionnels, requirements non-fonctionnels). 
-- [X] Description préliminaire de l’architecture 
-- [ ] Mockups (Figma, papier-crayon, etc.) / Landing page 
-- [X] Description des choix techniques • Description du processus de travail (p.ex.: git flow, devops, etc.) 
-- [X] Mise en place des outils de développement (Issue tracker … etc.) 
-- [X] Mise en place d’un environnement de déploiement 
-- [X] Mise en place d’un pipeline de livraison et de déploiement (CI/CD) 
+- [X] Description du projet (objectif, requirements fonctionnels, requirements non-fonctionnels).
+- [X] Description préliminaire de l’architecture
+- [ ] Mockups (Figma, papier-crayon, etc.) / Landing page
+- [X] Description des choix techniques • Description du processus de travail (p.ex.: git flow, devops, etc.)
+- [X] Mise en place des outils de développement (Issue tracker … etc.)
+- [X] Mise en place d’un environnement de déploiement
+- [X] Mise en place d’un pipeline de livraison et de déploiement (CI/CD)
 - [ ] Démonstration du déploiement d’une modification
 ## 1. Description du projet
 
@@ -57,7 +57,7 @@ Repeat:
 
     - Langage : TypeScript
 
-- Back-end : 
+- Back-end :
     - Authentification
 
     - Sauvegarde de la progression
@@ -72,6 +72,9 @@ Repeat:
 
     - Persistence : sauvegarde locale ou en ligne
 ## 3. Mockup
+
+[figma](https://www.figma.com/design/tnGuliOxWSMdlvZOj1Epsm/Game?node-id=0-1&p=f&t=2IQgDc3RoBgWTm9V-0)
+
 ## 4. Description des choix techniques
 
 - PixiJS: librairie pour gérer le rendu 2D.
@@ -103,7 +106,7 @@ Repeat:
     - développement des features sur branches spécifiques puis merge dans dev une fois que les tests passent et finalement merge dans main une fois que la feature est stable.
 
     - Code reviews via pull requests.
- 
+
     - Push bloqués sur dev et main
 
 ## 6. Environnement de déploiement
@@ -117,5 +120,7 @@ Repeat:
 Après un push passant les tests sur la branche associée à l'environnement, le code est automatiquement déployé.
 
 ### Interpréteur
+
+L'interpréteur est développé dans un repo séparé : [CodeBotsInterpreter](https://github.com/LeonardJouve/CodeBotsInterpreter)
 
 Déploiement automatique sur [NPM](https://www.npmjs.com/package/codebotsinterpreter) après un push passant les tests sur main.
