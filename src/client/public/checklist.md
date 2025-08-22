@@ -2,7 +2,7 @@ Checklist des sprites/textures à trouver.
 
 ### Sols
 - [x] herbe
-- [x] pierre
+- [x] chemin
 - [ ] sable ?
 
 ### Minerais / Ressources
