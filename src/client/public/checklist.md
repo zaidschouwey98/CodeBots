@@ -7,7 +7,7 @@ Checklist des sprites/textures à trouver.
 
 ### Minerais / Ressources
 
-- [ ] pierre
+- [x] pierre
 - [x] charbon
 - [x] fer
 - [x] diamant ?
@@ -17,38 +17,35 @@ Checklist des sprites/textures à trouver.
 
 ### bloques interactifs
 
-- [ ] four
-- [ ] établi
+- [x] four
+- [x] établi
 - [ ] coffre
-- [ ] robot
-- [ ] cœur ? (objectif du jeu)
+- [x] robot
+- [x] cœur
 
 ### icones inventaire / éléments HUD
 
-- [ ] pioche
-- [ ] hache
-- [ ] pelle ?
+- [x] pioche
+- [x] hache
+- [x] pelle ?
 
-- [ ] tuyau en fer
-- [ ] vis en fer
-- [ ] armature en fer
+- [x] tuyau en fer
+- [x] vis en fer
+- [x] armature en fer
 - [ ] plaque renforcée en fer
 - [ ] ciment
 - [ ] beton
-- [ ] planche de bois
-- [ ] plaque de fer
+- [x] planche de bois
+- [x] plaque de fer
+- [x] lingot de fer
 
-- [ ] case inventaire
-- [ ] selection case inventaire
-- [ ] case craft
-- [ ] case craft invalide
-- [ ] interface code robot
-- [ ] icon fermeture interface
-- [ ] interface core
-- [ ] interface coffre
-- [ ] interface craft
-
-- [ ] four
-- [ ] établi
-- [ ] coffre
-- [ ] robot
+- [x] case inventaire
+- [x] selection case inventaire
+- [x] case craft
+- [x] case craft invalide
+- [x] icon fermeture interface
+- [x] interface code robot
+- [x] interface core
+- [x] interface coffre
+- [x] interface craft
+- [x] interface établi
