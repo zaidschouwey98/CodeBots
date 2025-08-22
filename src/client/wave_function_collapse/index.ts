@@ -1,4 +1,5 @@
-import {directions, EdgeName, rotate, type Texture} from "./textures";
+import type {TextureName} from "../spritesheet_atlas";
+import {directions, rotate, type Texture, type EdgeName} from "./textures";
 
 type Dimensions = {
     width: number;
@@ -13,6 +14,12 @@ type NeighborWithDirection = {
 type Wave = {
     possibilities: Texture[];
     isCollapsed: boolean;
+};
+
+type ResultTexture = {
+    name: TextureName;
+    rotation: number;
+    overlay?: TextureName;
 };
 
 export default class WaveFunctionCollapse {
@@ -32,12 +39,28 @@ export default class WaveFunctionCollapse {
         }));
     }
 
-    run(): Texture[] {
+    run(): ResultTexture[] {
         while (!this.isCollapsed()) {
             this.iterate();
         }
 
-        return this.waves.map(({possibilities: [possibility]}) => possibility);
+        return this.waves.map(({possibilities: [{name, rotation, overlays}]}) => {
+            const random = Math.random();
+            let sum = 0;
+
+            return {
+                name,
+                rotation,
+                overlay: overlays.reduce<ResultTexture["overlay"]>((acc, {probability, texture}) => {
+                    sum += probability;
+                    if (!acc && random < sum) {
+                        acc = texture;
+                    }
+
+                    return acc;
+                }, undefined),
+            };
+        });
     }
 
     private iterate(): void {

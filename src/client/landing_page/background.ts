@@ -1,8 +1,8 @@
 import $ from "jquery";
-import {Application, Assets, SCALE_MODES, Sprite, Spritesheet} from "pixi.js";
+import {Application, Sprite} from "pixi.js";
 import WaveFunctionCollapse from "../wave_function_collapse";
 import textures from "../wave_function_collapse/textures";
-import atlas from "../spritesheet_atlas";
+import {findTexture, getSpritesheets} from "../spritesheet_atlas";
 
 (async () => {
     const cellSize = 16;
@@ -10,7 +10,7 @@ import atlas from "../spritesheet_atlas";
 
     const container = document.querySelector(".background-image");
     if (!(container instanceof HTMLElement)) {
-        throw new Error("no container");
+        throw new Error("invalid container");
     }
 
     const gridSize = {
@@ -30,53 +30,31 @@ import atlas from "../spritesheet_atlas";
 
     container.appendChild(app.canvas);
 
-    const spritesheetAsset = await Assets.load({
-        src: atlas.meta.image,
-        data: {scaleMode: SCALE_MODES.NEAREST},
-    });
-    const spritesheet = new Spritesheet(spritesheetAsset, atlas);
-    await spritesheet.parse();
+    const spritesheets = await getSpritesheets();
 
     const wfc = new WaveFunctionCollapse(textures, gridSize);
     const result = wfc.run();
 
-    result.forEach(({name, rotation}, i) => {
+    result.forEach(({name, rotation, overlay}, i) => {
         const x = i % gridSize.width;
         const y = Math.floor(i / gridSize.width);
 
-        const sprite = new Sprite(spritesheet.textures[name]);
+        const sprite = new Sprite(findTexture(spritesheets, name));
 
-        sprite.width = cellSize;
-        sprite.height = cellSize;
-        sprite.x = x * cellSize + cellSize / 2;
-        sprite.y = y * cellSize + cellSize / 2;
-        sprite.anchor.set(0.5);
+        sprite.x = x * cellSize + sprite.width / 2;
+        sprite.y = y * cellSize + sprite.height / 2;
+        sprite.pivot.set(cellSize / 2, cellSize / 2);
         sprite.rotation = (Math.PI / 2) * rotation;
 
         app.stage.addChild(sprite);
 
-        if (name === "grass") {
-            if (Math.random() < 0.1) {
-                const overlay = new Sprite(spritesheet.textures["flower"]);
+        if (overlay) {
+            const sprite = new Sprite(findTexture(spritesheets, overlay));
 
-                overlay.width = cellSize;
-                overlay.height = cellSize;
-                overlay.x = x * cellSize + cellSize / 2;
-                overlay.y = y * cellSize + cellSize / 2;
-                overlay.anchor.set(0.5);
+            sprite.x = x * cellSize - sprite.width + cellSize;
+            sprite.y = y * cellSize - sprite.height + cellSize;
 
-                app.stage.addChild(overlay);
-            }
-        } else if (Math.random() < 0.4) {
-            const overlay = new Sprite(spritesheet.textures["iron"]);
-
-            overlay.width = cellSize;
-            overlay.height = cellSize;
-            overlay.x = x * cellSize + cellSize / 2;
-            overlay.y = y * cellSize + cellSize / 2;
-            overlay.anchor.set(0.5);
-
-            app.stage.addChild(overlay);
+            app.stage.addChild(sprite);
         }
     });
 })();
