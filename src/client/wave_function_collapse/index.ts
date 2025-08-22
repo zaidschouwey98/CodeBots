@@ -144,13 +144,14 @@ export default class WaveFunctionCollapse {
     }
 
     private areEdgesMatching(first: Edge, second: Edge): boolean {
-        for (let i = 0; i < first.length; i++) {
-            if (first[i] !== second[second.length - 1 - i]) {
-                return false;
-            }
-        }
+        return first === second;
+        // for (let i = 0; i < first.length; i++) {
+        //     if (first[i] !== second[second.length - 1 - i]) {
+        //         return false;
+        //     }
+        // }
 
-        return true;
+        // return true;
     }
 
     private getValidNeighborIndex(index: number, direction: number): number|null {

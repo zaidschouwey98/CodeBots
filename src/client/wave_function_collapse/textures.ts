@@ -1,16 +1,14 @@
-export type TextureName = "grass" | "rock" | "grass_rock" | "grass_corner_rock" | "rock_corner_grass";
+import type {TextureName} from "../spritesheet_atlas";
 
-type EdgeName = "grass" | "rock";
-export type Edge = [EdgeName, EdgeName];
+type EdgeName = "grass" | "path";
+export type Edge = EdgeName[];
 
 export type Texture = {
     name: TextureName;
     weight: number;
-    edges: Edge[];
+    edges: Edge;
     rotation: number;
 };
-
-export const getTextureAssetName = (name: TextureName) => `/sprites/${name}.png`;
 
 export const rotate = (texture: Texture, rotation: number) => {
     const newTexture = {...texture, edges: [...texture.edges]};
@@ -34,57 +32,79 @@ export const directions = {
 const textures: Texture[] = [
     {
         name: "grass",
-        weight: 10,
+        weight: 100,
         rotation: 0,
         edges: [
-            ["grass", "grass"],
-            ["grass", "grass"],
-            ["grass", "grass"],
-            ["grass", "grass"],
+            "grass",
+            "grass",
+            "grass",
+            "grass",
         ],
     },
     {
-        name: "rock",
-        weight: 10,
+        name: "path_i",
+        weight: 4,
         rotation: 0,
         edges: [
-            ["rock", "rock"],
-            ["rock", "rock"],
-            ["rock", "rock"],
-            ["rock", "rock"]
+            "grass",
+            "path",
+            "grass",
+            "path",
         ],
     },
     {
-        name: "grass_rock",
-        weight: 10,
+        name: "path_u",
+        weight: 2,
         rotation: 0,
         edges: [
-            ["grass", "rock"],
-            ["rock", "rock"],
-            ["rock", "grass"],
-            ["grass", "grass"],
+            "grass",
+            "grass",
+            "grass",
+            "path",
         ],
     },
     {
-        name: "grass_corner_rock",
-        weight: 10,
+        name: "path_l_1",
+        weight: 6,
         rotation: 0,
         edges: [
-            ["grass", "rock"],
-            ["rock", "grass"],
-            ["grass", "grass"],
-            ["grass", "grass"],
+            "path",
+            "grass",
+            "grass",
+            "path",
+        ],
+    },
+    // {
+    //     name: "path_l_2",
+    //     weight: 10,
+    //     rotation: 0,
+    //     edges: [
+    //         "grass",
+    //         "grass",
+    //         "path",
+    //         "path",
+    //     ],
+    // },
+    {
+        name: "path_t",
+        weight: 8,
+        rotation: 0,
+        edges: [
+            "path",
+            "path",
+            "grass",
+            "path",
         ],
     },
     {
-        name: "rock_corner_grass",
+        name: "path_x",
         weight: 10,
         rotation: 0,
         edges: [
-            ["rock", "grass"],
-            ["grass", "rock"],
-            ["rock", "rock"],
-            ["rock", "rock"],
+            "path",
+            "path",
+            "path",
+            "path",
         ],
     },
 ];
