@@ -160,6 +160,8 @@ La plupart des assets graphiques ont été créés par Schouwey Zaid à l'aide d
 
 <img src="./src/client/public/assets/spritesheet.png" alt="spritesheet" style="width: 30%">
 
+<img src="./src/client/public/assets/trees.png" alt="trees" style="width: 5%;" >
+
 Les éléments de GUI proviennent du pack
 gratuit : [Tiny Wonder GUI Pack](https://butterymilk.itch.io/tiny-wonder-gui-pack).
 
