@@ -117,4 +117,4 @@ Après un push passant les tests sur la branche associée à l'environnement, le
 
 ### Interpréteur
 
-Déploiement automatique sur [NPM](https://www.npmjs.com/) après un push passant les tests sur main.
+Déploiement automatique sur [NPM](https://www.npmjs.com/package/codebotsinterpreter) après un push passant les tests sur main.
