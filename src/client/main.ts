@@ -1,8 +1,5 @@
-import {Application, Assets, RenderLayer, SCALE_MODES, Sprite, Spritesheet, spritesheetAsset, Texture} from "pixi.js";
+import {Application, Assets, Container, Sprite} from "pixi.js";
 import Parser from "codebotsinterpreter";
-import WaveFunctionCollapse from "./wave_function_collapse";
-import textures from "./wave_function_collapse/textures";
-import atlas from "./spritesheet_atlas";
 
 const parser = new Parser();
 console.log(parser.test());
@@ -10,65 +7,40 @@ console.log(parser.test());
 (async () => {
     const app = new Application();
 
-    await app.init({
-        background: "white",
-        resizeTo: window,
-    });
+    await app.init({ background: "#1099bb", resizeTo: window });
+
+    // Append the application canvas to the document body
     document.body.appendChild(app.canvas);
 
-    const spritesheetAsset = await Assets.load({
-        src: atlas.meta.image,
-        data: {scaleMode: SCALE_MODES.NEAREST},
-    });
-    const spritesheet = new Spritesheet(spritesheetAsset, atlas);
-    await spritesheet.parse();
+    // Create and add a container to the stage
+    const container = new Container();
 
-    const gridSize = {
-        width: 8,
-        height: 8,
-    };
-    const wfc = new WaveFunctionCollapse(textures, gridSize);
-    const result = wfc.run();
+    app.stage.addChild(container);
 
-    const cellSize = 64;
+    // Load the bunny texture
+    const texture = await Assets.load("https://pixijs.com/assets/bunny.png");
 
-    result.forEach(({name, rotation}, i) => {
-        const x = i % gridSize.width;
-        const y = Math.floor(i / gridSize.width);
+    // Create a 5x5 grid of bunnies in the container
+    for (let i = 0; i < 25; i++) {
+        const bunny = new Sprite(texture);
 
-        const sprite = new Sprite(spritesheet.textures[name]);
+        bunny.x = (i % 5) * 40;
+        bunny.y = Math.floor(i / 5) * 40;
+        container.addChild(bunny);
+    }
 
-        sprite.width = cellSize;
-        sprite.height = cellSize;
-        sprite.x = x * cellSize + cellSize / 2;
-        sprite.y = y * cellSize + cellSize / 2;
-        sprite.anchor.set(0.5);
-        sprite.rotation = (Math.PI / 2) * rotation;
+    // Move the container to the center
+    container.x = app.screen.width / 2;
+    container.y = app.screen.height / 2;
 
-        app.stage.addChild(sprite);
+    // Center the bunny sprites in local container coordinates
+    container.pivot.x = container.width / 2;
+    container.pivot.y = container.height / 2;
 
-        if (name === "grass") {
-            if (Math.random() < 0.1) {
-                const overlay = new Sprite(spritesheet.textures["flower"]);
-
-                overlay.width = cellSize;
-                overlay.height = cellSize;
-                overlay.x = x * cellSize + cellSize / 2;
-                overlay.y = y * cellSize + cellSize / 2;
-                overlay.anchor.set(0.5);
-
-                app.stage.addChild(overlay);
-            }
-        } else if (Math.random() < 0.4) {
-            const overlay = new Sprite(spritesheet.textures["iron"]);
-
-            overlay.width = cellSize;
-            overlay.height = cellSize;
-            overlay.x = x * cellSize + cellSize / 2;
-            overlay.y = y * cellSize + cellSize / 2;
-            overlay.anchor.set(0.5);
-
-            app.stage.addChild(overlay);
-        }
+    // Listen for animate update
+    app.ticker.add((time) => {
+        // Continuously rotate the container!
+        // * use delta to create frame-independent transform *
+        container.rotation -= 0.01 * time.deltaTime;
     });
 })();

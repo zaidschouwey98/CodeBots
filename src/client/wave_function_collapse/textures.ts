@@ -1,6 +1,6 @@
 import type {TextureName} from "../spritesheet_atlas";
 
-type EdgeName = "grass" | "path";
+export type EdgeName = "grass" | "path";
 export type Edge = EdgeName[];
 
 export type Texture = {

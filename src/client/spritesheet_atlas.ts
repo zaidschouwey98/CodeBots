@@ -3,7 +3,23 @@ type Dimensions = {
     h: number;
 };
 
-export type TextureName = "grass" | "path_i" | "path_u" | "path_l_1" | "path_l_2" | "path_t" | "path_x" | string;
+export type TextureName =
+    "grass" |
+    "path_i" |
+    "path_u" |
+    "path_l_1" |
+    "path_l_2" |
+    "path_t" |
+    "path_x" |
+    "flower" |
+    "furnace_off" |
+    "furnace_on" |
+    "workbench" |
+    "core" |
+    "stone" |
+    "coal" |
+    "copper" |
+    "iron";
 
 const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: Dimensions, names: TextureName[]) => {
     return {

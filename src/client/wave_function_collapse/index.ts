@@ -1,4 +1,4 @@
-import {directions, Edge, rotate, type Texture} from "./textures";
+import {directions, EdgeName, rotate, type Texture} from "./textures";
 
 type Dimensions = {
     width: number;
@@ -143,7 +143,7 @@ export default class WaveFunctionCollapse {
         });
     }
 
-    private areEdgesMatching(first: Edge, second: Edge): boolean {
+    private areEdgesMatching(first: EdgeName, second: EdgeName): boolean {
         return first === second;
         // for (let i = 0; i < first.length; i++) {
         //     if (first[i] !== second[second.length - 1 - i]) {
