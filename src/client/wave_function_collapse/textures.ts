@@ -65,7 +65,7 @@ const textures: Texture[] = [
     },
     {
         name: "path_l_1",
-        weight: 6,
+        weight: 3,
         rotation: 0,
         edges: [
             "path",
@@ -74,17 +74,17 @@ const textures: Texture[] = [
             "path",
         ],
     },
-    // {
-    //     name: "path_l_2",
-    //     weight: 10,
-    //     rotation: 0,
-    //     edges: [
-    //         "grass",
-    //         "grass",
-    //         "path",
-    //         "path",
-    //     ],
-    // },
+    {
+        name: "path_l_2",
+        weight: 3,
+        rotation: 0,
+        edges: [
+            "grass",
+            "grass",
+            "path",
+            "path",
+        ],
+    },
     {
         name: "path_t",
         weight: 8,
