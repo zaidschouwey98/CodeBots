@@ -110,8 +110,8 @@ Repeat:
 ### Application
 
 2 environnements de déploiement sur Azure App Service:
-- dev
-- stable
+- [dev](https://codebots-dev-web-app.azurewebsites.net/)
+- [stable](https://codebots-stable-web-app.azurewebsites.net/)
 
 Après un push passant les tests sur la branche associée à l'environnement, le code est automatiquement déployé.
 
