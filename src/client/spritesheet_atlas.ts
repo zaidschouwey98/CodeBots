@@ -52,7 +52,7 @@ const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: 
     };
 };
 
-const atlas = generateAtlas("/sprites/spritesheet.png", {w: 4, h: 4}, {w: 16, h: 16}, [
+const atlas = generateAtlas("/assets/spritesheet.png", {w: 4, h: 4}, {w: 16, h: 16}, [
     "grass",
     "flower",
     "path_i",
