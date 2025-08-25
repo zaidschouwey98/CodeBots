@@ -3,12 +3,12 @@ import {findTexture} from "../spritesheet_atlas";
 
 /**
  * Draws an item bar at the bottom center of the screen.
- * @param app
- * @param spritesheets
- * @param scale
+ * @param app The PIXI application instance
+ * @param spritesheets Array of loaded spritesheets
+ * @param scale Size of each item slot in pixels
  * @param items Array of item identifiers to display in the item bar
  */
-const drawItemBar = (app, spritesheets: Spritesheet<SpritesheetData>[], scale: number, items: []) => {
+const drawItemBar = (app: Application, spritesheets: Spritesheet[], scale: number, items: []) => {
     const itemBar = new Container();
     const slotCount = 6;
     const spaceBetweenSquares = 20;
