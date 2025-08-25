@@ -19,7 +19,7 @@ const drawItemBar = (app: Application, spritesheets: Spritesheet[], scale: numbe
     itemBar.height = barHeight;
 
     itemBar.x = app.screen.width / 2 - (barWidth / 2);
-    itemBar.y = app.screen.height - barHeight - 10;
+    itemBar.y = app.screen.height - barHeight - 20;
     app.stage.addChild(itemBar);
 
     const texture = findTexture(spritesheets, "light_square");
