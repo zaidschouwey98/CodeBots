@@ -64,8 +64,7 @@ export type TextureName =
     "light_frame" |
     "dark_frame" |
     "scroll" |
-    "bar"
-    ;
+    "bar";
 
 export const findTexture = (spriteSheets: Spritesheet[], texture: TextureName) => {
     return spriteSheets.find((spritesheet) => spritesheet.textures[texture])?.textures[texture];
