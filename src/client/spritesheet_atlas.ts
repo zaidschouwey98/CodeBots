@@ -56,7 +56,15 @@ export type TextureName =
     "tree_1" |
     "tree_2" |
     "tree_3" |
-    "tree_4";
+    "tree_4" |
+    "power" |
+    "close" |
+    "light_square" |
+    "dark_square" |
+    "light_frame" |
+    "dark_frame" |
+    "scroll" |
+    "bar";
 
 export const findTexture = (spriteSheets: Spritesheet[], texture: TextureName) => {
     return spriteSheets.find((spritesheet) => spritesheet.textures[texture])?.textures[texture];
@@ -94,7 +102,7 @@ const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: 
 };
 
 const atlas = [
-    generateAtlas("/assets/spritesheet.png", {w: 7, h: 7}, {w: 16, h: 16}, [
+    generateAtlas("/assets/spritesheet.png", {w: 7, h: 8}, {w: 16, h: 16}, [
         "grass_1",
         "grass_2",
         "grass_3",
@@ -142,6 +150,8 @@ const atlas = [
         "codebot_2",
         "codebot_3",
         "codebot_4",
+        "power",
+        "close"
     ]),
     generateAtlas("/assets/trees.png", {w: 2, h: 2}, {w: 16, h: 32}, [
         "tree_1",
@@ -149,6 +159,14 @@ const atlas = [
         "tree_3",
         "tree_4",
     ]),
+    generateAtlas("/assets/gui_spritesheet.png", {w: 4, h: 2}, {w: 30, h: 30}, [
+        "light_square",
+        "dark_square",
+        "light_frame",
+        "dark_frame",
+        "scroll",
+        "bar",
+    ])
 ];
 
 export const getSpritesheets = async () => {
