@@ -8,7 +8,7 @@ You can find our Codebot interpreter package [here](https://github.com/LeonardJo
 
 - [X] Description du projet (objectif, requirements fonctionnels, requirements non-fonctionnels).
 - [X] Description préliminaire de l’architecture
-- [X] Mockups (Figma, papier-crayon, etc.) / Landing page
+- [X] Mockups (Figma, papier-crayon, etc.) / [Landing page](https://codebots-stable-web-app.azurewebsites.net/)
 - [X] Description des choix techniques • Description du processus de travail (p.ex.: git flow, devops, etc.)
 - [X] Mise en place des outils de développement (Issue tracker … etc.)
 - [X] Mise en place d’un environnement de déploiement
