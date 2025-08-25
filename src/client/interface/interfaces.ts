@@ -30,6 +30,10 @@ const drawItemBar = (app: Application, spritesheets: Spritesheet[], scale: numbe
         lightSquare.height = scale;
         lightSquare.x = i * (lightSquare.width + spaceBetweenSquares);
         lightSquare.y = 0;
+
+        //TODO display items in the bar
+        //displayItem(items[i], lightSquare);
+
         itemBar.addChild(lightSquare);
     }
 
