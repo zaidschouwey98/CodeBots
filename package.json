@@ -9,7 +9,8 @@
         "build:client": "vite build --config src/client/vite.config.ts",
         "build:server": "tsc --project src/server",
         "build": "npm run build:client && npm run build:server",
-        "start": "node dist/server/index.js"
+        "start": "node dist/server/index.js",
+        "test": "tsx --test tests/**/*.test.ts "
     },
     "author": "",
     "license": "ISC",
