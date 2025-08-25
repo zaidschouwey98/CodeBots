@@ -6,7 +6,7 @@ import {findTexture} from "../spritesheet_atlas";
  * @param app The PIXI application instance
  * @param spritesheets Array of loaded spritesheets
  * @param scale Size of each item slot in pixels
- * @param items Array of item identifiers to display in the item bar
+ * @param items Array of items to display in the item bar
  */
 const drawItemBar = (app: Application, spritesheets: Spritesheet[], scale: number, items: []) => {
     const itemBar = new Container();
