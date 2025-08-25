@@ -1,46 +1,21 @@
 import {Application, Assets, Container, Sprite} from "pixi.js";
 import Parser from "codebotsinterpreter";
+import {getSpritesheets} from "./spritesheet_atlas";
+import drawItemBar from "./interface/interfaces";
 
 const parser = new Parser();
 console.log(parser.test());
 
-(async () => {
-    const app = new Application();
+const app = new Application();
+const scale = 64;
 
-    await app.init({ background: "#1099bb", resizeTo: window });
-
-    // Append the application canvas to the document body
+const run = async () => {
+    await app.init({background: "transparent", resizeTo: window});
     document.body.appendChild(app.canvas);
 
-    // Create and add a container to the stage
-    const container = new Container();
+    const spritesheets = await getSpritesheets();
 
-    app.stage.addChild(container);
+    drawItemBar(app, spritesheets, scale, []);
+}
 
-    // Load the bunny texture
-    const texture = await Assets.load("https://pixijs.com/assets/bunny.png");
-
-    // Create a 5x5 grid of bunnies in the container
-    for (let i = 0; i < 25; i++) {
-        const bunny = new Sprite(texture);
-
-        bunny.x = (i % 5) * 40;
-        bunny.y = Math.floor(i / 5) * 40;
-        container.addChild(bunny);
-    }
-
-    // Move the container to the center
-    container.x = app.screen.width / 2;
-    container.y = app.screen.height / 2;
-
-    // Center the bunny sprites in local container coordinates
-    container.pivot.x = container.width / 2;
-    container.pivot.y = container.height / 2;
-
-    // Listen for animate update
-    app.ticker.add((time) => {
-        // Continuously rotate the container!
-        // * use delta to create frame-independent transform *
-        container.rotation -= 0.01 * time.deltaTime;
-    });
-})();
+run();
