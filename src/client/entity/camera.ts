@@ -7,8 +7,10 @@ export class Camera {
     public zoom = 1;
 
     follow(player: Player, screenWidth: number, screenHeight: number) {
-        this.x = screenWidth / 2 - player.posX;
-        this.y = screenHeight / 2 - player.posY;
+        const pixelX = player.posX * 16; // Tile size otherwise camera falls off behind player
+        const pixelY = player.posY * 16;
+        this.x = -pixelX + screenWidth / 2;
+        this.y = -pixelY + screenHeight / 2;
     }
 
 }

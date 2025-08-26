@@ -13,10 +13,12 @@ export class WorldRenderer {
     private contentContainer: PIXI.Container;
     private world: World;
     private tileSize: number;
+    private renderDistance:number;
     spriteMap: Map<Tile, PIXI.Sprite> = new Map();
 
-    constructor(world: World, tileSize = 16) {
-        this.world = world
+    constructor(world: World, tileSize = 16, renderDistance = 2) {
+        this.world = world;
+        this.renderDistance = renderDistance;
         this.container = new PIXI.Container();
         this.tileContainer = new PIXI.Container();
         this.contentContainer = new PIXI.Container();
@@ -29,32 +31,36 @@ export class WorldRenderer {
 
     async initialize() {
         this.renderChunk(0, 0);
-        this.renderChunk(0, 1);
-        this.renderChunk(0, 2);
-        this.renderChunk(0, 3);
+        // this.renderChunk(0, 1);
+        // this.renderChunk(0, 2);
+        // this.renderChunk(0, 3);
 
-        this.renderChunk(0, 0);
-        this.renderChunk(1, 0);
-        this.renderChunk(2, 0);
-        this.renderChunk(3, 0);
+        // this.renderChunk(0, 0);
+        // this.renderChunk(1, 0);
+        // this.renderChunk(2, 0);
+        // this.renderChunk(3, 0);
 
-        this.renderChunk(0, 0);
-        this.renderChunk(1, 1);
-        this.renderChunk(2, 2);
-        this.renderChunk(3, 3);
-        ///
+        // this.renderChunk(0, 0);
+        // this.renderChunk(1, 1);
+        // this.renderChunk(2, 2);
+        // this.renderChunk(3, 3);
+        // ///
 
-        this.renderChunk(1, 2);
-        this.renderChunk(1, 3);
-        this.renderChunk(2, 3);
+        // this.renderChunk(1, 2);
+        // this.renderChunk(1, 3);
+        // this.renderChunk(2, 3);
 
-        this.renderChunk(2, 1);
-        this.renderChunk(3, 1);
-        this.renderChunk(3, 2);
+        // this.renderChunk(2, 1);
+        // this.renderChunk(3, 1);
+        // this.renderChunk(3, 2);
 
     }
 
-    async renderChunk(cx: number, cy: number) {
+    public async renderVisibleChunks(cx:number,cy:number){
+        this.renderChunk(cx,cy);
+    }
+
+    private async renderChunk(cx: number, cy: number) {
         const chunk = this.world.getChunk(cx, cy);
 
         for (let y = 0; y < chunk.size; y++) {
@@ -112,7 +118,7 @@ export class WorldRenderer {
         }
     }
 
-    async getTextureForTile(tile: Tile): Promise<PIXI.Sprite> {
+    private async getTextureForTile(tile: Tile): Promise<PIXI.Sprite> {
         const spriteSheets = await getSpritesheets();
         findTexture(spriteSheets, "grass_1")
         switch (tile.type) {
@@ -197,7 +203,7 @@ export class WorldRenderer {
         }
     }
 
-    async getTextureForContent(content: TileContentType): Promise<any> {
+    private async getTextureForContent(content: TileContentType): Promise<any> {
         const spriteSheets = await getSpritesheets();
         switch (content) {
             case ResourceType.WOOD: return findTexture(spriteSheets, "tree_1");
@@ -208,7 +214,7 @@ export class WorldRenderer {
         }
     }
 
-    async getTextureForDecoration(tile: Tile): Promise<any> {
+    private async getTextureForDecoration(tile: Tile): Promise<any> {
         const spriteSheets = await getSpritesheets();
         const variation = tile.variation;
         const flowerVariants: TextureName[] = ["flower_1", "flower_2", "flower_3", "bush_1","bush_2","bush_3"];
