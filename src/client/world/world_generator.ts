@@ -20,6 +20,11 @@ export class WorldGenerator implements IWorldGenerator {
         this.resourceNoiseFunc = Simplex.createNoise2D(resourceRng);
     }
 
+
+    getPseudoRandomGenerator() :seedrandom.PRNG{
+        return this.rng;
+    }
+
     generateChunk(cx: number, cy: number, size: number): Chunk {
         const chunk = new Chunk(cx, cy, size);
 
@@ -28,7 +33,7 @@ export class WorldGenerator implements IWorldGenerator {
                 const absX = cx * size + x;
                 const absY = cy * size + y;
                 let tile: Tile;
-                const frequency = 0.05;
+                const frequency = 0.1;
                 const resourceFrequency = 0.02;
                 const res = this.noiseFunc(absX * frequency, absY * frequency);
                 tile = new Tile(TileType.GRASS);

@@ -4,9 +4,9 @@ import { IWorldGenerator } from "./i_world_generator";
 import Tile from "./tile";
 
 export class World {
-    chunks: Map<string, Chunk>;
-    chunkSize: number;
-    generator: IWorldGenerator;
+    public chunks: Map<string, Chunk>;
+    public chunkSize: number;
+    public generator: IWorldGenerator;
 
     constructor(chunkSize: number, generator: IWorldGenerator) {
         this.chunks = new Map();

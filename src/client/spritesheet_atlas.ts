@@ -17,6 +17,8 @@ export type TextureName =
     "forest_left_edge" |
     "forest_center_1" |
     "forest_center_2" |
+    "forest_one_edge" |
+    "forest_0_edge" |
     "path_i" |
     "path_u" |
     "path_l_1" |
@@ -116,6 +118,8 @@ const atlas = [
         "forest_left_edge",
         "forest_center_1",
         "forest_center_2",
+        "forest_one_edge",
+        "forest_0_edge",
         "path_i",
         "path_u",
         "path_l_1",

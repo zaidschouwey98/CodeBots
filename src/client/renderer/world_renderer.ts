@@ -5,16 +5,14 @@ import { TileType } from "../types/tile_type";
 import { TileContentType } from "../types/tile_content_type";
 import { ResourceType } from "../types/resource_type";
 import { TextureName, findTexture, getSpritesheets } from "../spritesheet_atlas";
-import seedrandom from "seedrandom";
 
 
 export class WorldRenderer {
-    private container: PIXI.Container;
+    public container: PIXI.Container;
     private tileContainer: PIXI.Container;
     private contentContainer: PIXI.Container;
     private world: World;
     private tileSize: number;
-    private pRng: seedrandom.PRNG;
     spriteMap: Map<Tile, PIXI.Sprite> = new Map();
 
     constructor(world: World, tileSize = 16) {
@@ -96,8 +94,9 @@ export class WorldRenderer {
                     occSprite.zIndex = occSprite.y;
                     this.contentContainer.addChild(occSprite);;
                 } else {
-                    if (tile.variation <= 0.95)
+                    if(this.world.generator.getPseudoRandomGenerator()() < 0.93){
                         continue;
+                    }
                     const occSprite = new PIXI.Sprite(await this.getTextureForDecoration(tile));
 
                     occSprite.anchor.set(0.5, 1);
@@ -126,6 +125,22 @@ export class WorldRenderer {
                 const forestEdgeTypes: TextureName[] = ["forest_edge_1", "forest_edge_2", "forest_edge_3"];
                 let textureName: TextureName;
                 let rotation = 0;
+
+                if(neighbors.left?.type !== TileType.FOREST && neighbors.top?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST){
+                    textureName = "forest_one_edge"; rotation = 0;
+                }
+                if(neighbors.left?.type !== TileType.FOREST && neighbors.top?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST){
+                    textureName = "forest_one_edge"; rotation = 90;
+                }
+                if(neighbors.top?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST){
+                    textureName = "forest_one_edge"; rotation = 180;
+                }
+                if(neighbors.left?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST){
+                    textureName = "forest_one_edge"; rotation = 270;
+                }else
+
+
+
 
                 if (neighbors.left?.type !== TileType.FOREST && neighbors.top?.type !== TileType.FOREST) {
                     textureName = "forest_right_edge"; rotation = 0;
@@ -191,7 +206,7 @@ export class WorldRenderer {
     async getTextureForDecoration(tile: Tile): Promise<any> {
         const spriteSheets = await getSpritesheets();
         const variation = tile.variation;
-        const flowerVariants: TextureName[] = ["flower_1", "flower_2", "flower_3", "bush_1"];
+        const flowerVariants: TextureName[] = ["flower_1", "flower_2", "flower_3", "bush_1","bush_2","bush_3"];
         const spriteIndex = Math.floor(variation * flowerVariants.length);
         return findTexture(spriteSheets, flowerVariants[spriteIndex]);
     }
