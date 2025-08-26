@@ -65,9 +65,6 @@ export class Interface {
         chestInventory.x = this.app.screen.width / 2 - (chestWidth / 2);
         chestInventory.y = this.app.screen.height / 2 - (chestHeight / 2);
 
-        const innerContainer = new Container();
-        chestInventory.addChild(innerContainer);
-
         const texture = findTexture(this.spritesheets, "dark_frame");
         const frame = new NineSliceSprite({
             texture: texture,
@@ -81,28 +78,28 @@ export class Interface {
 
         chestInventory.addChild(frame);
 
-        //add item slots in the chest frame
-        const maxLength = chestInventory.height - (this.scale * 0.5);
-
         const slotsPerRow = 7;
         const rows = 4;
 
-        const length = Math.min(this.scale, maxLength / (rows * 1.2));
-        const spaceBetweenSquares = (chestWidth - (slotsPerRow * this.scale)) / (slotsPerRow + 1);
+        const maxSquareWidth = chestWidth / slotsPerRow;
+        const maxSquareHeight = chestHeight / rows;
+        const length = Math.min(this.scale, maxSquareWidth, maxSquareHeight);
 
+        const totalSquaresWidth = slotsPerRow * length;
+        const totalSquaresHeight = rows * length;
+        const spaceBetweenSquares = (chestWidth - totalSquaresWidth) / (slotsPerRow + 1);
+        const spaceBetweenRows = (chestHeight - totalSquaresHeight) / (rows + 1);
 
         for (let i = 0; i < slotsPerRow * rows; ++i) {
             const texture = findTexture(this.spritesheets, "dark_square");
-
             const darkSquare = new Sprite(texture);
             darkSquare.width = length;
             darkSquare.height = length;
 
             darkSquare.x = (i % slotsPerRow) * (length + spaceBetweenSquares) + spaceBetweenSquares;
-            darkSquare.y = Math.floor(i / slotsPerRow) * (length + spaceBetweenSquares) + spaceBetweenSquares;
+            darkSquare.y = Math.floor(i / slotsPerRow) * (length + spaceBetweenRows) + spaceBetweenRows;
 
             this.drawItem(items[i], darkSquare);
-
             chestInventory.addChild(darkSquare);
         }
     }
