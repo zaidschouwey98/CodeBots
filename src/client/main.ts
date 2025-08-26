@@ -1,7 +1,7 @@
 import {Application, Assets, Container, Sprite} from "pixi.js";
 import Parser from "codebotsinterpreter";
 import {getSpritesheets} from "./spritesheet_atlas";
-import {drawItemBar, drawChestInventory} from "./interface/interfaces";
+import {Interface} from "./interface/interfaces";
 
 const parser = new Parser();
 console.log(parser.test());
@@ -15,8 +15,9 @@ const run = async () => {
 
     const spritesheets = await getSpritesheets();
 
-    drawChestInventory(app, spritesheets, scale, []);
-    drawItemBar(app, spritesheets, scale, []);
+    const interfaceInstance = new Interface(app, spritesheets, scale);
+    interfaceInstance.drawChestInventory([]);
+    interfaceInstance.drawItemBar([]);
 }
 
 run();
