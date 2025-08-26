@@ -1,4 +1,13 @@
-import {Application, Assets, Container, ContainerChild, Sprite, Spritesheet, SpritesheetData} from 'pixi.js';
+import {
+    Application,
+    Assets,
+    Container,
+    ContainerChild,
+    NineSlicePlane,
+    Sprite,
+    Spritesheet,
+    SpritesheetData
+} from 'pixi.js';
 import {findTexture} from "../spritesheet_atlas";
 
 /**
@@ -10,6 +19,8 @@ import {findTexture} from "../spritesheet_atlas";
  */
 const drawItemBar = (app: Application, spritesheets: Spritesheet[], scale: number, items: []) => {
     const itemBar = new Container();
+    app.stage.addChild(itemBar);
+
     const slotCount = 6;
     const spaceBetweenSquares = 20;
     const barWidth = scale * slotCount + ((slotCount - 1) * spaceBetweenSquares);
@@ -20,7 +31,6 @@ const drawItemBar = (app: Application, spritesheets: Spritesheet[], scale: numbe
 
     itemBar.x = app.screen.width / 2 - (barWidth / 2);
     itemBar.y = app.screen.height - barHeight - 20;
-    app.stage.addChild(itemBar);
 
     const texture = findTexture(spritesheets, "light_square");
 
@@ -39,5 +49,27 @@ const drawItemBar = (app: Application, spritesheets: Spritesheet[], scale: numbe
 
 };
 
+const drawChestInventory = (app: Application, spritesheets: Spritesheet[], scale: number, items: []) => {
+    const chestInventory = new Container();
+    app.stage.addChild(chestInventory);
 
-export default drawItemBar;
+    const chestWidth = app.screen.width * 3 / 4;
+    const chestHeight = app.screen.height * 3 / 4;
+
+    chestInventory.width = chestWidth;
+    chestInventory.height = chestHeight;
+
+    chestInventory.x = app.screen.width / 2 - (chestWidth / 2);
+    chestInventory.y = app.screen.height / 2 - (chestHeight / 2);
+
+    const texture = findTexture(spritesheets, "dark_frame");
+    const frame = new NineSlicePlane(texture, 4, 4, 4, 4);
+    frame.width = chestWidth;
+    frame.height = chestHeight;
+    frame.x = 0;
+    frame.y = 0;
+
+    chestInventory.addChild(frame);
+}
+
+export {drawItemBar, drawChestInventory};
