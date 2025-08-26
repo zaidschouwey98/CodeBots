@@ -1,23 +1,76 @@
 import {Application, Container, ContainerChild, NineSliceSprite, Sprite, Spritesheet, Text} from 'pixi.js';
-import {findTexture} from "../spritesheet_atlas";
-import {Item} from "../items/item";
+import {findTexture, TextureName} from "../spritesheet_atlas";
+import {Item, Recipe} from "../items/item";
 
 export class Interface {
-    app: Application;
-    spritesheets: Spritesheet[];
-    scale: number;
+    constructor(public app: Application, public spritesheets: Spritesheet[], public scale: number) {
+    }
 
-    constructor(app: Application, spritesheets: Spritesheet[], scale: number) {
-        this.app = app;
-        this.spritesheets = spritesheets;
-        this.scale = scale;
+    private createCenteredContainer = (width: number, height: number): Container => {
+        const container = new Container();
+        this.app.stage.addChild(container);
+        container.width = width;
+        container.height = height;
+        container.x = this.app.screen.width / 2 - (width / 2);
+        container.y = this.app.screen.height / 2 - (height / 2);
+        return container;
+    }
+
+    private createFrame = (width: number, height: number, textureName: TextureName, borderDimension: number): NineSliceSprite => {
+        const texture = findTexture(this.spritesheets, textureName);
+        return new NineSliceSprite({
+            texture: texture,
+            leftWidth: borderDimension,
+            topHeight: borderDimension,
+            rightWidth: borderDimension,
+            bottomHeight: borderDimension,
+            width: width,
+            height: height
+        });
+    }
+
+    /**
+     * Draws an item inside a given square container.
+     * @param item
+     * @param container
+     */
+    private drawItem = (item: Item, container: ContainerChild) => {
+        if(!item) return;
+
+        const itemTexture = findTexture(this.spritesheets, item.spriteName);
+        const itemSprite = new Sprite(itemTexture);
+
+        const bounds = container.getLocalBounds();
+
+        const length = bounds.height * 0.8;
+        itemSprite.width = length;
+        itemSprite.height = length;
+
+        itemSprite.x = (bounds.width - itemSprite.width) / 2;
+        itemSprite.y = (bounds.height - itemSprite.height) / 2;
+
+        container.addChild(itemSprite);
+
+        const quantityText = new Text({
+            text: item.quantity > 1 ? item.quantity.toString() : '',
+            style: {
+                //fill: '#000000',
+                fontSize: 8,
+                fontFamily: 'Jersey',
+            },
+            resolution: 4,
+        });
+
+        quantityText.x = itemSprite.x + itemSprite.width - (quantityText.width * 1.1);
+        quantityText.y = itemSprite.y + itemSprite.height - (quantityText.height * 1.1);
+        container.addChild(quantityText);
     }
 
     /**
      * Draws an item bar at the bottom center of the screen.
      * @param items Array of items to display in the item bar
      */
-    public drawItemBar = (items: []) => {
+    public drawItemBar = (items: Item[]) => {
         const itemBar = new Container();
         this.app.stage.addChild(itemBar);
 
@@ -52,30 +105,12 @@ export class Interface {
      * Draws a chest inventory interface at the center of the screen.
      * @param items
      */
-    public drawChestInventory = (items: []) => {
-        const chestInventory = new Container();
-        this.app.stage.addChild(chestInventory);
-
+    public drawChestInventory = (items: Item[]) => {
         const chestWidth = this.app.screen.width * 0.5;
         const chestHeight = this.app.screen.height * 0.5;
+        const chestInventory = this.createCenteredContainer(chestWidth, chestHeight);
 
-        chestInventory.width = chestWidth;
-        chestInventory.height = chestHeight;
-
-        chestInventory.x = this.app.screen.width / 2 - (chestWidth / 2);
-        chestInventory.y = this.app.screen.height / 2 - (chestHeight / 2);
-
-        const texture = findTexture(this.spritesheets, "dark_frame");
-        const frame = new NineSliceSprite({
-            texture: texture,
-            leftWidth: 4,
-            topHeight: 4,
-            rightWidth: 4,
-            bottomHeight: 4,
-            width: chestWidth,
-            height: chestHeight
-        });
-
+        const frame = this.createFrame(chestWidth, chestHeight, "dark_frame", 4);
         chestInventory.addChild(frame);
 
         const slotsPerRow = 7;
@@ -103,42 +138,7 @@ export class Interface {
         }
     }
 
-    /**
-     * Draws an item inside a given square container.
-     * @param item
-     * @param container
-     */
-    private drawItem = (item: Item, container: ContainerChild) => {
-        //if(!item) return;
+    public drawCraftingInterface = (recipes: Recipe[]) => {
 
-        const itemTexture = findTexture(this.spritesheets, "pickaxe"/*item.spriteName*/);
-        const itemSprite = new Sprite(itemTexture);
-
-        const bounds = container.getLocalBounds();
-
-        const length = bounds.height;
-        itemSprite.width = length;
-        itemSprite.height = length;
-
-        itemSprite.x = (bounds.width - itemSprite.width) / 2;
-        itemSprite.y = (bounds.height - itemSprite.height) / 2;
-
-        container.addChild(itemSprite);
-
-        //display quantity if more than 1
-        const quantityText = new Text({
-            text: '2500'/*item.quantity > 1 ? item.quantity.toString() : ''*/,
-            style: {
-                fill: '#000000',
-                fontSize: 8,
-                fontFamily: 'Jersey',
-            },
-            resolution: 4,
-        });
-
-        quantityText.x = itemSprite.x + itemSprite.width - (quantityText.width * 1.1);
-        quantityText.y = itemSprite.y + itemSprite.height - (quantityText.height * 1.1);
-        container.addChild(quantityText);
     }
-
 }
