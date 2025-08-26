@@ -135,7 +135,7 @@ export class Interface {
             style: {
                 fill: '#000000',
                 fontSize: 8,
-                fontFamily: 'Arial',
+                fontFamily: 'Jersey',
             },
             resolution: 4,
         });
