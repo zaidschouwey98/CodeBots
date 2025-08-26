@@ -1,4 +1,4 @@
-import {Assets, Spritesheet} from "pixi.js";
+import { Assets, Sprite, Spritesheet, Texture } from "pixi.js";
 
 type Dimensions = {
     w: number;
@@ -10,6 +10,15 @@ export type TextureName =
     "grass_2" |
     "grass_3" |
     "grass_4" |
+    "forest_right_edge" |
+    "forest_edge_1" |
+    "forest_edge_2" |
+    "forest_edge_3" |
+    "forest_left_edge" |
+    "forest_center_1" |
+    "forest_center_2" |
+    "forest_one_edge" |
+    "forest_0_edge" |
     "path_i" |
     "path_u" |
     "path_l_1" |
@@ -30,6 +39,9 @@ export type TextureName =
     "flower_1" |
     "flower_2" |
     "flower_3" |
+    "bush_1" |
+    "bush_2" |
+    "bush_3" |
     "stone_ore" |
     "coal_ore" |
     "copper_ore" |
@@ -102,11 +114,20 @@ const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: 
 };
 
 const atlas = [
-    generateAtlas("/assets/spritesheet.png", {w: 7, h: 8}, {w: 16, h: 16}, [
+    generateAtlas("/assets/spritesheet.png", { w: 8, h: 8 }, { w: 16, h: 16 }, [
         "grass_1",
         "grass_2",
         "grass_3",
         "grass_4",
+        "forest_right_edge",
+        "forest_edge_1",
+        "forest_edge_2",
+        "forest_edge_3",
+        "forest_left_edge",
+        "forest_center_1",
+        "forest_center_2",
+        "forest_one_edge",
+        "forest_0_edge",
         "path_i",
         "path_u",
         "path_l_1",
@@ -127,6 +148,9 @@ const atlas = [
         "flower_1",
         "flower_2",
         "flower_3",
+        "bush_1",
+        "bush_2",
+        "bush_3",
         "stone_ore",
         "coal_ore",
         "copper_ore",
@@ -153,7 +177,7 @@ const atlas = [
         "power",
         "close"
     ]),
-    generateAtlas("/assets/trees.png", {w: 2, h: 2}, {w: 16, h: 32}, [
+    generateAtlas("/assets/trees.png", { w: 2, h: 2 }, { w: 16, h: 32 }, [
         "tree_1",
         "tree_2",
         "tree_3",
@@ -172,7 +196,7 @@ const atlas = [
 export const getSpritesheets = async () => {
     const spritesheetAssets = await Promise.all(atlas.map((atlas) => Assets.load({
         src: atlas.meta.image,
-        data: {scaleMode: "nearest"},
+        data: { scaleMode: "nearest" },
     })));
 
     const spritesheets = spritesheetAssets.map((spritesheetAsset, i) => new Spritesheet(spritesheetAsset, atlas[i]));
