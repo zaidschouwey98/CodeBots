@@ -6,10 +6,13 @@ export class Interface {
     constructor(public app: Application, public spritesheets: Spritesheet[], public scale: number) {
     }
 
+    /**
+     * Creates a close button and positions it at the top-right corner of the given container.
+     * @param container
+     */
     private createCloseButton = (container: Container): Sprite => {
         const closeButton = new Sprite(findTexture(this.spritesheets, "close"));
         const bounds = container.getLocalBounds();
-        //scale button relative to container size
         closeButton.width = bounds.width * 0.05;
         closeButton.height = bounds.width * 0.05;
         closeButton.x = bounds.width - closeButton.width - 5;
@@ -21,6 +24,13 @@ export class Interface {
         return closeButton;
     }
 
+    /**
+     * Creates a centered container with a frame and a close button.
+     * @param width
+     * @param height
+     * @param textureName
+     * @param borderDimension
+     */
     private createCenteredContainer = (width: number, height: number, textureName: TextureName, borderDimension: number): Container => {
         const container = new Container();
         container.width = width;
@@ -33,6 +43,13 @@ export class Interface {
         return container;
     }
 
+    /**
+     * Creates a resizable frame using a nine-slice sprite.
+     * @param width
+     * @param height
+     * @param textureName
+     * @param borderDimension
+     */
     private createFrame = (width: number, height: number, textureName: TextureName, borderDimension: number): NineSliceSprite => {
         return new NineSliceSprite({
             texture: findTexture(this.spritesheets, textureName),
@@ -153,7 +170,13 @@ export class Interface {
         }
     }
 
+    /**
+     * Draws a crafting interface at the center of the screen.
+     * @param recipes
+     */
     public drawCraftingInterface = (recipes: Recipe[]) => {
-
+        const craftingWidth = this.app.screen.width * 0.5;
+        const craftingHeight = this.app.screen.height * 0.5;
+        const craftingInterface = this.createCenteredContainer(craftingWidth, craftingHeight, "dark_frame", 4);
     }
 }
