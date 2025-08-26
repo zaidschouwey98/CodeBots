@@ -34,6 +34,8 @@ export class WorldGenerator implements IWorldGenerator {
                 tile = new Tile(TileType.GRASS);
                 tile.noiseValue = res;
                 tile.variation = this.rng();
+                tile.absX = absX;
+                tile.absY = absY;
 
                 if (res < 0.5 && res > -0.5) {
                     chunk.tiles[y][x] = tile;
@@ -43,7 +45,8 @@ export class WorldGenerator implements IWorldGenerator {
                 if (res <= -0.5) {
                     if (res < -0.65) {
                         tile = new Tile(TileType.FOREST);
-
+                        tile.absX = absX;
+                        tile.absY = absY;
                         tile.variation = this.rng();
                         if (res < -0.75) {
                             tile.content = new Tree();

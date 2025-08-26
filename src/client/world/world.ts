@@ -1,3 +1,4 @@
+import { Direction } from "../types/direction";
 import { Chunk } from "./chunk";
 import { IWorldGenerator } from "./i_world_generator";
 import Tile from "./tile";
@@ -36,18 +37,12 @@ export class World {
     }
 
 
-    getNeighbors(absX: number, absY: number): (Tile | null)[] {
-        const dirs = [
-            [0, -1],
-            [1, -1],
-            [1, 0],
-            [1, 1],
-            [0, 1],
-            [-1, 1],
-            [-1, 0],
-            [-1, -1],
-        ];
-
-        return dirs.map(([dx, dy]) => this.getTileAt(absX + dx, absY + dy));
+    getTileNeighborsByDirection(absX: number, absY: number): Partial<Record<Direction, Tile | null>> {
+        return {
+            [Direction.TOP]: this.getTileAt(absX, absY - 1),
+            [Direction.RIGHT]: this.getTileAt(absX + 1, absY),
+            [Direction.BOTTOM]: this.getTileAt(absX, absY + 1),
+            [Direction.LEFT]: this.getTileAt(absX - 1, absY),
+        };
     }
 }
