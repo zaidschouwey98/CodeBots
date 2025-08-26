@@ -83,8 +83,7 @@ export class Interface {
 
         const maxSquareWidth = chestWidth / slotsPerRow;
         const maxSquareHeight = chestHeight / rows;
-        const length = Math.min(this.scale, maxSquareWidth, maxSquareHeight);
-
+        const length = Math.min(maxSquareWidth, maxSquareHeight) * 0.8;
         const totalSquaresWidth = slotsPerRow * length;
         const totalSquaresHeight = rows * length;
         const spaceBetweenSquares = (chestWidth - totalSquaresWidth) / (slotsPerRow + 1);
