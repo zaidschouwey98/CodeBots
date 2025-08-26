@@ -6,5 +6,8 @@ export type Item = {
     quantity: number
 }
 
-
+export type Recipe = {
+    inputs: Item[],
+    output: Item
+}
 
