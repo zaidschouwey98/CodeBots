@@ -14,7 +14,7 @@ import { WorldGenerator } from './world/world_generator';
     document.body.appendChild(app.canvas);
 
 
-    const generator = new WorldGenerator("maseed4");
+    const generator = new WorldGenerator("dwadsfe");
 
     // Création du monde
     const world = new World(16, generator); // chunkSize = 16
