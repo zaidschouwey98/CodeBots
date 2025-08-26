@@ -4,7 +4,7 @@ import {World} from './world/world';
 import {WorldGenerator} from './world/world_generator';
 import {getSpritesheets} from './spritesheet_atlas';
 import {Interface} from './interface/interfaces';
-import {Item, Recipe} from './items/item';
+import {Recipe} from './items/item';
 
 const exampleRecipes: Recipe[] = [
     {inputs: [{spriteName: "wood_log", quantity: 1}], output: {spriteName: "wood_plank", quantity: 4}},
@@ -39,11 +39,11 @@ const exampleRecipes: Recipe[] = [
 
     // Ajouter le container du renderer à la scène
     const spritesheets = await getSpritesheets();
-    const interfaceInstance = new Interface(app, spritesheets, scale);
+    const gui = new Interface(app, spritesheets, scale);
 
-    interfaceInstance.drawCraftingInterface(exampleRecipes);
+    gui.drawCraftingInterface(exampleRecipes);
 
-    interfaceInstance.drawItemBar([
+    gui.drawItemBar([
         {spriteName: "pickaxe", quantity: 1},
         {spriteName: "shovel", quantity: 1},
         null,
