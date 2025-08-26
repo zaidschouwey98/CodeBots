@@ -64,6 +64,7 @@ export class WorldRenderer {
 
                 if (!this.spriteMap.has(tile)) {
                     const sprite = await this.getTextureForTile(tile);
+                    sprite.roundPixels = true;
                     sprite.x = (cx * chunk.size + x) * this.tileSize + this.tileSize / 2;
                     sprite.y = (cy * chunk.size + y) * this.tileSize + this.tileSize / 2;
                     this.tileContainer.addChild(sprite);
@@ -89,6 +90,7 @@ export class WorldRenderer {
                 if (tile.content) {
                     const occSprite = new PIXI.Sprite(await this.getTextureForContent(tile.content.tileContentType));
                     occSprite.anchor.set(0.5, 1);
+                    occSprite.roundPixels = true;
                     occSprite.x = (cx * chunk.size + x) * this.tileSize + this.tileSize / 2;
                     occSprite.y = (cy * chunk.size + y) * this.tileSize + this.tileSize;
                     occSprite.zIndex = occSprite.y;
@@ -98,6 +100,7 @@ export class WorldRenderer {
                         continue;
                     }
                     const occSprite = new PIXI.Sprite(await this.getTextureForDecoration(tile));
+                    occSprite.roundPixels = true;
 
                     occSprite.anchor.set(0.5, 1);
                     occSprite.x = (cx * chunk.size + x) * this.tileSize + this.tileSize / 2;

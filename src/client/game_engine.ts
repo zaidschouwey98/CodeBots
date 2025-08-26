@@ -14,7 +14,6 @@ export class GameEngine {
     private keys: Set<string>;
 
     constructor(app: PIXI.Application) {
-
         this.app = app;
         const generator = new WorldGenerator("seed");
         this.world = new World(16,generator);

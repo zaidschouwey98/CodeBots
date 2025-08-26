@@ -1,7 +1,5 @@
-import { Application, Assets, Container, Sprite } from 'pixi.js';
-import { WorldRenderer } from './renderer/world_renderer';
-import { World } from './world/world';
-import { WorldGenerator } from './world/world_generator';
+import { Application} from 'pixi.js';
+
 import { GameEngine } from './game_engine';
 
 (async () => {
@@ -9,7 +7,10 @@ import { GameEngine } from './game_engine';
     const app = new Application();
 
     // Initialize the application
-    await app.init({ background: '#1099bb', resizeTo: window });
+    await app.init({
+        background: '#1099bb',
+        resizeTo: window,
+    });
 
     // Append the application canvas to the document body
     document.body.appendChild(app.canvas);
