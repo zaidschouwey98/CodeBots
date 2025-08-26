@@ -277,6 +277,10 @@ export class Interface {
             outSprite.x = 6; // small left margin within the content
             outSprite.y = (rowHeight - leftOutputSize) / 2;
             outSprite.interactive = true;
+            outSprite.on('pointerdown', () => {
+                //TODO craft item on click
+                console.log(`Craft item ${recipe.output.spriteName} x${recipe.output.quantity}`);
+            })
             row.addChild(outSprite);
             this.drawItem(recipe.output, outSprite);
 
