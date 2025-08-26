@@ -118,9 +118,14 @@ export class Interface {
         const itemTexture = findTexture(this.spritesheets, "pickaxe"/*item.spriteName*/);
         const itemSprite = new Sprite(itemTexture);
 
-        const length = this.scale * 0.8;
+        const bounds = container.getLocalBounds();
+
+        const length = bounds.height;
         itemSprite.width = length;
         itemSprite.height = length;
+
+        itemSprite.x = (bounds.width - itemSprite.width) / 2;
+        itemSprite.y = (bounds.height - itemSprite.height) / 2;
 
         container.addChild(itemSprite);
 
@@ -135,8 +140,8 @@ export class Interface {
             resolution: 4,
         });
 
-        quantityText.x = itemSprite.x + itemSprite.width - (quantityText.width * 1.2);
-        quantityText.y = itemSprite.y + itemSprite.height - (quantityText.height * 1.2);
+        quantityText.x = itemSprite.x + itemSprite.width - (quantityText.width * 1.1);
+        quantityText.y = itemSprite.y + itemSprite.height - (quantityText.height * 1.1);
         container.addChild(quantityText);
     }
 
