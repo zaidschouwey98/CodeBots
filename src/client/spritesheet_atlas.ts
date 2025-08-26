@@ -10,6 +10,9 @@ export type TextureName =
     "grass_2" |
     "grass_3" |
     "grass_4" |
+    "forest_1"|
+    "forest_2"|
+    "forest_3"|
     "path_i" |
     "path_u" |
     "path_l_1" |
@@ -30,6 +33,9 @@ export type TextureName =
     "flower_1" |
     "flower_2" |
     "flower_3" |
+    "bush_1"|
+    "bush_2"|
+    "bush_3"|
     "stone_ore" |
     "coal_ore" |
     "copper_ore" |
@@ -94,11 +100,14 @@ const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: 
 };
 
 const atlas = [
-    generateAtlas("/assets/spritesheet.png", {w: 7, h: 7}, {w: 16, h: 16}, [
+    generateAtlas("/assets/spritesheet.png", {w: 7, h: 8}, {w: 16, h: 16}, [
         "grass_1",
         "grass_2",
         "grass_3",
         "grass_4",
+        "forest_1",
+        "forest_2",
+        "forest_3",
         "path_i",
         "path_u",
         "path_l_1",
@@ -119,6 +128,9 @@ const atlas = [
         "flower_1",
         "flower_2",
         "flower_3",
+        "bush_1",
+        "bush_2",
+        "bush_3",
         "stone_ore",
         "coal_ore",
         "copper_ore",
