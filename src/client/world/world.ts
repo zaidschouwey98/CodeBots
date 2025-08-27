@@ -17,10 +17,9 @@ export class World {
     getChunk(cx: number, cy: number): Chunk {
         const key = `${cx},${cy}`;
         if (!this.chunks.has(key)) {
-            const chunk = this.generator.generateChunk(cx, cy, this.chunkSize);
-            this.chunks.set(key, chunk);
-        }
-        return this.chunks.get(key)!;
+            return this.generator.generateChunk(cx, cy, this.chunkSize);
+
+        } else return this.chunks.get(key)!;
     }
 
 

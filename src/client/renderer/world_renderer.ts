@@ -11,6 +11,19 @@ import { DecorationType } from "../types/decoration_type";
 export class WorldRenderer {
     public container: PIXI.Container;
 
+    private spriteSheet: PIXI.Spritesheet<{
+        meta: {
+            image: string;
+            format: string;
+            size: {
+                w: number;
+                h: number;
+            };
+            scale: number;
+        };
+        frames: {};
+    }>[];
+
     private tileContainer: PIXI.Container;
     private contentContainer: PIXI.Container;
     private foregroundContainer: PIXI.Container;
@@ -30,7 +43,6 @@ export class WorldRenderer {
         this.foregroundContainer = new PIXI.Container();
 
 
-
         this.tileContainer.sortableChildren = false;
         this.contentContainer.sortableChildren = true;
         this.foregroundContainer.sortableChildren = true;
@@ -43,7 +55,7 @@ export class WorldRenderer {
     }
 
     async initialize() {
-
+        this.spriteSheet = await getSpritesheets();
 
     }
 
@@ -142,12 +154,12 @@ export class WorldRenderer {
     }
 
     private async getTextureForTile(tile: Tile): Promise<PIXI.Sprite> {
-        const spriteSheets = await getSpritesheets();
+
         switch (tile.type) {
             case TileType.GRASS: {
                 const grassTypes: TextureName[] = ["grass_1", "grass_2", "grass_3", "grass_4"];
                 const spriteIndex = Math.floor(tile.variation * grassTypes.length);
-                const sprite = new PIXI.Sprite(findTexture(spriteSheets, grassTypes[spriteIndex]));
+                const sprite = new PIXI.Sprite(findTexture(this.spriteSheet, grassTypes[spriteIndex]));
                 sprite.anchor.set(0.5, 0.5);
                 return sprite;
             }
@@ -211,7 +223,7 @@ export class WorldRenderer {
                     rotation = 0;
                 }
 
-                const texture = findTexture(spriteSheets, textureName);
+                const texture = findTexture(this.spriteSheet, textureName);
                 const sprite = new PIXI.Sprite(texture);
 
                 // rotation autour du centre
@@ -221,39 +233,37 @@ export class WorldRenderer {
                 return sprite;
             }
 
-            default: return new PIXI.Sprite(findTexture(spriteSheets, "axe"))
+            default: return new PIXI.Sprite(findTexture(this.spriteSheet, "axe"))
         }
     }
 
     private async getTextureForContent(content: TileContentType): Promise<any> {
-        const spriteSheets = await getSpritesheets();
         switch (content) {
-            case ResourceType.WOOD: return findTexture(spriteSheets, "tree_1");
-            case ResourceType.STONE: return findTexture(spriteSheets, "stone");
-            case ResourceType.COPPER: return findTexture(spriteSheets, "copper");
-            case ResourceType.IRON: return findTexture(spriteSheets, "iron");
-            default: return findTexture(spriteSheets, "axe")
+            case ResourceType.WOOD: return findTexture(this.spriteSheet, "tree_1");
+            case ResourceType.STONE: return findTexture(this.spriteSheet, "stone");
+            case ResourceType.COPPER: return findTexture(this.spriteSheet, "copper");
+            case ResourceType.IRON: return findTexture(this.spriteSheet, "iron");
+            default: return findTexture(this.spriteSheet, "axe")
         }
     }
 
     private async getTextureForDecoration(tile: Tile): Promise<PIXI.Sprite> {
-        const spriteSheets = await getSpritesheets();
         switch(tile.decoration){
             case DecorationType.BUSH:{
                 const bushTypes: TextureName[] = ["bush_1", "bush_2", "bush_3"];
                 const spriteIndex = Math.floor(tile.variation * bushTypes.length);
-                const sprite = new PIXI.Sprite(findTexture(spriteSheets, bushTypes[spriteIndex]));
+                const sprite = new PIXI.Sprite(findTexture(this.spriteSheet, bushTypes[spriteIndex]));
                 sprite.anchor.set(0.5, 0.5);
                 return sprite;
             }
             case DecorationType.FLOWER:{
                 const flowerTypes: TextureName[] = ["flower_1", "flower_2", "flower_3"];
                 const spriteIndex = Math.floor(tile.variation * flowerTypes.length);
-                const sprite = new PIXI.Sprite(findTexture(spriteSheets, flowerTypes[spriteIndex]));
+                const sprite = new PIXI.Sprite(findTexture(this.spriteSheet, flowerTypes[spriteIndex]));
                 sprite.anchor.set(0.5, 0.5);
                 return sprite;
             }
-            default: return new PIXI.Sprite(findTexture(spriteSheets, "axe"));
+            default: return new PIXI.Sprite(findTexture(this.spriteSheet, "axe"));
         }
     }
 
