@@ -19,6 +19,7 @@ export class GameEngine {
         this.world = new World(16, generator);
         this.renderer = new WorldRenderer(this.world);
         this.camera = new Camera();
+        this.camera.zoom = 2;
         this.player = new Player();
 
         this.keys = new Set<string>();
@@ -33,22 +34,18 @@ export class GameEngine {
 
     async initialize() {
         await this.renderer.initialize();
-        // this.renderer.container.scale.x *= 4;
-        // this.renderer.container.scale.y *= 4;
+        this.renderer.container.scale.set(this.camera.zoom);
         this.app.stage.addChild(this.renderer.container);
     }
 
     update(delta: number) {
         this.player.update(this.keys, delta);
-        this.camera.follow(this.player, this.app.renderer.width, this.app.renderer.height);
-
-        this.renderer.container.x   = this.camera.x * this.renderer.container.scale.x;
-        this.renderer.container.y = this.camera.y * this.renderer.container.scale.y;
-
         const chunkX = Math.floor(this.player.posX / this.world.chunkSize);
         const chunkY = Math.floor(this.player.posY / this.world.chunkSize);
+        this.camera.follow(this.player, this.app.screen.width, this.app.screen.height);
 
-        // Si le joueur est dans un nouveau chunk
+        this.renderer.container.x = this.camera.x;
+        this.renderer.container.y = this.camera.y;
         if (chunkX !== this.player.cX || chunkY !== this.player.cY) {
             console.debug("Rendering new Chunks");
             this.player.cX = chunkX;
