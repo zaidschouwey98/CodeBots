@@ -10,8 +10,12 @@ import { DecorationType } from "../types/decoration_type";
 
 export class WorldRenderer {
     public container: PIXI.Container;
+
     private tileContainer: PIXI.Container;
     private contentContainer: PIXI.Container;
+    private foregroundContainer: PIXI.Container;
+    private chunkContent: Map<string, PIXI.Sprite[]> = new Map();
+
     private world: World;
     private tileSize: number;
     private renderDistance:number;
@@ -23,97 +27,88 @@ export class WorldRenderer {
         this.container = new PIXI.Container();
         this.tileContainer = new PIXI.Container();
         this.contentContainer = new PIXI.Container();
-        this.tileContainer.sortableChildren = false;
-        this.contentContainer.sortableChildren = true;
+        this.foregroundContainer = new PIXI.Container();
         this.container.addChild(this.tileContainer);
         this.container.addChild(this.contentContainer);
+        this.container.addChild(this.foregroundContainer);
+
+
+
         this.tileSize = tileSize;
     }
 
     async initialize() {
         this.renderChunk(0, 0);
-        // this.renderChunk(0, 1);
-        // this.renderChunk(0, 2);
-        // this.renderChunk(0, 3);
-
-        // this.renderChunk(0, 0);
-        // this.renderChunk(1, 0);
-        // this.renderChunk(2, 0);
-        // this.renderChunk(3, 0);
-
-        // this.renderChunk(0, 0);
-        // this.renderChunk(1, 1);
-        // this.renderChunk(2, 2);
-        // this.renderChunk(3, 3);
-        // ///
-
-        // this.renderChunk(1, 2);
-        // this.renderChunk(1, 3);
-        // this.renderChunk(2, 3);
-
-        // this.renderChunk(2, 1);
-        // this.renderChunk(3, 1);
-        // this.renderChunk(3, 2);
 
     }
 
-    public async renderVisibleChunks(cx:number,cy:number){
-        this.renderChunk(cx,cy);
+    public async render(cx:number,cy:number, radius = 1){
+        const newVisibleChunks = new Set<string>();
+        for (let dx = -radius; dx <= radius; dx++) {
+            for (let dy = -radius; dy <= radius; dy++) {
+                const chunkX = cx + dx;
+                const chunkY = cy + dy;
+                const key = `${chunkX}_${chunkY}`;
+                newVisibleChunks.add(key);
+
+                // Si le chunk n'est pas déjà rendu, le rendre
+                if (!this.chunkContent.has(key)) {
+                    await this.renderChunk(chunkX, chunkY);
+                }
+            }
+        }
+
+        // 2️⃣ Décharger les chunks qui ne sont plus visibles
+        for (const key of Array.from(this.chunkContent.keys())) {
+            if (!newVisibleChunks.has(key)) {
+                const [chunkX, chunkY] = key.split("_").map(Number);
+                this.unloadChunk(chunkX, chunkY);
+            }
+        }
+    }
+
+    public async unloadChunk(cx:number, cy:Number){
+        let sprites = this.chunkContent.get(`${cx}_${cy}`);
+        sprites?.map((s)=>{s.destroy()});
     }
 
     private async renderChunk(cx: number, cy: number) {
         const chunk = this.world.getChunk(cx, cy);
-
+        const key = `${cx}_${cy}`;
+        const chunkSprites:PIXI.Sprite[] = [];
         for (let y = 0; y < chunk.size; y++) {
             for (let x = 0; x < chunk.size; x++) {
                 const tile = chunk.tiles[y][x];
-
-
-                if (!this.spriteMap.has(tile)) {
-                    const sprite = await this.getTextureForTile(tile);
-                    sprite.roundPixels = true;
-                    sprite.x = (cx * chunk.size + x) * this.tileSize + this.tileSize / 2;
-                    sprite.y = (cy * chunk.size + y) * this.tileSize + this.tileSize / 2;
-                    this.tileContainer.addChild(sprite);
-                    this.spriteMap.set(tile, sprite);
-                    sprite.zIndex = sprite.y;
-
-                    // const debugText = new PIXI.Text(tile.noiseValue?.toFixed(1) ?? "?", {
-                    //     fontSize: 6,
-                    //     fill: 0xffffff,
-                    //     stroke: 0x000000,
-
-                    //     fontFamily: "monospace",
-
-                    // });
-                    // debugText.anchor.set(0.5);
-                    // debugText.x = sprite.x + this.tileSize / 2;
-                    // debugText.y = sprite.y + this.tileSize / 2;
-                    // debugText.roundPixels = true;
-
-                    // this.container.addChild(debugText);
-                }
-
+                const sprite = await this.getTextureForTile(tile);
+                sprite.roundPixels = true;
+                sprite.x = (cx * chunk.size + x) * this.tileSize + this.tileSize / 2;
+                sprite.y = (cy * chunk.size + y) * this.tileSize + this.tileSize / 2;
+                this.tileContainer.addChild(sprite);
+                chunkSprites.push(sprite);
+                sprite.zIndex = sprite.y;
                 if (tile.content) {
                     const occSprite = new PIXI.Sprite(await this.getTextureForContent(tile.content.tileContentType));
                     occSprite.anchor.set(0.5, 1);
                     occSprite.roundPixels = true;
                     occSprite.x = (cx * chunk.size + x) * this.tileSize + this.tileSize / 2;
                     occSprite.y = (cy * chunk.size + y) * this.tileSize + this.tileSize;
-                    occSprite.zIndex = occSprite.y;
+
                     this.contentContainer.addChild(occSprite);;
+                    chunkSprites.push(occSprite);
+                    occSprite.zIndex = occSprite.y;
                 } else if(tile.decoration != null){
                     const occSprite = await this.getTextureForDecoration(tile);
                     occSprite.roundPixels = true;
-
-                    // occSprite.anchor.set(0.5, 1);
                     occSprite.x = (cx * chunk.size + x) * this.tileSize + this.tileSize / 2;
                     occSprite.y = (cy * chunk.size + y) * this.tileSize + this.tileSize / 2;
-                    occSprite.zIndex = occSprite.y;
                     this.contentContainer.addChild(occSprite);;
+                    chunkSprites.push(occSprite);
+                    occSprite.zIndex = occSprite.y;
                 }
             }
         }
+
+        this.chunkContent.set(key,chunkSprites);
     }
 
     private async getTextureForTile(tile: Tile): Promise<PIXI.Sprite> {

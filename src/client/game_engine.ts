@@ -35,7 +35,6 @@ export class GameEngine {
         await this.renderer.initialize();
         // this.renderer.container.scale.x *= 4;
         // this.renderer.container.scale.y *= 4;
-
         this.app.stage.addChild(this.renderer.container);
     }
 
@@ -56,7 +55,7 @@ export class GameEngine {
             this.player.cY = chunkY;
 
             // Render uniquement les chunks autour du joueur
-            this.renderer.renderVisibleChunks(chunkX, chunkY);
+            this.renderer.render(chunkX, chunkY);
         }
     }
 }
