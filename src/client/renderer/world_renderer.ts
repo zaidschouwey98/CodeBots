@@ -5,6 +5,7 @@ import { TileType } from "../types/tile_type";
 import { TileContentType } from "../types/tile_content_type";
 import { ResourceType } from "../types/resource_type";
 import { TextureName, findTexture, getSpritesheets } from "../spritesheet_atlas";
+import { DecorationType } from "../types/decoration_type";
 
 
 export class WorldRenderer {
@@ -101,16 +102,13 @@ export class WorldRenderer {
                     occSprite.y = (cy * chunk.size + y) * this.tileSize + this.tileSize;
                     occSprite.zIndex = occSprite.y;
                     this.contentContainer.addChild(occSprite);;
-                } else {
-                    if(this.world.generator.getPseudoRandomGenerator()() < 0.93){
-                        continue;
-                    }
-                    const occSprite = new PIXI.Sprite(await this.getTextureForDecoration(tile));
+                } else if(tile.decoration != null){
+                    const occSprite = await this.getTextureForDecoration(tile);
                     occSprite.roundPixels = true;
 
-                    occSprite.anchor.set(0.5, 1);
+                    // occSprite.anchor.set(0.5, 1);
                     occSprite.x = (cx * chunk.size + x) * this.tileSize + this.tileSize / 2;
-                    occSprite.y = (cy * chunk.size + y) * this.tileSize + this.tileSize;
+                    occSprite.y = (cy * chunk.size + y) * this.tileSize + this.tileSize / 2;
                     occSprite.zIndex = occSprite.y;
                     this.contentContainer.addChild(occSprite);;
                 }
@@ -120,7 +118,6 @@ export class WorldRenderer {
 
     private async getTextureForTile(tile: Tile): Promise<PIXI.Sprite> {
         const spriteSheets = await getSpritesheets();
-        findTexture(spriteSheets, "grass_1")
         switch (tile.type) {
             case TileType.GRASS: {
                 const grassTypes: TextureName[] = ["grass_1", "grass_2", "grass_3", "grass_4"];
@@ -214,12 +211,25 @@ export class WorldRenderer {
         }
     }
 
-    private async getTextureForDecoration(tile: Tile): Promise<any> {
+    private async getTextureForDecoration(tile: Tile): Promise<PIXI.Sprite> {
         const spriteSheets = await getSpritesheets();
-        const variation = tile.variation;
-        const flowerVariants: TextureName[] = ["flower_1", "flower_2", "flower_3", "bush_1","bush_2","bush_3"];
-        const spriteIndex = Math.floor(variation * flowerVariants.length);
-        return findTexture(spriteSheets, flowerVariants[spriteIndex]);
+        switch(tile.decoration){
+            case DecorationType.BUSH:{
+                const bushTypes: TextureName[] = ["bush_1", "bush_2", "bush_3"];
+                const spriteIndex = Math.floor(tile.variation * bushTypes.length);
+                const sprite = new PIXI.Sprite(findTexture(spriteSheets, bushTypes[spriteIndex]));
+                sprite.anchor.set(0.5, 0.5);
+                return sprite;
+            }
+            case DecorationType.FLOWER:{
+                const flowerTypes: TextureName[] = ["flower_1", "flower_2", "flower_3"];
+                const spriteIndex = Math.floor(tile.variation * flowerTypes.length);
+                const sprite = new PIXI.Sprite(findTexture(spriteSheets, flowerTypes[spriteIndex]));
+                sprite.anchor.set(0.5, 0.5);
+                return sprite;
+            }
+            default: return new PIXI.Sprite(findTexture(spriteSheets, "axe"));
+        }
     }
 
 

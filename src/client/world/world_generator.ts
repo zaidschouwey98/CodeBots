@@ -8,6 +8,7 @@ import Tile from "./tile";
 import { IronStone } from "./resources/iron_stone";
 import { CopperStone } from "./resources/copper_stone";
 import { IWorldGenerator } from "./i_world_generator";
+import { DecorationType } from "../types/decoration_type";
 
 export class WorldGenerator implements IWorldGenerator {
     private noiseFunc: Simplex.NoiseFunction2D;
@@ -36,6 +37,7 @@ export class WorldGenerator implements IWorldGenerator {
                 const frequency = 0.1;
                 const resourceFrequency = 0.02;
                 const res = this.noiseFunc(absX * frequency, absY * frequency);
+                const tileRng = seedrandom(`tile_${this.seed}_${absX}_${absY}`);
                 tile = new Tile(TileType.GRASS);
                 tile.noiseValue = res;
                 tile.variation = this.rng();
@@ -44,6 +46,11 @@ export class WorldGenerator implements IWorldGenerator {
 
                 if (res < 0.5 && res > -0.5) {
                     chunk.tiles[y][x] = tile;
+                    if(tileRng() > 0.9){
+                        const values = Object.values(DecorationType).filter(v => typeof v === "number") as DecorationType[];
+                        const index = Math.floor(tileRng() * values.length);
+                        tile.decoration = values[index];
+                    }
                     continue;
                 }
 
