@@ -2,16 +2,15 @@ import * as PIXI from "pixi.js";
 import Tile from "../world/tile";
 import { World } from "../world/world";
 import { TileType } from "../types/tile_type";
-import { TileContentType } from "../types/tile_content_type";
 import { ResourceType } from "../types/resource_type";
 import { TextureName, findTexture, getSpritesheets } from "../spritesheet_atlas";
 import { DecorationType } from "../types/decoration_type";
-import { TILE_SIZE } from "../constants";
+import { RENDER_DISTANCE, TILE_SIZE } from "../constants";
+import { Chunk } from "../world/chunk";
 
 
 export class WorldRenderer {
     public container: PIXI.Container;
-
     private spriteSheet: PIXI.Spritesheet<{
         meta: {
             image: string;
@@ -24,12 +23,11 @@ export class WorldRenderer {
         };
         frames: {};
     }>[];
-
     private tileContainer: PIXI.Container;
     private contentContainer: PIXI.Container;
     private foregroundContainer: PIXI.Container;
     private chunkContent: Map<string, PIXI.Sprite[]> = new Map();
-
+    private currentlyRenderingChunks: Set<string> = new Set();
     private world: World;
     spriteMap: Map<Tile, PIXI.Sprite> = new Map();
 
@@ -53,46 +51,39 @@ export class WorldRenderer {
 
     async initialize() {
         this.spriteSheet = await getSpritesheets();
-
     }
 
-    public async render(cx:number,cy:number, radius = 1){
-        const newVisibleChunks = new Set<string>();
-        for (let dx = -radius; dx <= radius; dx++) {
-            for (let dy = -radius; dy <= radius; dy++) {
-                const chunkX = cx + dx;
-                const chunkY = cy + dy;
-                const key = `${chunkX}_${chunkY}`;
-                newVisibleChunks.add(key);
+    public async render(chunks: Chunk[]) {
+        console.log(chunks.length);
+        if(chunks.length > 9) throw new Error("Too many chunks to render at once, this should never happen with render distance of 1");
+        const newChunkKeys = new Set(chunks.map(c => c.key));
 
-                // Si le chunk n'est pas déjà rendu, le rendre
-                if (!this.chunkContent.has(key)) {
-                    await this.renderChunk(chunkX, chunkY);
-                }
+        // 1. Unload ceux qui ne sont plus dans newChunkKeys
+        for (const key of this.currentlyRenderingChunks) {
+            if (!newChunkKeys.has(key)) {
+                const [cx, cy] = key.split("_").map(Number);
+                this.unloadChunk(cx, cy);
+                this.currentlyRenderingChunks.delete(key);
             }
         }
 
-        // 2️⃣ Décharger les chunks qui ne sont plus visibles
-        for (const key of Array.from(this.chunkContent.keys())) {
-            if (!newVisibleChunks.has(key)) {
-                const [chunkX, chunkY] = key.split("_").map(Number);
-                this.unloadChunk(chunkX, chunkY);
+        // 2. Render ceux qui sont nouveaux
+        for (const chunk of chunks) {
+            if (!this.currentlyRenderingChunks.has(chunk.key)) {
+                this.currentlyRenderingChunks.add(chunk.key);
+                this.renderChunk(chunk);
             }
         }
     }
 
-    public async unloadChunk(cx:number, cy:Number){
+    private async unloadChunk(cx: number, cy: Number) {
         let sprites = this.chunkContent.get(`${cx}_${cy}`);
-        sprites?.map((s)=>{s.destroy()});
+        sprites?.map((s) => { s.destroy() });
         this.chunkContent.delete(`${cx}_${cy}`)
     }
 
-    private async renderChunk(cx: number, cy: number, batchSize = 16): Promise<void> {
-        const chunk = this.world.getChunk(cx, cy);
-        const chunkKey = `${cx}_${cy}`;
-
+    private async renderChunk(chunk: Chunk, batchSize = 8): Promise<void> {
         const spriteArr: PIXI.Sprite[] = [];
-
         let y = 0;
         let x = 0;
 
@@ -132,7 +123,7 @@ export class WorldRenderer {
                 let count = 0;
                 while (y < chunk.size) {
                     while (x < chunk.size) {
-                        await createTileSprite(chunk.tiles[y][x], this.tileContainer, this.contentContainer, cx, cy);
+                        await createTileSprite(chunk.tiles[y][x], this.tileContainer, this.contentContainer, chunk.cx, chunk.cy);
                         count++;
                         x++;
                         if (count >= batchSize) {
@@ -143,7 +134,7 @@ export class WorldRenderer {
                     x = 0;
                     y++;
                 }
-                this.chunkContent.set(chunkKey, spriteArr);
+                this.chunkContent.set(chunk.key, spriteArr);
                 resolve(); // tout le chunk est rendu
             };
             step();
@@ -165,60 +156,60 @@ export class WorldRenderer {
                 const forestEdgeTypes: TextureName[] = ["forest_edge_1", "forest_edge_2", "forest_edge_3"];
                 let textureName: TextureName;
                 let rotation = 0;
-                if(neighbors.left?.type !== TileType.FOREST && neighbors.top?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST){
+                if (neighbors.left?.type !== TileType.FOREST && neighbors.top?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST) {
                     textureName = "forest_0_edge"; rotation = 0;
                 }
-                else if(neighbors.left?.type !== TileType.FOREST && neighbors.top?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST){
+                else if (neighbors.left?.type !== TileType.FOREST && neighbors.top?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST) {
                     textureName = "forest_one_edge"; rotation = 0;
                 }
-                else if(neighbors.left?.type !== TileType.FOREST && neighbors.top?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST){
+                else if (neighbors.left?.type !== TileType.FOREST && neighbors.top?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST) {
                     textureName = "forest_one_edge"; rotation = 90;
                 }
-                else if(neighbors.top?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST){
+                else if (neighbors.top?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST) {
                     textureName = "forest_one_edge"; rotation = 180;
                 }
-                else if(neighbors.left?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST){
+                else if (neighbors.left?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST) {
                     textureName = "forest_one_edge"; rotation = 270;
-                }else
+                } else
 
 
 
 
-                if (neighbors.left?.type !== TileType.FOREST && neighbors.top?.type !== TileType.FOREST) {
-                    textureName = "forest_right_edge"; rotation = 0;
-                }
-                else if (neighbors.top?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST) {
-                    textureName = "forest_right_edge"; rotation = 90;
-                }
-                else if (neighbors.right?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST) {
-                    textureName = "forest_left_edge"; rotation = 270;
-                }
-                else if (neighbors.bottom?.type !== TileType.FOREST && neighbors.left?.type !== TileType.FOREST) {
-                    textureName = "forest_left_edge"; rotation = 0;
-                }
+                    if (neighbors.left?.type !== TileType.FOREST && neighbors.top?.type !== TileType.FOREST) {
+                        textureName = "forest_right_edge"; rotation = 0;
+                    }
+                    else if (neighbors.top?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST) {
+                        textureName = "forest_right_edge"; rotation = 90;
+                    }
+                    else if (neighbors.right?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST) {
+                        textureName = "forest_left_edge"; rotation = 270;
+                    }
+                    else if (neighbors.bottom?.type !== TileType.FOREST && neighbors.left?.type !== TileType.FOREST) {
+                        textureName = "forest_left_edge"; rotation = 0;
+                    }
 
-                else if (neighbors.left?.type !== TileType.FOREST) {
-                    textureName = forestEdgeTypes[Math.floor(tile.variation * forestEdgeTypes.length)];
-                    rotation = 0;
-                }
-                else if (neighbors.top?.type !== TileType.FOREST) {
-                    textureName = forestEdgeTypes[Math.floor(tile.variation * forestEdgeTypes.length)];
-                    rotation = 90;
-                }
-                else if (neighbors.right?.type !== TileType.FOREST) {
-                    textureName = forestEdgeTypes[Math.floor(tile.variation * forestEdgeTypes.length)];
-                    rotation = 180;
-                }
-                else if (neighbors.bottom?.type !== TileType.FOREST) {
-                    textureName = forestEdgeTypes[Math.floor(tile.variation * forestEdgeTypes.length)];
-                    rotation = 270;
-                }
+                    else if (neighbors.left?.type !== TileType.FOREST) {
+                        textureName = forestEdgeTypes[Math.floor(tile.variation * forestEdgeTypes.length)];
+                        rotation = 0;
+                    }
+                    else if (neighbors.top?.type !== TileType.FOREST) {
+                        textureName = forestEdgeTypes[Math.floor(tile.variation * forestEdgeTypes.length)];
+                        rotation = 90;
+                    }
+                    else if (neighbors.right?.type !== TileType.FOREST) {
+                        textureName = forestEdgeTypes[Math.floor(tile.variation * forestEdgeTypes.length)];
+                        rotation = 180;
+                    }
+                    else if (neighbors.bottom?.type !== TileType.FOREST) {
+                        textureName = forestEdgeTypes[Math.floor(tile.variation * forestEdgeTypes.length)];
+                        rotation = 270;
+                    }
 
-                else {
-                    const forestTypes: TextureName[] = ["forest_center_1", "forest_center_2"];
-                    textureName = forestTypes[Math.floor(tile.variation * forestTypes.length)];
-                    rotation = 0;
-                }
+                    else {
+                        const forestTypes: TextureName[] = ["forest_center_1", "forest_center_2"];
+                        textureName = forestTypes[Math.floor(tile.variation * forestTypes.length)];
+                        rotation = 0;
+                    }
 
                 const texture = findTexture(this.spriteSheet, textureName);
                 const sprite = new PIXI.Sprite(texture);
@@ -250,15 +241,15 @@ export class WorldRenderer {
     }
 
     private async getTextureForDecoration(tile: Tile): Promise<PIXI.Sprite> {
-        switch(tile.decoration){
-            case DecorationType.BUSH:{
+        switch (tile.decoration) {
+            case DecorationType.BUSH: {
                 const bushTypes: TextureName[] = ["bush_1", "bush_2", "bush_3"];
                 const spriteIndex = Math.floor(tile.variation * bushTypes.length);
                 const sprite = new PIXI.Sprite(findTexture(this.spriteSheet, bushTypes[spriteIndex]));
                 sprite.anchor.set(0.5, 0.5);
                 return sprite;
             }
-            case DecorationType.FLOWER:{
+            case DecorationType.FLOWER: {
                 const flowerTypes: TextureName[] = ["flower_1", "flower_2", "flower_3"];
                 const spriteIndex = Math.floor(tile.variation * flowerTypes.length);
                 const sprite = new PIXI.Sprite(findTexture(this.spriteSheet, flowerTypes[spriteIndex]));

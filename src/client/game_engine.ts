@@ -41,19 +41,24 @@ export class GameEngine {
 
     update(delta: number) {
         this.player.update(this.keys, delta);
-        const chunkX = Math.floor(this.player.posX / CHUNK_SIZE);
-        const chunkY = Math.floor(this.player.posY / CHUNK_SIZE);
-        this.camera.follow(this.player, this.app.screen.width, this.app.screen.height);
 
+        const newCX = Math.floor(this.player.posX / CHUNK_SIZE);
+        const newCY = Math.floor(this.player.posY / CHUNK_SIZE);
+
+        if (newCX !== this.player.cX || newCY !== this.player.cY) {
+            this.player.cX = newCX;
+            this.player.cY = newCY;
+
+            const entities = [this.player /* , ...robots plus tard */];
+            this.world.updateLoadedChunks(entities);
+
+            // 2. recalcul rendu
+            const visibleChunks = this.world.getChunksInVisibleRange(this.player);
+            this.renderer.render(visibleChunks);
+        }
+
+        this.camera.follow(this.player, this.app.screen.width, this.app.screen.height);
         this.renderer.container.x = this.camera.x;
         this.renderer.container.y = this.camera.y;
-        if (chunkX !== this.player.cX || chunkY !== this.player.cY) {
-            console.debug("Rendering new Chunks");
-            this.player.cX = chunkX;
-            this.player.cY = chunkY;
-
-            // Render uniquement les chunks autour du joueur
-            this.renderer.render(chunkX, chunkY);
-        }
     }
 }
