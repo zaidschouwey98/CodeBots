@@ -23,16 +23,8 @@ export class Codebot extends Entity {
         return EntityType.CODEBOT;
     }
 
-    getTextureName(): TextureName {
-        return "codebot_1";
-    }
-
-    getAnimationName(): AnimationName|null {
-        if (this.isRunning) {
-            return "codebot";
-        }
-
-        return null;
+    getAnimationName(): AnimationName {
+        return "codebot";
     }
 
     setProgram(program: string) {
@@ -50,6 +42,10 @@ export class Codebot extends Entity {
             this.error = await Codebot.interpreter.evaluate(this.program, this.customBuiltins.builtins);
             this.isRunning = false;
         }
+    }
+
+    isAnimated(): boolean {
+        return this.isRunning;
     }
 
     update(keys: Set<string>, delta: number) {}

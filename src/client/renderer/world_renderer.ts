@@ -143,12 +143,7 @@ export class WorldRenderer {
     }
 
     public renderEntity(entity: Entity) {
-        const animationName = entity.getAnimationName();
-        if (!animationName) {
-            return;
-        }
-
-        const animation = findAnimation(this.spriteSheet, animationName);
+        const animation = findAnimation(this.spriteSheet, entity.getAnimationName());
         if (!animation) {
             throw new Error("animation not found");
         }
@@ -156,6 +151,7 @@ export class WorldRenderer {
         const sprite = new PIXI.AnimatedSprite(animation);
         sprite.animationSpeed = ANIMATION_SPEED;
         sprite.play();
+
         // sprite.anchor.set(0.5, 1); // les pieds posés sur le sol
         // bas du sprite = bas du tile
         sprite.zIndex = sprite.y; // pour le tri avec les autres objets
@@ -163,6 +159,11 @@ export class WorldRenderer {
         sprite.x = entity.posX;
         sprite.y = entity.posY;
         this.entityContainer.addChild(sprite);
+
+        entity.observe((state) => {
+            sprite.x = state.posX;
+            sprite.y = state.posY;
+        });
     }
 
     private async getTextureForTile(tile: Tile): Promise<PIXI.Sprite> {

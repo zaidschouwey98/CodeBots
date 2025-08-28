@@ -15,8 +15,12 @@ export class Player extends Entity{
         return EntityType.PLAYER;
     }
 
-    getAnimationName(): AnimationName|null {
-        return null;
+    getAnimationName(): AnimationName {
+        return "player_idle";
+    }
+
+    isAnimated(): boolean {
+        return true;
     }
 
     update(keys: Set<string>, delta: number) {

@@ -24,8 +24,6 @@ export default class CustomBuiltins {
                     return new ErrorObject(`unsupported argument type: ${arg.type()}`);
                 }
 
-                console.log("GOTO", this.codebot);
-
                 this.codebot.posX += 50;
                 this.codebot.posY += 50;
 
