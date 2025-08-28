@@ -8,8 +8,8 @@ export class Entity{
     public speed:number;
 
     constructor(){
-        this.posX = 10;
-        this.posY = 10;
+        this.posX = 0;
+        this.posY = 0;
     }
 
     interact(i:Interactable){

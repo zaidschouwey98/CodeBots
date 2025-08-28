@@ -6,6 +6,7 @@ import { TileContentType } from "../types/tile_content_type";
 import { ResourceType } from "../types/resource_type";
 import { TextureName, findTexture, getSpritesheets } from "../spritesheet_atlas";
 import { DecorationType } from "../types/decoration_type";
+import { TILE_SIZE } from "../constants";
 
 
 export class WorldRenderer {
@@ -30,13 +31,10 @@ export class WorldRenderer {
     private chunkContent: Map<string, PIXI.Sprite[]> = new Map();
 
     private world: World;
-    private tileSize: number;
-    private renderDistance:number;
     spriteMap: Map<Tile, PIXI.Sprite> = new Map();
 
-    constructor(world: World, tileSize = 16, renderDistance = 2) {
+    constructor(world: World) {
         this.world = world;
-        this.renderDistance = renderDistance;
         this.container = new PIXI.Container();
         this.tileContainer = new PIXI.Container();
         this.contentContainer = new PIXI.Container();
@@ -51,7 +49,6 @@ export class WorldRenderer {
         this.container.addChild(this.contentContainer);
         this.container.addChild(this.foregroundContainer);
 
-        this.tileSize = tileSize;
     }
 
     async initialize() {
@@ -103,18 +100,18 @@ export class WorldRenderer {
         const createTileSprite = async (tile: Tile, tileContainer: PIXI.Container, contentContainer: PIXI.Container, cx: number, cy: number) => {
             const sprite = await this.getTextureForTile(tile);
             sprite.anchor.set(0.5, 0.5);
-            sprite.x = (cx * chunk.size + x) * this.tileSize + this.tileSize / 2;
-            sprite.y = (cy * chunk.size + y) * this.tileSize + this.tileSize / 2;
+            sprite.x = (cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
+            sprite.y = (cy * chunk.size + y) * TILE_SIZE + TILE_SIZE / 2;
             sprite.zIndex = sprite.y;
             sprite.roundPixels = true;
             tileContainer.addChild(sprite);
             spriteArr.push(sprite);
             // Contenu / décoration
             if (tile.content) {
-                const occSprite = new PIXI.Sprite(await this.getTextureForContent(tile.content.tileContentType));
+                const occSprite = await this.getTextureForContent(tile);
                 occSprite.anchor.set(0.5, 1);
                 occSprite.x = sprite.x;
-                occSprite.y = (cy * chunk.size + y) * this.tileSize + this.tileSize;
+                occSprite.y = (cy * chunk.size + y) * TILE_SIZE + TILE_SIZE;
                 occSprite.zIndex = occSprite.y;
                 contentContainer.addChild(occSprite);
                 spriteArr.push(occSprite);
@@ -237,13 +234,18 @@ export class WorldRenderer {
         }
     }
 
-    private async getTextureForContent(content: TileContentType): Promise<any> {
-        switch (content) {
-            case ResourceType.WOOD: return findTexture(this.spriteSheet, "tree_1");
-            case ResourceType.STONE: return findTexture(this.spriteSheet, "stone");
-            case ResourceType.COPPER: return findTexture(this.spriteSheet, "copper");
-            case ResourceType.IRON: return findTexture(this.spriteSheet, "iron");
-            default: return findTexture(this.spriteSheet, "axe")
+    private async getTextureForContent(tile: Tile): Promise<PIXI.Sprite> {
+        switch (tile.content?.tileContentType) {
+            case ResourceType.WOOD: {
+                const treeTypes: TextureName[] = ["tree_1", "tree_2", "tree_3", "tree_4"];
+                const spriteIndex = Math.floor(tile.variation * treeTypes.length);
+                const sprite = new PIXI.Sprite(findTexture(this.spriteSheet, treeTypes[spriteIndex]));
+                return sprite;
+            };
+            case ResourceType.STONE: return new PIXI.Sprite(findTexture(this.spriteSheet, "stone"));
+            case ResourceType.COPPER: return new PIXI.Sprite(findTexture(this.spriteSheet, "copper"));
+            case ResourceType.IRON: return new PIXI.Sprite(findTexture(this.spriteSheet, "iron"));
+            default: return new PIXI.Sprite(findTexture(this.spriteSheet, "axe"));
         }
     }
 

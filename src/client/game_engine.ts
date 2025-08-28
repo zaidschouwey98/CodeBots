@@ -1,9 +1,10 @@
-import { Camera } from "./entity/camera";
+import { Camera } from "./world/camera";
 import { Player } from "./entity/player";
 import { WorldRenderer } from "./renderer/world_renderer";
 import { World } from "./world/world";
 import * as PIXI from "pixi.js";
 import { WorldGenerator } from "./world/world_generator";
+import { CHUNK_SIZE } from "./constants";
 
 export class GameEngine {
     public app: PIXI.Application;
@@ -16,7 +17,7 @@ export class GameEngine {
     constructor(app: PIXI.Application) {
         this.app = app;
         const generator = new WorldGenerator("seed");
-        this.world = new World(16, generator);
+        this.world = new World(generator);
         this.renderer = new WorldRenderer(this.world);
         this.camera = new Camera();
         this.camera.zoom = 2;
@@ -40,8 +41,8 @@ export class GameEngine {
 
     update(delta: number) {
         this.player.update(this.keys, delta);
-        const chunkX = Math.floor(this.player.posX / this.world.chunkSize);
-        const chunkY = Math.floor(this.player.posY / this.world.chunkSize);
+        const chunkX = Math.floor(this.player.posX / CHUNK_SIZE);
+        const chunkY = Math.floor(this.player.posY / CHUNK_SIZE);
         this.camera.follow(this.player, this.app.screen.width, this.app.screen.height);
 
         this.renderer.container.x = this.camera.x;
