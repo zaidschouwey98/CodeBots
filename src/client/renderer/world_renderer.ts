@@ -3,10 +3,11 @@ import Tile from "../world/tile";
 import { World } from "../world/world";
 import { TileType } from "../types/tile_type";
 import { ResourceType } from "../types/resource_type";
-import { TextureName, findTexture, getSpritesheets } from "../spritesheet_atlas";
+import { TextureName, findAnimation, findTexture, getSpritesheets } from "../spritesheet_atlas";
 import { DecorationType } from "../types/decoration_type";
 import { RENDER_DISTANCE, TILE_SIZE } from "../constants";
 import { Chunk } from "../world/chunk";
+import { Entity } from "../entity/entity";
 
 
 export class WorldRenderer {
@@ -26,6 +27,7 @@ export class WorldRenderer {
     private tileContainer: PIXI.Container;
     private contentContainer: PIXI.Container;
     private foregroundContainer: PIXI.Container;
+    private entityContainer: PIXI.Container;
     private chunkContent: Map<string, PIXI.Sprite[]> = new Map();
     private currentlyRenderingChunks: Set<string> = new Set();
     private world: World;
@@ -37,7 +39,7 @@ export class WorldRenderer {
         this.tileContainer = new PIXI.Container();
         this.contentContainer = new PIXI.Container();
         this.foregroundContainer = new PIXI.Container();
-
+        this.entityContainer = new PIXI.Container();
 
         this.tileContainer.sortableChildren = false;
         this.contentContainer.sortableChildren = true;
@@ -136,6 +138,28 @@ export class WorldRenderer {
                 resolve(); // tout le chunk est rendu
             };
             step();
+        });
+    }
+
+    public renderEntities(entities: Entity[]) {
+        entities.forEach(() => {
+            const animation = findAnimation(this.spriteSheet, "codebot");
+            if (!animation) {
+                throw new Error("animation not found");
+            }
+
+            const sprite = new PIXI.AnimatedSprite(animation);
+            sprite.animationSpeed = 0.1;
+            sprite.play();
+            // sprite.anchor.set(0.5, 1); // les pieds posés sur le sol
+            // bas du sprite = bas du tile
+            sprite.zIndex = sprite.y; // pour le tri avec les autres objets
+            sprite.updateTransform({x:entities[0].posX, y:entities[0].posY});
+            sprite.x = entities[0].posX ;
+            sprite.y = entities[0].posY ;
+            if(!this.entityContainer.children.length) {
+                this.entityContainer.addChild(sprite);
+            }
         });
     }
 

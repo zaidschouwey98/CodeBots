@@ -22,7 +22,4 @@ import { GameEngine } from './game_engine';
         // Suivre une position cible
         engine.update(delta.deltaTime);
     });
-
-
-
 })();

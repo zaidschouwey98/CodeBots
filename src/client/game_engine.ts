@@ -5,6 +5,7 @@ import { World } from "./world/world";
 import * as PIXI from "pixi.js";
 import { WorldGenerator } from "./world/world_generator";
 import { CHUNK_SIZE } from "./constants";
+import { Codebot } from "./entity/codebot";
 
 export class GameEngine {
     public app: PIXI.Application;
@@ -13,6 +14,7 @@ export class GameEngine {
     public camera: Camera;
     private player: Player;
     private keys: Set<string>;
+    private codebots: Codebot[];
 
     constructor(app: PIXI.Application) {
         this.app = app;
@@ -22,6 +24,10 @@ export class GameEngine {
         this.camera = new Camera();
         this.camera.zoom = 2;
         this.player = new Player();
+        this.codebots = [];
+
+        // TODO test only
+        this.codebots.push(new Codebot());
 
         this.keys = new Set<string>();
 
@@ -49,7 +55,7 @@ export class GameEngine {
             this.player.cX = newCX;
             this.player.cY = newCY;
 
-            const entities = [this.player /* , ...robots plus tard */];
+            const entities = [this.player, ...this.codebots /* , ...robots plus tard */];
             this.world.updateLoadedChunks(entities);
 
             // 2. recalcul rendu
