@@ -1,7 +1,8 @@
 import Interpreter from "codebotsinterpreter";
 import CustomBuiltins from "../interpreter/custom_builtins";
 import {Entity} from "./entity";
-import type {AnimationName} from "../spritesheet_atlas";
+import type {AnimationName, TextureName} from "../spritesheet_atlas";
+import {EntityType} from "../types/entity_type";
 
 export class Codebot extends Entity {
     private customBuiltins: CustomBuiltins;
@@ -18,8 +19,20 @@ export class Codebot extends Entity {
         this.customBuiltins = new CustomBuiltins(this);
     }
 
-    getAnimationName(): AnimationName {
-        return "codebot";
+    getType(): EntityType {
+        return EntityType.CODEBOT;
+    }
+
+    getTextureName(): TextureName {
+        return "codebot_1";
+    }
+
+    getAnimationName(): AnimationName|null {
+        if (this.isRunning) {
+            return "codebot";
+        }
+
+        return null;
     }
 
     setProgram(program: string) {
@@ -35,6 +48,7 @@ export class Codebot extends Entity {
 
         if (this.isRunning) {
             this.error = await Codebot.interpreter.evaluate(this.program, this.customBuiltins.builtins);
+            this.isRunning = false;
         }
     }
 

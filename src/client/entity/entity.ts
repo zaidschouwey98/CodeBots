@@ -1,4 +1,5 @@
-import { AnimationName } from "../spritesheet_atlas";
+import { AnimationName, TextureName } from "../spritesheet_atlas";
+import { EntityType } from "../types/entity_type";
 import { Interactable } from "../world/interactables/interactable";
 
 export abstract class Entity{
@@ -16,7 +17,11 @@ export abstract class Entity{
         this.posY = 0;
     }
 
-    abstract getAnimationName(): AnimationName;
+    abstract getTextureName(): TextureName;
+
+    abstract getAnimationName(): AnimationName|null;
+
+    abstract getType(): EntityType;
 
     interact(i: Interactable){
 

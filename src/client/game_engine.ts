@@ -26,9 +26,6 @@ export class GameEngine {
         this.player = new Player();
         this.codebots = [];
 
-        // TODO test only
-        this.codebots.push(new Codebot());
-
         this.keys = new Set<string>();
 
         window.addEventListener("keydown", (e) =>
@@ -43,6 +40,19 @@ export class GameEngine {
         await this.renderer.initialize();
         this.renderer.container.scale.set(this.camera.zoom);
         this.app.stage.addChild(this.renderer.container);
+
+        // TODO test only
+        this.addCodebot();
+    }
+
+    addCodebot() {
+        const codebot = new Codebot();
+        this.codebots.push(codebot);
+        this.renderer.renderEntity(codebot);
+
+        // TODO test only
+        codebot.setProgram("var i = 0; while (i < 5) { goto(i); wait(1000); var i = i + 1; }");
+        codebot.setIsRunning(true);
     }
 
     update(delta: number) {

@@ -5,7 +5,7 @@ import { TileType } from "../types/tile_type";
 import { ResourceType } from "../types/resource_type";
 import { TextureName, findAnimation, findTexture, getSpritesheets } from "../spritesheet_atlas";
 import { DecorationType } from "../types/decoration_type";
-import { RENDER_DISTANCE, TILE_SIZE } from "../constants";
+import { ANIMATION_SPEED, RENDER_DISTANCE, TILE_SIZE } from "../constants";
 import { Chunk } from "../world/chunk";
 import { Entity } from "../entity/entity";
 
@@ -141,26 +141,27 @@ export class WorldRenderer {
         });
     }
 
-    public renderEntities(entities: Entity[]) {
-        entities.forEach(() => {
-            const animation = findAnimation(this.spriteSheet, "codebot");
-            if (!animation) {
-                throw new Error("animation not found");
-            }
+    public renderEntity(entity: Entity) {
+        const animationName = entity.getAnimationName();
+        if (!animationName) {
+            return;
+        }
 
-            const sprite = new PIXI.AnimatedSprite(animation);
-            sprite.animationSpeed = 0.1;
-            sprite.play();
-            // sprite.anchor.set(0.5, 1); // les pieds posés sur le sol
-            // bas du sprite = bas du tile
-            sprite.zIndex = sprite.y; // pour le tri avec les autres objets
-            sprite.updateTransform({x:entities[0].posX, y:entities[0].posY});
-            sprite.x = entities[0].posX ;
-            sprite.y = entities[0].posY ;
-            if(!this.entityContainer.children.length) {
-                this.entityContainer.addChild(sprite);
-            }
-        });
+        const animation = findAnimation(this.spriteSheet, animationName);
+        if (!animation) {
+            throw new Error("animation not found");
+        }
+
+        const sprite = new PIXI.AnimatedSprite(animation);
+        sprite.animationSpeed = ANIMATION_SPEED;
+        sprite.play();
+        // sprite.anchor.set(0.5, 1); // les pieds posés sur le sol
+        // bas du sprite = bas du tile
+        sprite.zIndex = sprite.y; // pour le tri avec les autres objets
+        sprite.updateTransform({x: entity.posX, y: entity.posY});
+        sprite.x = entity.posX;
+        sprite.y = entity.posY;
+        this.entityContainer.addChild(sprite);
     }
 
     private async getTextureForTile(tile: Tile): Promise<PIXI.Sprite> {
