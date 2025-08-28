@@ -59,6 +59,7 @@ export type TextureName =
     "iron_frame" |
     "iron_plate" |
     "reinforced_iron_plate" |
+    "codebot_item" |
     "cement" |
     "concrete" |
     "codebot_1" |
@@ -78,11 +79,18 @@ export type TextureName =
     "scroll" |
     "bar";
 
+export type AnimationName =
+    "codebot";
+
 export const findTexture = (spriteSheets: Spritesheet[], texture: TextureName) => {
     return spriteSheets.find((spritesheet) => spritesheet.textures[texture])?.textures[texture];
 };
 
-const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: Dimensions, names: TextureName[]) => {
+export const findAnimation = (spriteSheets: Spritesheet[], animation: AnimationName) => {
+    return spriteSheets.find((spritesheet) => spritesheet.animations[animation])?.animations[animation];
+};
+
+const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: Dimensions, names: TextureName[], animations?: Record<AnimationName, TextureName[]>) => {
     return {
         meta: {
             image: file,
@@ -110,6 +118,7 @@ const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: 
 
             return acc;
         }, {}),
+        animations,
     };
 };
 
@@ -168,6 +177,7 @@ const atlas = [
         "iron_frame",
         "iron_plate",
         "reinforced_iron_plate",
+        "codebot_item",
         "cement",
         "concrete",
         "codebot_1",
@@ -176,7 +186,9 @@ const atlas = [
         "codebot_4",
         "power",
         "close"
-    ]),
+    ], {
+        codebot: ["codebot_1", "codebot_2", "codebot_3", "codebot_4"],
+    }),
     generateAtlas("/assets/trees.png", { w: 2, h: 2 }, { w: 16, h: 32 }, [
         "tree_1",
         "tree_2",
