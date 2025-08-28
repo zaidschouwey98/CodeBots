@@ -10,6 +10,7 @@ export class World {
     public savedChunks: Map<string, Chunk>; // Chunks that have been modified and need to be saved
     public activeChunks: Map<string,Chunk>; // Chunks currently loaded in memory
     public generator: IWorldGenerator;
+    public entities: Entity[];
 
     constructor(generator: IWorldGenerator) {
         this.savedChunks = new Map();
@@ -18,8 +19,6 @@ export class World {
     }
 
     updateLoadedChunks(entities: Entity[]) {
-        console.log("saved chunks:", this.savedChunks);
-        console.log("active chunks:", this.activeChunks);
         const newLoaded = new Map<string, Chunk>();
         for (const entity of entities) {
             const cx = entity.cX;

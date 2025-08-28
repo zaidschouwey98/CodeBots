@@ -44,7 +44,7 @@ export class GameEngine {
 
         const newCX = Math.floor(this.player.posX / CHUNK_SIZE);
         const newCY = Math.floor(this.player.posY / CHUNK_SIZE);
-
+        this.renderer.renderEntities([this.player]);
         if (newCX !== this.player.cX || newCY !== this.player.cY) {
             this.player.cX = newCX;
             this.player.cY = newCY;

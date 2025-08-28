@@ -3,10 +3,11 @@ import Tile from "../world/tile";
 import { World } from "../world/world";
 import { TileType } from "../types/tile_type";
 import { ResourceType } from "../types/resource_type";
-import { TextureName, findTexture, getSpritesheets } from "../spritesheet_atlas";
+import { TextureName, findAnimation, findTexture, getSpritesheets } from "../spritesheet_atlas";
 import { DecorationType } from "../types/decoration_type";
 import { RENDER_DISTANCE, TILE_SIZE } from "../constants";
 import { Chunk } from "../world/chunk";
+import { Entity } from "../entity/entity";
 
 
 export class WorldRenderer {
@@ -25,6 +26,7 @@ export class WorldRenderer {
     }>[];
     private tileContainer: PIXI.Container;
     private contentContainer: PIXI.Container;
+    private entityContainer: PIXI.Container;
     private foregroundContainer: PIXI.Container;
     private chunkContent: Map<string, PIXI.Sprite[]> = new Map();
     private currentlyRenderingChunks: Set<string> = new Set();
@@ -37,7 +39,7 @@ export class WorldRenderer {
         this.tileContainer = new PIXI.Container();
         this.contentContainer = new PIXI.Container();
         this.foregroundContainer = new PIXI.Container();
-
+        this.entityContainer = new PIXI.Container();
 
         this.tileContainer.sortableChildren = false;
         this.contentContainer.sortableChildren = true;
@@ -45,6 +47,7 @@ export class WorldRenderer {
 
         this.container.addChild(this.tileContainer);
         this.container.addChild(this.contentContainer);
+        this.container.addChild(this.entityContainer);
         this.container.addChild(this.foregroundContainer);
 
     }
@@ -72,6 +75,18 @@ export class WorldRenderer {
                 this.renderChunk(chunk);
             }
         }
+    }
+
+    renderEntities(entities: Entity[]) {
+
+        const sprite = new PIXI.AnimatedSprite(findAnimation(this.spriteSheet, "player_idle")!);
+        sprite.animationSpeed = 0.1; // Vitesse de l'animation
+        sprite.play();
+        sprite.anchor.set(0.5, 1); // les pieds posés sur le sol
+        // bas du sprite = bas du tile
+        sprite.zIndex = sprite.y; // pour le tri avec les autres objets
+        if(this.entityContainer.children.length == 0)
+            this.entityContainer.addChild(sprite);
     }
 
     private async unloadChunk(cx: number, cy: Number) {
