@@ -28,7 +28,7 @@ export class WorldGenerator implements IWorldGenerator {
 
     generateChunk(cx: number, cy: number, size: number): Chunk {
         const chunk = new Chunk(cx, cy, size);
-
+        const tileRng = seedrandom(`${this.seed}_${cx}_${cy}`);
         for (let y = 0; y < size; y++) {
             for (let x = 0; x < size; x++) {
                 const absX = cx * size + x;
@@ -37,7 +37,7 @@ export class WorldGenerator implements IWorldGenerator {
                 const frequency = 0.1;
                 const resourceFrequency = 0.02;
                 const res = this.noiseFunc(absX * frequency, absY * frequency);
-                const tileRng = seedrandom(`tile_${this.seed}_${absX}_${absY}`);
+
                 tile = new Tile(TileType.GRASS);
                 tile.noiseValue = res;
                 tile.variation = this.rng();

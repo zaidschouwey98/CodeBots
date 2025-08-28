@@ -5,7 +5,7 @@ import { TileType } from "../types/tile_type";
 import { ResourceType } from "../types/resource_type";
 import { TextureName, findAnimation, findTexture, getSpritesheets } from "../spritesheet_atlas";
 import { DecorationType } from "../types/decoration_type";
-import { RENDER_DISTANCE, TILE_SIZE } from "../constants";
+import { TILE_SIZE } from "../constants";
 import { Chunk } from "../world/chunk";
 import { Entity } from "../entity/entity";
 
@@ -67,7 +67,6 @@ export class WorldRenderer {
                 this.currentlyRenderingChunks.delete(key);
             }
         }
-
         // 2. Render ceux qui sont nouveaux
         for (const chunk of chunks) {
             if (!this.currentlyRenderingChunks.has(chunk.key)) {
@@ -82,10 +81,13 @@ export class WorldRenderer {
         const sprite = new PIXI.AnimatedSprite(findAnimation(this.spriteSheet, "player_idle")!);
         sprite.animationSpeed = 0.1; // Vitesse de l'animation
         sprite.play();
-        sprite.anchor.set(0.5, 1); // les pieds posés sur le sol
+        // sprite.anchor.set(0.5, 1); // les pieds posés sur le sol
         // bas du sprite = bas du tile
         sprite.zIndex = sprite.y; // pour le tri avec les autres objets
-        if(this.entityContainer.children.length == 0)
+        sprite.x = entities[0].posX;
+        sprite.y = entities[0].posY;
+        sprite.x += 1;
+        if (this.entityContainer.children.length == 0)
             this.entityContainer.addChild(sprite);
     }
 
@@ -95,66 +97,51 @@ export class WorldRenderer {
         this.chunkContent.delete(`${cx}_${cy}`)
     }
 
-    private async renderChunk(chunk: Chunk, batchSize = 8): Promise<void> {
-        const spriteArr: PIXI.Sprite[] = [];
-        let y = 0;
-        let x = 0;
+    private async renderChunk(chunk: Chunk) {
+        const tiles: PIXI.Sprite[] = [];
+        const tileContents: PIXI.Sprite[] = [];
 
-        // Fonction pour créer un sprite d’une tile
-        const createTileSprite = async (tile: Tile, tileContainer: PIXI.Container, contentContainer: PIXI.Container, cx: number, cy: number) => {
-            const sprite = await this.getTextureForTile(tile);
-            sprite.anchor.set(0.5, 0.5);
-            sprite.x = (cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
-            sprite.y = (cy * chunk.size + y) * TILE_SIZE + TILE_SIZE / 2;
-            sprite.zIndex = sprite.y;
-            sprite.roundPixels = true;
-            tileContainer.addChild(sprite);
-            spriteArr.push(sprite);
-            // Contenu / décoration
-            if (tile.content) {
-                const occSprite = await this.getTextureForContent(tile);
-                occSprite.anchor.set(0.5, 1);
-                occSprite.x = sprite.x;
-                occSprite.y = (cy * chunk.size + y) * TILE_SIZE + TILE_SIZE;
-                occSprite.zIndex = occSprite.y;
-                contentContainer.addChild(occSprite);
-                spriteArr.push(occSprite);
-            } else if (tile.decoration != null) {
-                const occSprite = await this.getTextureForDecoration(tile);
-                occSprite.anchor.set(0.5, 0.5);
-                occSprite.x = sprite.x;
-                occSprite.y = sprite.y;
-                occSprite.zIndex = occSprite.y;
-                contentContainer.addChild(occSprite);
-                spriteArr.push(occSprite);
-            }
-        };
+        const chunkSprites: PIXI.Sprite[] = [];
+        for (let y = 0; y < chunk.size; y++) {
+            for (let x = 0; x < chunk.size; x++) {
+                const tile = chunk.tiles[y][x];
+                const sprite = this.getTextureForTile(tile);
+                sprite.roundPixels = true;
+                sprite.x = (chunk.cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
+                sprite.y = (chunk.cy * chunk.size + y) * TILE_SIZE + TILE_SIZE / 2;
+                tiles.push(sprite);
+                chunkSprites.push(sprite);
+                sprite.zIndex = sprite.y;
+                if (tile.content) {
+                    const occSprite = this.getTextureForContent(tile);
+                    occSprite.anchor.set(0.5, 1);
+                    occSprite.roundPixels = true;
+                    occSprite.x = (chunk.cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
+                    occSprite.y = (chunk.cy * chunk.size + y) * TILE_SIZE + TILE_SIZE;
 
-        // Fonction pour étaler le rendu sur plusieurs frames
-        return new Promise<void>((resolve) => {
-            const step = async () => {
-                let count = 0;
-                while (y < chunk.size) {
-                    while (x < chunk.size) {
-                        await createTileSprite(chunk.tiles[y][x], this.tileContainer, this.contentContainer, chunk.cx, chunk.cy);
-                        count++;
-                        x++;
-                        if (count >= batchSize) {
-                            requestAnimationFrame(step);
-                            return;
-                        }
-                    }
-                    x = 0;
-                    y++;
+                    tileContents.push(occSprite);
+                    chunkSprites.push(occSprite);
+                    occSprite.zIndex = occSprite.y;
+                } else if (tile.decoration != null) {
+                    const occSprite = this.getTextureForDecoration(tile);
+                    occSprite.roundPixels = true;
+                    occSprite.x = (chunk.cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
+                    occSprite.y = (chunk.cy * chunk.size + y) * TILE_SIZE + TILE_SIZE / 2;
+                    tileContents.push(occSprite);
+                    chunkSprites.push(occSprite);
+                    occSprite.zIndex = occSprite.y;
                 }
-                this.chunkContent.set(chunk.key, spriteArr);
-                resolve(); // tout le chunk est rendu
-            };
-            step();
-        });
+
+
+
+            }
+        }
+        this.tileContainer.addChild(...tiles);
+        this.contentContainer.addChild(...tileContents);
+        this.chunkContent.set(chunk.key, chunkSprites);
     }
 
-    private async getTextureForTile(tile: Tile): Promise<PIXI.Sprite> {
+    private getTextureForTile(tile: Tile): PIXI.Sprite {
 
         switch (tile.type) {
             case TileType.GRASS: {
@@ -238,7 +225,7 @@ export class WorldRenderer {
         }
     }
 
-    private async getTextureForContent(tile: Tile): Promise<PIXI.Sprite> {
+    private getTextureForContent(tile: Tile): PIXI.Sprite {
         switch (tile.content?.tileContentType) {
             case ResourceType.WOOD: {
                 const treeTypes: TextureName[] = ["tree_1", "tree_2", "tree_3", "tree_4"];
@@ -253,7 +240,7 @@ export class WorldRenderer {
         }
     }
 
-    private async getTextureForDecoration(tile: Tile): Promise<PIXI.Sprite> {
+    private getTextureForDecoration(tile: Tile): PIXI.Sprite {
         switch (tile.decoration) {
             case DecorationType.BUSH: {
                 const bushTypes: TextureName[] = ["bush_1", "bush_2", "bush_3"];
