@@ -54,8 +54,6 @@ export class WorldRenderer {
     }
 
     public async render(chunks: Chunk[]) {
-        console.log(chunks.length);
-        if(chunks.length > 9) throw new Error("Too many chunks to render at once, this should never happen with render distance of 1");
         const newChunkKeys = new Set(chunks.map(c => c.key));
 
         // 1. Unload ceux qui ne sont plus dans newChunkKeys
