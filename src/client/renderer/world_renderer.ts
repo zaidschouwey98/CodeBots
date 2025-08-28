@@ -47,6 +47,7 @@ export class WorldRenderer {
 
         this.container.addChild(this.tileContainer);
         this.container.addChild(this.contentContainer);
+        this.container.addChild(this.entityContainer);
         this.container.addChild(this.foregroundContainer);
 
     }
