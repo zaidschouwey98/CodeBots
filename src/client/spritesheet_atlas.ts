@@ -72,6 +72,7 @@ export type TextureName =
     "iron_frame" |
     "iron_plate" |
     "reinforced_iron_plate" |
+    "codebot_item" |
     "cement" |
     "concrete" |
     "codebot_1" |
@@ -207,6 +208,7 @@ const atlas = [
         "iron_frame",
         "iron_plate",
         "reinforced_iron_plate",
+        "codebot_item",
         "cement",
         "concrete",
         "codebot_1",

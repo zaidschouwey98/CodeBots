@@ -41,12 +41,18 @@ const exampleRecipes: Recipe[] = [
 const exampleCoreStep: CoreStep = {
     stepNumber: 1,
     items: [
-        {spriteName: "wood_plank", currentGathered: 0, goal: 20},
-        {spriteName: "stone", currentGathered: 0, goal: 10},
-        {spriteName: "coal", currentGathered: 0, goal: 5},
+        {spriteName: "wood_plank", currentGathered: 2500, goal: 2500},
+        {spriteName: "stone", currentGathered: 0, goal: 800},
+        {spriteName: "coal", currentGathered: 1843, goal: 3000},
         {spriteName: "iron_ore", currentGathered: 0, goal: 5},
-        {spriteName: "iron_ingot", currentGathered: 0, goal: 5},
-        {spriteName: "nail", currentGathered: 0, goal: 50}
+        {spriteName: "iron_ingot", currentGathered: 515, goal: 3000},
+        {spriteName: "nail", currentGathered: 0, goal: 9000},
+        {spriteName: "crate", currentGathered: 0, goal: 50},
+        {spriteName: "furnace_off", currentGathered: 1, goal: 3},
+        {spriteName: "pickaxe", currentGathered: 1, goal: 1},
+        {spriteName: "shovel", currentGathered: 0, goal: 1},
+        {spriteName: "axe", currentGathered: 1, goal: 1},
+
     ]
 };
 
@@ -76,8 +82,8 @@ const exampleCoreStep: CoreStep = {
     const spritesheets = await getSpritesheets();
     const gui = new Interface(app, spritesheets, guiScale);
 
-    gui.drawCraftingInterface(exampleRecipes);
-    //gui.drawCoreInterface(exampleCoreStep);
+    //gui.drawCraftingInterface(exampleRecipes);
+    gui.drawCoreInterface(exampleCoreStep);
 
     gui.drawItemBar([
         {spriteName: "pickaxe", quantity: 1},

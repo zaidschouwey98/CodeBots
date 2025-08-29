@@ -66,9 +66,11 @@ export class Interface {
 
     /**
      * Draws an item inside a given square container.
-     * @param item
-     * @param container
-     * @param drawQty
+     * @param item the item to draw
+     * @param container the square container to draw the item in
+     * @param drawQty whether to show the item quantity at the bottom-right of the slot
+     * @param drawNameOnHover whether to show the item name below the slot when hovering over the item
+     * (note : this requires the container to leave enough space below the slotto show the text)
      */
     private drawItem = (item: Item, container: ContainerChild, drawQty: boolean = true, drawNameOnHover: boolean = true) => {
         if (!item) return;
@@ -173,9 +175,9 @@ export class Interface {
 
     /**
      * Draws a chest inventory interface at the center of the screen.
-     * @param items
+     * @param items Array of items to display in the chest inventory
      */
-    public drawChestInventory = (items: Item[]) => {
+    public drawChestInterface = (items: Item[]) => {
         const chestWidth = this.app.screen.width * 0.5;
         const chestHeight = this.app.screen.height * 0.5;
         const chestInventory = this.createCenteredContainer(chestWidth, chestHeight, "dark_frame", 4);
@@ -243,16 +245,6 @@ export class Interface {
         viewport.width = viewportW;
         viewport.height = viewportH;
         craftingInterface.addChild(viewport);
-
-        // mask to clip content to viewport rectangle
-        const maskG = new Graphics();
-        maskG.beginFill(0xff0000);
-        maskG.drawRect(0, 0, viewportW, viewportH);
-        maskG.endFill();
-        maskG.x = viewport.x;
-        maskG.y = viewport.y;
-        craftingInterface.addChild(maskG);
-        viewport.mask = maskG;
 
         // content container (holds the list of rows). We'll move content.y for scrolling.
         const content = new Container();
@@ -335,10 +327,97 @@ export class Interface {
     public drawCoreInterface = (step: CoreStep) => {
         const width = this.app.screen.width * 0.5;
         const height = this.app.screen.height * 0.5;
+        const padding = 18;
         const coreInterface = this.createCenteredContainer(width, height, "dark_frame", 4);
 
-        for (let i = 0; i < step.items.length; ++i) {
+        const viewport = new Container();
+        const viewportX = padding;
+        const viewportY = padding;
+        const viewportW = width - padding * 2 - 40;
+        const viewportH = height - padding * 2;
 
+        viewport.x = viewportX;
+        viewport.y = viewportY;
+        viewport.width = viewportW;
+        viewport.height = viewportH;
+        coreInterface.addChild(viewport);
+
+        const maskG = new Graphics();
+        maskG.beginFill(0xff0000);
+        maskG.drawRect(0, 0, viewportW, viewportH);
+        maskG.endFill();
+        maskG.x = viewport.x;
+        maskG.y = viewport.y;
+        coreInterface.addChild(maskG);
+        viewport.mask = maskG;
+
+        // Ajout du container content pour les lignes
+        const content = new Container();
+        viewport.addChild(content);
+
+        //add title text at the top of content
+        const titleText = new Text({
+            text: `CORE STEP ${step.stepNumber}`,
+            style: {
+                fill: '#ffffff',
+                fontSize: 32,
+                fontFamily: 'Jersey',
+                stroke: '#000000',
+            },
+        });
+        titleText.x = (viewportW - titleText.width) / 2;
+        content.addChild(titleText);
+
+        for (let i = 0; i < step.items.length; ++i) {
+            const row = new Container();
+
+            const item = step.items[i];
+            const itemSprite = new Sprite(findTexture(this.spritesheets, "light_square"));
+            itemSprite.width = itemSprite.height = Math.round(this.scale * 1.05);
+            row.addChild(itemSprite);
+            this.drawItem({spriteName: item.spriteName, quantity: item.goal}, itemSprite, false, false);
+            const progressText = new Text({
+                text: `${item.spriteName.replace(/_/g, ' ').toUpperCase()}\n${item.currentGathered} / ${item.goal}`,
+                style: {
+                    fill: '#ffffff',
+                    fontSize: 12,
+                    fontFamily: 'Jersey',
+                    stroke: '#000000',
+                },
+            });
+            progressText.x = itemSprite.x + itemSprite.width + 12;
+            progressText.y = itemSprite.y + (itemSprite.height - progressText.height) / 2;
+            row.addChild(progressText);
+
+            const barWidth = this.scale * 2;
+            const barHeight = this.scale / 4;
+            const barX = progressText.x;
+            const barY = itemSprite.y + itemSprite.height - barHeight;
+            const progressBarBg = new Graphics();
+            progressBarBg.beginFill(0x555555);
+            progressBarBg.drawRect(barX, barY, barWidth, barHeight);
+            progressBarBg.endFill();
+            row.addChild(progressBarBg);
+
+            const progress = Math.min(1, item.currentGathered / item.goal);
+            const progressBar = new Graphics();
+            progressBar.beginFill(0xe42d38);
+            progressBar.drawRect(barX, barY, barWidth * progress, barHeight);
+            progressBar.endFill();
+            row.addChild(progressBar);
+
+            row.y = i * (itemSprite.height + 12) + titleText.height + padding;
+            row.x = (viewportW - row.width) / 2;
+
+            content.addChild(row);
         }
-    }
+
+        const contentHeight = content.getLocalBounds().height + padding;
+        const scrollbarX = coreInterface.width - padding - 40;
+        const scrollbarY = padding;
+        const scrollbarW = 18;
+        const scrollbarH = height - padding * 2;
+
+        new ScrollBar(content, contentHeight, viewportH, coreInterface, scrollbarX, scrollbarY, scrollbarW, scrollbarH, this.app);
+    };
 }
