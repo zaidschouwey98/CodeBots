@@ -1,14 +1,21 @@
 import BuiltinObject from "codebotsinterpreter/lib/object/builtin_object";
 import IntegerObject from "codebotsinterpreter/lib/object/integer_object";
 import ErrorObject from "codebotsinterpreter/lib/object/error_object";
+import BooleanObject from "codebotsinterpreter/lib/object/boolean_object";
+import StringObject from "codebotsinterpreter/lib/object/string_object";
 import {NULL} from "codebotsinterpreter/lib/evaluator";
 import type {Codebot} from "../entity/codebot";
+import {ITEM_TYPES, ItemType} from "../types/item";
 
 export default class CustomBuiltins {
     private codebot: Codebot;
 
     constructor (codebot: Codebot) {
         this.codebot = codebot;
+    }
+
+    isValidItemType(itemType: string): itemType is ItemType {
+        return ITEM_TYPES.includes(itemType as ItemType);
     }
 
     get builtins(): Record<string, BuiltinObject> {
@@ -36,10 +43,10 @@ export default class CustomBuiltins {
                 // (ressource) => coordinate
 
                 throw new Error("not implemented");
-
             }),
             "gather": new BuiltinObject(async (...args) => {
                 // () => void
+                // TODO: get item type
 
                 throw new Error("not implemented");
             }),
@@ -58,15 +65,31 @@ export default class CustomBuiltins {
 
                 throw new Error("not implemented");
             }),
-            "isFull": new BuiltinObject(async (...args) => {
+            "canTake": new BuiltinObject(async (...args) => {
                 // () => boolean
+
+                if (args.length < 1 || args.length > 2) {
+                    return new ErrorObject(`wrong arguments amount: received ${args.length}, expected 1 or 2`);
+                }
+
+                const [itemType, amount] = args;
+
+                if (!(itemType instanceof StringObject)) {
+                    return new ErrorObject(`unsupported argument type: ${itemType.type()}`);
+                }
+
+                if (amount && !(amount instanceof IntegerObject)) {
+                    return new ErrorObject(`unsupported argument type: ${itemType.type()}`);
+                }
 
                 throw new Error("not implemented");
             }),
             "isEmpty": new BuiltinObject(async (...args) => {
-                // () => boolean
+                if (args.length !== 0) {
+                    return new ErrorObject(`wrong arguments amount: received ${args.length}, expected 0`);
+                }
 
-                throw new Error("not implemented");
+                return new BooleanObject(this.codebot.isEmpty());
             }),
             "wait": new BuiltinObject(async (...args) => {
                 if (args.length !== 1) {

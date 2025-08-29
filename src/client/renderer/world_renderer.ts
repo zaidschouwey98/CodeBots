@@ -159,13 +159,13 @@ export class WorldRenderer {
         // bas du sprite = bas du tile
         sprite.zIndex = sprite.y; // pour le tri avec les autres objets
         sprite.updateTransform({x: entity.posX, y: entity.posY});
-        sprite.x = entity.posX;
+        sprite.x = entity.posX * TILE_SIZE;
         sprite.y = entity.posY;
         this.entityContainer.addChild(sprite);
 
         entity.observe((state) => {
-            sprite.x = state.posX;
-            sprite.y = state.posY;
+            sprite.x = state.posX * TILE_SIZE;
+            sprite.y = state.posY * TILE_SIZE;
 
             if (entity.isAnimated()) {
                 sprite.play();

@@ -7,3 +7,4 @@ export const PLAYER_SPEED = 10;
 export const CODEBOT_SPEED = 10;
 export const PLAYER_INVENTORY_SIZE = 6;
 export const CODEBOT_INVENTORY_SIZE = 3;
+export const INVENTORY_STACK_SIZE = 99;
