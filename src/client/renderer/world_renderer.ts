@@ -60,6 +60,31 @@ export class WorldRenderer {
         this.spriteSheet = await getSpritesheets();
     }
 
+    public printDebugGrid() {
+        const grid = new PIXI.Graphics();
+
+        const cols = 100;
+        const rows = 100;
+
+        for (let i = -cols; i <= cols; i++) {
+            grid.moveTo(i * TILE_SIZE, -rows * TILE_SIZE);
+            grid.lineTo(i * TILE_SIZE, rows * TILE_SIZE);
+        }
+
+        for (let j = -rows; j <= rows; j++) {
+            grid.moveTo(-rows * TILE_SIZE, j * TILE_SIZE);
+            grid.lineTo(cols * TILE_SIZE, j * TILE_SIZE);
+        }
+
+        grid.stroke({
+            width: 1,
+            color: 0xffffff,
+            alpha: 0.5,
+        });
+
+        this.foregroundLayer.addChild(grid);
+    }
+
     public async render(chunks: Chunk[]) {
         const newChunkKeys = new Set(chunks.map(c => c.key));
 
@@ -120,6 +145,8 @@ export class WorldRenderer {
         sprite.animationSpeed = ANIMATION_SPEED;
         sprite.anchor.set(0, 1);
         sprite.play();
+        sprite.x = entity.posX * TILE_SIZE;
+        sprite.y = entity.posY * TILE_SIZE + TILE_SIZE;
         sprite.zIndex = sprite.y;
 
         this.middleLayer.addChild(sprite);
@@ -132,7 +159,7 @@ export class WorldRenderer {
             }
 
             sprite.x = state.posX * TILE_SIZE;
-            sprite.y = state.posY * TILE_SIZE;
+            sprite.y = state.posY * TILE_SIZE + TILE_SIZE;
 
             if (entity.isAnimated()) {
                 sprite.play();
@@ -261,7 +288,6 @@ export class WorldRenderer {
                 const spriteIndex = Math.floor(tile.variation * treeTypes.length);
                 sprite = new PIXI.Sprite(findTexture(this.spriteSheet, treeTypes[spriteIndex]));
                 this.middleLayer.addChild(sprite);
-                sprite.anchor.set(0.5, 1);
                 offsetY = -2;
                 break;
 
@@ -269,29 +295,26 @@ export class WorldRenderer {
             case ResourceType.STONE:  {
                 sprite = new PIXI.Sprite(findTexture(this.spriteSheet, "stone"))
                 this.overTileLayer.addChild(sprite);
-                sprite.anchor.set(0.5, 0.5);
                 break;
             };
             case ResourceType.COPPER:  {
                 sprite = new PIXI.Sprite(findTexture(this.spriteSheet, "copper"))
                 this.overTileLayer.addChild(sprite);
-                sprite.anchor.set(0.5, 0.5);
                 break;
             };
             case ResourceType.IRON:  {
                 sprite = new PIXI.Sprite(findTexture(this.spriteSheet, "iron"))
                 this.overTileLayer.addChild(sprite);
-                sprite.anchor.set(0.5, 0.5);
                 break;
             };
             default: {
                 sprite = new PIXI.Sprite(findTexture(this.spriteSheet, "axe"));
                 this.middleLayer.addChild(sprite);
-                sprite.anchor.set(0.5, 0.5);
                 break;
             }
         }
 
+        sprite.anchor.set(0.5, 1);
         sprite.roundPixels = true;
         sprite.x = (chunk.cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
         sprite.y = (chunk.cy * chunk.size + y) * TILE_SIZE + TILE_SIZE + offsetY;
