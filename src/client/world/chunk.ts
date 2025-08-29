@@ -6,6 +6,7 @@ export class Chunk {
     public cx: number;
     public cy: number;
     public size: number;
+    public key: string;
     constructor(
         cx: number,
         cy: number,
@@ -14,6 +15,7 @@ export class Chunk {
         this.cx = cx;
         this.cy = cy;
         this.size = size;
+        this.key = `${cx}_${cy}`;
         this.tiles = Array.from({ length: size }, () =>
             Array.from({ length: size }, () => new Tile(TileType.GRASS))
         );
