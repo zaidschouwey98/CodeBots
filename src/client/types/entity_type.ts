@@ -1,4 +1,4 @@
-export enum EntityType{
+export enum EntityType {
     PLAYER,
-    CODEBOT
-}
+    CODEBOT,
+};

@@ -1,10 +1,10 @@
-import { AnimationName } from "../spritesheet_atlas";
+import { AnimationName, TextureName } from "../spritesheet_atlas";
 import { EntityType } from "../types/entity_type";
 import { Entity } from "./entity";
+import {PLAYER_INVENTORY_SIZE, PLAYER_SPEED} from "../constants";
 
 export class Player extends Entity {
     private currentlyDisplayedAnimation: AnimationName;
-    private speed: number = 10;
     constructor() {
         super();
         this.currentlyDisplayedAnimation = "player_idle";
@@ -26,8 +26,8 @@ export class Player extends Entity {
             dx /= length;
             dy /= length;
 
-            this.posX += dx * this.speed * delta / 60;
-            this.posY += dy * this.speed * delta / 60;
+            this.posX += dx * this.getSpeed() * delta / 60;
+            this.posY += dy * this.getSpeed() * delta / 60;
 
             // choisir l’animation en fonction de la direction
             if (dx > 0) this.currentlyDisplayedAnimation = "player_walk_right";
@@ -44,8 +44,9 @@ export class Player extends Entity {
     }
 
     getSpeed(): number {
-        return this.speed;
+        return PLAYER_SPEED;
     }
+
     getAnimationName(): AnimationName {
         return this.currentlyDisplayedAnimation;
     }
@@ -56,6 +57,6 @@ export class Player extends Entity {
         return EntityType.PLAYER;
     }
     getInventorySize(): number {
-        return 10;
+        return PLAYER_INVENTORY_SIZE;
     }
 }

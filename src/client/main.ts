@@ -1,6 +1,6 @@
 import { Application} from 'pixi.js';
-
 import { GameEngine } from './game_engine';
+import { initDevtools } from '@pixi/devtools';
 
 (async () => {
     // Create a new application
@@ -12,6 +12,11 @@ import { GameEngine } from './game_engine';
         resizeTo: window,
     });
 
+    if (process.env.NODE_ENV === "development") {
+        console.log("init pixijs dev tools");
+        initDevtools({app});
+    }
+
     // Append the application canvas to the document body
     document.body.appendChild(app.canvas);
     const engine = new GameEngine(app);
@@ -22,7 +27,4 @@ import { GameEngine } from './game_engine';
         // Suivre une position cible
         engine.update(delta.deltaTime);
     });
-
-
-
 })();

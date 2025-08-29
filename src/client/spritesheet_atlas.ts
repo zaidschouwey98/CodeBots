@@ -8,7 +8,8 @@ export type AnimationName =
     "player_walk_down"|
     "player_walk_right"|
     "player_walk_left"|
-    "player_walk_up";
+    "player_walk_up" |
+    "codebot_error";
 
 export const findAnimation = (spriteSheets: Spritesheet[], animation: AnimationName) => {
     return spriteSheets.find((spritesheet) => spritesheet.animations[animation])?.animations[animation];
@@ -72,12 +73,17 @@ export type TextureName =
     "iron_frame" |
     "iron_plate" |
     "reinforced_iron_plate" |
+    "codebot_item" |
     "cement" |
     "concrete" |
     "codebot_1" |
     "codebot_2" |
     "codebot_3" |
     "codebot_4" |
+    "codebot_error_1" |
+    "codebot_error_2" |
+    "codebot_error_3" |
+    "codebot_error_4" |
     "tree_1" |
     "tree_2" |
     "tree_3" |
@@ -153,7 +159,7 @@ const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: 
 };
 
 const atlas = [
-    generateAtlas("/assets/spritesheet.png", { w: 8, h: 8 }, { w: 16, h: 16 }, [
+    generateAtlas("/assets/spritesheet.png", { w: 8, h: 9 }, { w: 16, h: 16 }, [
         "grass_1",
         "grass_2",
         "grass_3",
@@ -207,15 +213,23 @@ const atlas = [
         "iron_frame",
         "iron_plate",
         "reinforced_iron_plate",
+        "codebot_item",
         "cement",
         "concrete",
         "codebot_1",
         "codebot_2",
         "codebot_3",
         "codebot_4",
+        "codebot_error_1",
+        "codebot_error_2",
+        "codebot_error_3",
+        "codebot_error_4",
         "power",
         "close"
-    ]),
+    ], {
+        codebot: ["codebot_1", "codebot_2", "codebot_3", "codebot_4"],
+        codebot_error: ["codebot_error_1", "codebot_error_2", "codebot_error_3", "codebot_error_4"],
+    }),
     generateAtlas("/assets/trees.png", { w: 2, h: 2 }, { w: 16, h: 32 }, [
         "tree_1",
         "tree_2",

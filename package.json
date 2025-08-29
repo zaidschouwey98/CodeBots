@@ -15,6 +15,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "@pixi/devtools": "^2.0.1",
         "@types/node": "^24.3.0",
         "@types/seedrandom": "^3.0.8",
         "tsx": "^4.20.4",
@@ -25,7 +26,7 @@
         "@hono/node-server": "^1.19.0",
         "@types/jquery": "^3.5.32",
         "@types/rellax": "^1.7.7",
-        "codebotsinterpreter": "^1.0.4",
+        "codebotsinterpreter": "^1.0.7",
         "hono": "^4.9.2",
         "jquery": "^3.7.1",
         "pixi.js": "^8.12.0",

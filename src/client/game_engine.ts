@@ -5,6 +5,8 @@ import { World } from "./world/world";
 import * as PIXI from "pixi.js";
 import { WorldGenerator } from "./world/world_generator";
 import { CHUNK_SIZE } from "./constants";
+import { Codebot } from "./entity/codebot";
+import CustomBuiltins from "./interpreter/custom_builtins";
 
 export class GameEngine {
     public app: PIXI.Application;
@@ -13,6 +15,7 @@ export class GameEngine {
     public camera: Camera;
     private player: Player;
     private keys: Set<string>;
+    private codebots: Codebot[];
 
     constructor(app: PIXI.Application) {
         this.app = app;
@@ -21,6 +24,7 @@ export class GameEngine {
         this.renderer = new WorldRenderer(this.world);
         this.camera = new Camera();
         this.camera.zoom = 2;
+        this.codebots = [];
 
         this.keys = new Set<string>();
 
@@ -33,15 +37,46 @@ export class GameEngine {
     }
 
     async initialize() {
-        await this.renderer.initialize();
-        this.renderer.container.scale.set(this.camera.zoom);
+        this.renderer.gameContainer.scale.set(this.camera.zoom);
         this.app.stage.addChild(this.renderer.container);
+        await this.renderer.initialize();
         this.player = new Player();
         this.renderer.renderEntity(this.player);
+
+        CustomBuiltins.getNearestResource = this.world.getNearestResourceFromPosition.bind(this.world);
+
+        this.renderer.renderPlayerCoordinate(this.player);
+
+        // TODO test only
+        this.addCodebot();
+    }
+
+    addCodebot() {
+        const codebot = new Codebot();
+        this.codebots.push(codebot);
+        this.renderer.renderEntity(codebot);
+
+        // TODO test only
+        codebot.setProgram(`
+            wait(1000);
+            var position = find("wood");
+            goto(position);
+            wait(1000);
+            var position = find("iron");
+            goto(position);
+            wait(1000);
+            var position = find("stone");
+            goto(position);
+            wait(1000);
+            var position = find("coal");
+            goto(position);
+        `);
+        codebot.setIsRunning(true);
     }
 
     update(delta: number) {
-        this.player.update(this.keys, delta);
+        const entities = [this.player, ...this.codebots /* , ...robots plus tard */];
+        entities.forEach((entity) => entity.update(this.keys, delta));
 
         const newCX = Math.floor(this.player.posX / CHUNK_SIZE);
         const newCY = Math.floor(this.player.posY / CHUNK_SIZE);
@@ -49,7 +84,6 @@ export class GameEngine {
             this.player.cX = newCX;
             this.player.cY = newCY;
 
-            const entities = [this.player /* , ...robots plus tard */];
             this.world.updateLoadedChunks(entities);
 
             // 2. recalcul rendu
@@ -58,7 +92,7 @@ export class GameEngine {
         }
 
         this.camera.follow(this.player, this.app.screen.width, this.app.screen.height);
-        this.renderer.container.x = this.camera.x;
-        this.renderer.container.y = this.camera.y;
+        this.renderer.gameContainer.x = this.camera.x;
+        this.renderer.gameContainer.y = this.camera.y;
     }
 }

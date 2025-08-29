@@ -2,8 +2,10 @@ import { CHUNK_LOAD_RADIUS, CHUNK_SIZE, RENDER_DISTANCE } from "../constants";
 import { Entity } from "../entity/entity";
 import { Player } from "../entity/player";
 import { Direction } from "../types/direction";
+import {ResourceType} from "../types/resource_type";
 import { Chunk } from "./chunk";
 import { IWorldGenerator } from "./i_world_generator";
+import type {Position} from "../types/position";
 import Tile from "./tile";
 
 export class World {
@@ -106,5 +108,58 @@ export class World {
         }
 
         return result;
+    }
+
+    getNearestResourceFromPosition(from: Position, ressourceType: ResourceType): Position|null {
+        const visited = new Set<string>();
+        const queue: Position[] = [from];
+
+        const directions = [
+            {x: 1, y: 0},
+            {x: -1, y: 0},
+            {x: 0, y: 1},
+            {x: 0, y: -1},
+        ];
+
+        const getKey = ({x, y}: Position) => `${x}_${y}`
+        const mod = (n: number, m: number) => ((n % m) + m) % m;
+
+        while (queue.length > 0) {
+            const current = queue.shift()!;
+
+            const cX = Math.floor(current.x / CHUNK_SIZE);
+            const cY = Math.floor(current.y / CHUNK_SIZE);
+
+            const chunk = this.activeChunks.get(getKey({x: cX, y: cY}));
+            if (!chunk) {
+                continue;
+            }
+
+            const x = mod(current.x, CHUNK_SIZE);
+            const y = mod(current.y, CHUNK_SIZE);
+
+            const tile = chunk.getTile(x, y);
+
+            if (tile.content?.tileContentType === ressourceType) {
+                return current;
+            }
+
+            for (const direction of directions) {
+                const newPosition = {
+                    x: current.x + direction.x,
+                    y: current.y + direction.y,
+                };
+
+                const newCX = Math.floor(newPosition.x / CHUNK_SIZE);
+                const newCY = Math.floor(newPosition.y / CHUNK_SIZE);
+
+                if (!visited.has(getKey(newPosition)) && this.activeChunks.has(getKey({x: newCX, y: newCY}))) {
+                    visited.add(getKey(newPosition));
+                    queue.push(newPosition);
+                }
+            }
+        }
+
+        return null;
     }
 }

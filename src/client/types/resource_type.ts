@@ -4,4 +4,8 @@ export enum ResourceType {
     IRON,
     COPPER,
     COAL,
-}
+};
+
+export const RESOURCE_TYPES = Object.keys(ResourceType)
+    .filter(key => isNaN(Number(key)))
+    .map(key => key.toLowerCase());
