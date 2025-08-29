@@ -84,6 +84,8 @@ export abstract class Entity extends Observable<EntityState> {
             }
         }
 
+        this.notify();
+
         return item.amount - remaining;
     }
 
@@ -106,6 +108,8 @@ export abstract class Entity extends Observable<EntityState> {
                 if (remaining <= 0) break;
             }
         }
+
+        this.notify();
 
         return item.amount - remaining;
     }

@@ -4,7 +4,6 @@ import {Entity} from "./entity";
 import type {AnimationName, TextureName} from "../spritesheet_atlas";
 import {EntityType} from "../types/entity_type";
 import { CODEBOT_SPEED, CODEBOT_INVENTORY_SIZE } from "../constants";
-import { Item } from "../types/item";
 
 export class Codebot extends Entity {
     private customBuiltins: CustomBuiltins;
@@ -15,7 +14,6 @@ export class Codebot extends Entity {
     private targetY: number|null;
     private onTargetReached: (() => void)|null;
     private static interpreter = new Interpreter();
-    private activeItem: Item|null;
 
     constructor(){
         super();
@@ -26,11 +24,6 @@ export class Codebot extends Entity {
         this.targetX = null;
         this.targetY = null;
         this.onTargetReached = null;
-        this.activeItem = null;
-    }
-
-    hold() {
-
     }
 
     getType(): EntityType {
