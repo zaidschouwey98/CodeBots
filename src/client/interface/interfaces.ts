@@ -357,7 +357,7 @@ export class Interface {
 
         //add title text at the top of content
         const titleText = new Text({
-            text: `CORE STEP ${step.stepNumber}`,
+            text: `Etape ${step.stepNumber}`,
             style: {
                 fill: '#ffffff',
                 fontSize: 32,
