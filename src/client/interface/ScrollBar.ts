@@ -22,7 +22,7 @@ export class ScrollBar {
         private app: Application,
     ) {
         this.track = new Graphics();
-        this.track.beginFill(0x2b2b34);
+        this.track.beginFill('#6d3c2c');
         this.track.drawRoundedRect(this.scrollbarX, this.scrollbarY, this.scrollbarW, this.scrollbarH, 6);
         this.track.endFill();
         this.parent.addChild(this.track);
@@ -76,7 +76,7 @@ export class ScrollBar {
         const top = this.scrollbarY + (this.scrollY / Math.max(1, this.contentHeight - this.viewportH)) * (this.scrollbarH - thumbH);
 
         this.thumb.clear()
-            .beginFill(0x222533)
+            .beginFill('#bd735b')
             .drawRoundedRect(this.scrollbarX + 4, top + 4, this.scrollbarW - 8, thumbH - 8, 4)
             .endFill();
 
