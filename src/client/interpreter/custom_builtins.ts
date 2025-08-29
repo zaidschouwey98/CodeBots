@@ -9,9 +9,15 @@ import type {Codebot} from "../entity/codebot";
 import {Item, ITEM_TYPES, ItemType} from "../types/item";
 import { Object } from "codebotsinterpreter/lib/object";
 import {Position} from "../types/position";
+import { RESOURCE_TYPES, ResourceType } from "../types/resource_type";
+import { HashPair } from "codebotsinterpreter/lib/object/hash_key";
+
+type GetNearestResource = (from: Position, ressourceType: ResourceType) => Position|null;
+type Resource = (typeof RESOURCE_TYPES)[number];
 
 export default class CustomBuiltins {
     private codebot: Codebot;
+    public static getNearestResource: (GetNearestResource)|null = null;
 
     constructor (codebot: Codebot) {
         this.codebot = codebot;
@@ -19,6 +25,10 @@ export default class CustomBuiltins {
 
     isValidItemType(itemType: string): itemType is ItemType {
         return ITEM_TYPES.includes(itemType as ItemType);
+    }
+
+    isValidResourceType(resourceType: string): resourceType is Resource {
+        return RESOURCE_TYPES.includes(resourceType as Resource);
     }
 
     parsePosition(object: Object): Position|string {
@@ -65,6 +75,36 @@ export default class CustomBuiltins {
             type: type.value,
             amount: amount?.value ?? 1,
         };
+    }
+
+    parseResource(object: Object): ResourceType|string {
+        if (!(object instanceof StringObject)) {
+            return `unsupported argument type: ${object.type()}`;
+        }
+
+        if (!this.isValidResourceType(object.value)) {
+            return `invalid resource type: ${object.value}`;
+        }
+
+        return ResourceType[object.value.toUpperCase()];
+    }
+
+    getPositionObject({x, y}: Position): HashObject {
+        const pairs = new Map<string, HashPair>();
+
+        const keyX = new StringObject("x");
+        pairs.set(keyX.hashKey().toString(), {
+            key: keyX,
+            value: new IntegerObject(x),
+        });
+
+        const keyY = new StringObject("y");
+        pairs.set(keyY.hashKey().toString(), {
+            key: keyY,
+            value: new IntegerObject(y),
+        });
+
+        return new HashObject(pairs);
     }
 
     get builtins(): Record<string, BuiltinObject> {
@@ -187,8 +227,22 @@ export default class CustomBuiltins {
             }),
             "find": new BuiltinObject(async (...args) => {
                 // (ressource) => coordinate
+                if (args.length !== 1) {
+                    return new ErrorObject(`wrong arguments amount: received ${args.length}, expected 1`);
+                }
 
-                throw new Error("not implemented");
+                const resource = this.parseResource(args[0]);
+                if (typeof resource === "string") {
+                    return new ErrorObject(resource);
+                }
+
+                const codebotPosition = {x: this.codebot.posX, y: this.codebot.posY};
+                const position = CustomBuiltins.getNearestResource?.(codebotPosition, resource);
+                if (!position) {
+                    return new ErrorObject(`could not find resource ${args[0].inspect()}`);
+                }
+
+                return this.getPositionObject(position);
             }),
             "gather": new BuiltinObject(async (...args) => {
                 // () => void

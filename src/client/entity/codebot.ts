@@ -50,6 +50,10 @@ export class Codebot extends Entity {
 
         if (this.isRunning) {
             this.error = await Codebot.interpreter.evaluate(this.program, this.customBuiltins.builtins);
+            if (this.hasError()) {
+                console.error(this.error);
+            }
+
             this.isRunning = false;
             this.notify();
         }

@@ -6,6 +6,7 @@ import * as PIXI from "pixi.js";
 import { WorldGenerator } from "./world/world_generator";
 import { CHUNK_SIZE } from "./constants";
 import { Codebot } from "./entity/codebot";
+import CustomBuiltins from "./interpreter/custom_builtins";
 
 export class GameEngine {
     public app: PIXI.Application;
@@ -42,6 +43,8 @@ export class GameEngine {
         this.player = new Player();
         this.renderer.renderEntity(this.player);
 
+        CustomBuiltins.getNearestResource = this.world.getNearestResourceFromPosition.bind(this.world);
+
         this.renderer.renderPlayerCoordinate(this.player);
 
         // TODO test only
@@ -54,16 +57,21 @@ export class GameEngine {
         this.renderer.renderEntity(codebot);
 
         // TODO test only
+        // codebot.setProgram(`
+        //     var i = 0;
+        //     var position = [[10, -10], [10, 10], [-10, 10], [-10, -10]];
+        //     while (true) {
+        //         goto({"x": position[i][0], "y": position[i][1]});
+        //         var i = i + 1;
+        //         if (i == len(position)) {
+        //             var i = 0;
+        //         }
+        //     }
+        // `);
         codebot.setProgram(`
-            var i = 0;
-            var position = [[10, -10], [10, 10], [-10, 10], [-10, -10]];
-            while (true) {
-                goto({"x": position[i][0], "y": position[i][1]});
-                var i = i + 1;
-                if (i == len(position)) {
-                    var i = 0;
-                }
-            }
+            wait(1000);
+            var position = find("wood");
+            goto(position);
         `);
         codebot.setIsRunning(true);
     }
