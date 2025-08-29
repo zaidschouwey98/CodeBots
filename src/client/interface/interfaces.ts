@@ -256,6 +256,7 @@ export class Interface {
             rowBg.endFill();
             row.addChildAt(rowBg, 0);
 
+            // add darker bg color on hoverd recipe
             row.interactive = true;
             row.on('mouseover', () => {
                 stripe.fill(0x000000, 0.1);
@@ -288,16 +289,6 @@ export class Interface {
             outBorder.y = outSprite.y;
             outBorder.visible = false;
             row.addChild(outBorder);
-
-            outSprite.on('pointerdown', () => {
-                // hide all borders
-                content.children.forEach((r: any) => {
-                    r.children.forEach((c: any) => {
-                        if (c instanceof Graphics && (c as any).__isBorder) c.visible = false;
-                    });
-                });
-                outBorder.visible = true;
-            });
 
             // small input slots
             for (let s = 0; s < recipe.inputs.length; s++) {
@@ -350,5 +341,15 @@ export class Interface {
         const scrollbarH = viewportH;
 
         new ScrollBar(content, contentHeight, viewportH, craftingInterface, scrollbarX, scrollbarY, scrollbarW, scrollbarH, this.app);
+    }
+
+    public drawCoreInterface = (step: CoreStep) => {
+        const width = this.app.screen.width * 0.5;
+        const height = this.app.screen.height * 0.5;
+        const coreInterface = this.createCenteredContainer(width, height, "dark_frame", 4);
+
+        for (let i = 0; i < step.items.length; ++i) {
+
+        }
     }
 }
