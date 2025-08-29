@@ -30,6 +30,10 @@ export class Codebot extends Entity {
     }
 
     getAnimationName(): AnimationName {
+        if (this.hasError()) {
+            return "codebot_error";
+        }
+
         return "codebot";
     }
 
@@ -56,7 +60,7 @@ export class Codebot extends Entity {
     }
 
     isAnimated(): boolean {
-        return this.isRunning;
+        return true;
     }
 
     async moveTo(position: Position) {

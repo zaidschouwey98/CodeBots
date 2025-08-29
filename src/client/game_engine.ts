@@ -58,7 +58,7 @@ export class GameEngine {
             var i = 0;
             var position = [[10, -10], [10, 10], [-10, 10], [-10, -10]];
             while (true) {
-                goto(position[i][0], position[i][1]);
+                goto({"x": position[i][0], "y": position[i][1]});
                 var i = i + 1;
                 if (i == len(position)) {
                     var i = 0;
