@@ -313,7 +313,7 @@ export class CraftingInterface extends BaseInterface {
         craftingInterface.addChild(maskG);
         viewport.mask = maskG;
 
-        const scrollbarX = viewport.x + viewportW + 8;
+        const scrollbarX = craftingInterface.width * 0.9 ;
         const scrollbarY = viewport.y;
         const scrollbarW = 18;
         const scrollbarH = viewportH;
@@ -425,7 +425,7 @@ export class CoreInterface extends BaseInterface {
         }
 
         const contentHeight = content.getLocalBounds().height + padding;
-        const scrollbarX = coreInterface.width - padding - 40;
+        const scrollbarX = coreInterface.width * 0.9 ;
         const scrollbarY = padding;
         const scrollbarW = 18;
         const scrollbarH = height - padding * 2;
