@@ -8,6 +8,8 @@ import Tile from "./tile";
 import { IronStone } from "./resources/iron_stone";
 import { CopperStone } from "./resources/copper_stone";
 import { IWorldGenerator } from "./i_world_generator";
+import { DecorationType } from "../types/decoration_type";
+import { MAP_FREQUENCY, RESOURCE_FREQUENCY } from "../constants";
 
 export class WorldGenerator implements IWorldGenerator {
     private noiseFunc: Simplex.NoiseFunction2D;
@@ -27,15 +29,14 @@ export class WorldGenerator implements IWorldGenerator {
 
     generateChunk(cx: number, cy: number, size: number): Chunk {
         const chunk = new Chunk(cx, cy, size);
-
+        const tileRng = seedrandom(`${this.seed}_${cx}_${cy}`);
         for (let y = 0; y < size; y++) {
             for (let x = 0; x < size; x++) {
                 const absX = cx * size + x;
                 const absY = cy * size + y;
                 let tile: Tile;
-                const frequency = 0.05;
-                const resourceFrequency = 0.02;
-                const res = this.noiseFunc(absX * frequency, absY * frequency);
+                const res = this.noiseFunc(absX * MAP_FREQUENCY, absY * MAP_FREQUENCY);
+
                 tile = new Tile(TileType.GRASS);
                 tile.noiseValue = res;
                 tile.variation = this.rng();
@@ -44,6 +45,11 @@ export class WorldGenerator implements IWorldGenerator {
 
                 if (res < 0.5 && res > -0.5) {
                     chunk.tiles[y][x] = tile;
+                    if(tileRng() > 0.9){
+                        const values = Object.values(DecorationType).filter(v => typeof v === "number") as DecorationType[];
+                        const index = Math.floor(tileRng() * values.length);
+                        tile.decoration = values[index];
+                    }
                     continue;
                 }
 
@@ -60,7 +66,7 @@ export class WorldGenerator implements IWorldGenerator {
                 }
                 if (res >= 0.5) {
                     if (res > 0.75) {
-                        const resourceVal = this.resourceNoiseFunc(absX * resourceFrequency, absY * resourceFrequency);
+                        const resourceVal = this.resourceNoiseFunc(absX * RESOURCE_FREQUENCY, absY * RESOURCE_FREQUENCY);
 
                         if (resourceVal < -0.33) tile.content = new Stone();
                         else if (resourceVal < 0.33) tile.content = new IronStone();
