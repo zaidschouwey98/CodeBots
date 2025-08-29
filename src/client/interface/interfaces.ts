@@ -3,15 +3,32 @@ import {findTexture, TextureName} from "../spritesheet_atlas";
 import {CoreStep, Item, Recipe} from "../items/item";
 import {ScrollBar} from "./ScrollBar";
 
-export class Interface {
-    constructor(public app: Application, public spritesheets: Spritesheet[], public scale: number) {
+export abstract class BaseInterface {
+    protected app: Application;
+    protected container: Container;
+    protected spritesheets: Spritesheet[];
+    protected scale: number;
+
+    protected constructor(app: Application, spritesheets: Spritesheet[], scale: number) {
+        this.app = app;
+        this.container = new Container();
+        this.spritesheets = spritesheets;
+        this.scale = scale;
+        this.app.stage.addChild(this.container);
+    }
+
+    public abstract draw(): void;
+
+    public destroy(): void {
+        this.app.stage.removeChild(this.container);
+        this.container.destroy();
     }
 
     /**
      * Creates a close button and positions it at the top-right corner of the given container.
      * @param container
      */
-    private createCloseButton = (container: Container): Sprite => {
+    protected createCloseButton = (container: Container): Sprite => {
         const closeButton = new Sprite(findTexture(this.spritesheets, "close"));
         const bounds = container.getLocalBounds();
         closeButton.width = bounds.width * 0.05;
@@ -32,7 +49,7 @@ export class Interface {
      * @param textureName
      * @param borderDimension
      */
-    private createCenteredContainer = (width: number, height: number, textureName: TextureName, borderDimension: number): Container => {
+    protected createCenteredContainer = (width: number, height: number, textureName: TextureName, borderDimension: number): Container => {
         const container = new Container();
         container.width = width;
         container.height = height;
@@ -51,7 +68,7 @@ export class Interface {
      * @param textureName
      * @param borderDimension
      */
-    private createFrame = (width: number, height: number, textureName: TextureName, borderDimension: number): NineSliceSprite => {
+    protected createFrame = (width: number, height: number, textureName: TextureName, borderDimension: number): NineSliceSprite => {
         return new NineSliceSprite({
             texture: findTexture(this.spritesheets, textureName),
             leftWidth: borderDimension,
@@ -71,7 +88,7 @@ export class Interface {
      * @param drawNameOnHover whether to show the item name below the slot when hovering over the item
      * (note : this requires the container to leave enough space below the slotto show the text)
      */
-    private drawItem = (item: Item, container: ContainerChild, drawQty: boolean = true, drawNameOnHover: boolean = true) => {
+    protected drawItem = (item: Item, container: ContainerChild, drawQty: boolean = true, drawNameOnHover: boolean = true) => {
         if (!item) return;
 
         const itemTexture = findTexture(this.spritesheets, item.spriteName);
@@ -131,52 +148,17 @@ export class Interface {
             });
         }
     }
+}
 
-    /**
-     * Draws an item bar at the bottom center of the screen.
-     * @param items Array of items to display in the item bar
-     */
-    public drawItemBar = (items: Item[]) => {
-        const itemBar = new Container();
-        this.app.stage.addChild(itemBar);
+export class InventoryInterface extends BaseInterface {
+    private items: Item[];
 
-        const slotCount = 6;
-        const spaceBetweenSquares = 20;
-        const barWidth = this.scale * slotCount + ((slotCount - 1) * spaceBetweenSquares);
-        const barHeight = this.scale;
+    constructor(app: Application, spritesheets: Spritesheet[], scale: number, items: Item[]) {
+        super(app, spritesheets, scale);
+        this.items = items;
+    }
 
-        itemBar.width = barWidth;
-        itemBar.height = barHeight;
-
-        itemBar.x = this.app.screen.width / 2 - (barWidth / 2);
-        itemBar.y = this.app.screen.height - barHeight - 20;
-
-        const texture = findTexture(this.spritesheets, "light_square");
-
-        for (let i = 0; i < slotCount; ++i) {
-            const lightSquare = new Sprite(texture);
-            lightSquare.width = this.scale;
-            lightSquare.height = this.scale;
-            lightSquare.x = i * (lightSquare.width + spaceBetweenSquares);
-            lightSquare.y = 0;
-
-            this.drawItem(items[i], lightSquare, true, false);
-
-            lightSquare.interactive = true;
-            lightSquare.on('pointerdown', () => {
-                //TODO manage item bar click
-                console.log(`Clicked on bar item slot ${i + 1}`);
-            });
-            itemBar.addChild(lightSquare);
-        }
-
-    };
-
-    /**
-     * Draws a chest inventory interface at the center of the screen.
-     * @param items Array of items to display in the chest inventory
-     */
-    public drawChestInterface = (items: Item[]) => {
+    public draw() {
         const chestWidth = this.app.screen.width * 0.5;
         const chestHeight = this.app.screen.height * 0.5;
         const chestInventory = this.createCenteredContainer(chestWidth, chestHeight, "dark_frame", 4);
@@ -209,16 +191,22 @@ export class Interface {
                 console.log(`Clicked on chest item slot ${i + 1}`);
             });
 
-            this.drawItem(items[i], darkSquare);
+            this.drawItem(this.items[i], darkSquare);
             chestInventory.addChild(darkSquare);
         }
     }
 
-    /**
-     * Draws a crafting interface at the center of the screen.
-     * @param recipes
-     */
-    public drawCraftingInterface = (recipes: Recipe[]) => {
+}
+
+export class CraftingInterface extends BaseInterface {
+    private recipes: Recipe[];
+
+    constructor(app: Application, spritesheets: Spritesheet[], scale: number, recipes: Recipe[]) {
+        super(app, spritesheets, scale);
+        this.recipes = recipes;
+    }
+
+    public draw(): void {
         const craftingWidth = this.app.screen.width * 0.5;
         const craftingHeight = this.app.screen.height * 0.5;
         const craftingInterface = this.createCenteredContainer(craftingWidth, craftingHeight, "dark_frame", 4);
@@ -254,14 +242,14 @@ export class Interface {
         stripe.y = 0;
         viewport.addChildAt(stripe, 0);
 
-        const totalRows = recipes.length;
+        const totalRows = this.recipes.length;
         const contentHeight = totalRows * (rowHeight + vGap);
 
         //where the small slots begin relative to content (after the output slot)
         const leftStartX = 6 + leftOutputSize + 6;
 
-        for (let i = 0; i < recipes.length; ++i) {
-            const recipe = recipes[i];
+        for (let i = 0; i < this.recipes.length; ++i) {
+            const recipe = this.recipes[i];
             const row = new Container();
             row.y = i * (rowHeight + vGap);
             content.addChild(row);
@@ -322,12 +310,24 @@ export class Interface {
 
         new ScrollBar(content, contentHeight, viewportH, craftingInterface, scrollbarX, scrollbarY, scrollbarW, scrollbarH, this.app);
     }
+}
 
-    /**
-     * Draws the core interface at the center of the screen.
-     * @param step the current core step to be accomplished
-     */
-    public drawCoreInterface = (step: CoreStep) => {
+export class CoreInterface extends BaseInterface {
+    private steps: CoreStep[];
+    private currentStepIndex: number;
+
+    constructor(app: Application, spritesheets: Spritesheet[], scale: number, steps: CoreStep[], currentStepIndex: number = 0) {
+        super(app, spritesheets, scale);
+        this.steps = steps;
+        this.currentStepIndex = currentStepIndex;
+    }
+
+    public draw(): void {
+        const step = this.steps[this.currentStepIndex];
+        if (!step) {
+            throw new Error("Invalid step index");
+        }
+
         const width = this.app.screen.width * 0.5;
         const height = this.app.screen.height * 0.5;
         const padding = 18;
@@ -421,5 +421,50 @@ export class Interface {
         const scrollbarH = height - padding * 2;
 
         new ScrollBar(content, contentHeight, viewportH, coreInterface, scrollbarX, scrollbarY, scrollbarW, scrollbarH, this.app);
-    };
+    }
 }
+
+export class ItemBar extends BaseInterface {
+    private items: Item[];
+
+    constructor(app: Application, spritesheets: Spritesheet[], scale: number, items: Item[]) {
+        super(app, spritesheets, scale);
+        this.items = items;
+    }
+
+    public draw(): void {
+        const itemBar = new Container();
+        this.app.stage.addChild(itemBar);
+
+        const slotCount = 6;
+        const spaceBetweenSquares = 20;
+        const barWidth = this.scale * slotCount + ((slotCount - 1) * spaceBetweenSquares);
+        const barHeight = this.scale;
+
+        itemBar.width = barWidth;
+        itemBar.height = barHeight;
+
+        itemBar.x = this.app.screen.width / 2 - (barWidth / 2);
+        itemBar.y = this.app.screen.height - barHeight - 20;
+
+        const texture = findTexture(this.spritesheets, "light_square");
+
+        for (let i = 0; i < slotCount; ++i) {
+            const lightSquare = new Sprite(texture);
+            lightSquare.width = this.scale;
+            lightSquare.height = this.scale;
+            lightSquare.x = i * (lightSquare.width + spaceBetweenSquares);
+            lightSquare.y = 0;
+
+            this.drawItem(this.items[i], lightSquare, true, false);
+
+            lightSquare.interactive = true;
+            lightSquare.on('pointerdown', () => {
+                //TODO manage item bar click
+                console.log(`Clicked on bar item slot ${i + 1}`);
+            });
+            itemBar.addChild(lightSquare);
+        }
+    }
+}
+
