@@ -35,7 +35,10 @@ export class Player extends Entity {
             else if (dy > 0) this.currentlyDisplayedAnimation = "player_walk_down";
             else if (dy < 0) this.currentlyDisplayedAnimation = "player_walk_up";
         } else {
-            this.currentlyDisplayedAnimation = "player_idle";
+            if(this.currentlyDisplayedAnimation == "player_walk_right" || this.currentlyDisplayedAnimation =="player_idle_right") this.currentlyDisplayedAnimation = "player_idle_right";
+            else if(this.currentlyDisplayedAnimation == "player_walk_left" || this.currentlyDisplayedAnimation == "player_idle_left") this.currentlyDisplayedAnimation = "player_idle_left";
+            else if(this.currentlyDisplayedAnimation == "player_walk_up" ||this.currentlyDisplayedAnimation == "player_idle_back") this.currentlyDisplayedAnimation = "player_idle_back";
+            else this.currentlyDisplayedAnimation = "player_idle";
             this.notify();
         }
     }

@@ -3,6 +3,7 @@ export type AnimationName =
     "codebot"|
     "player_idle"|
     "player_idle_right"|
+    "player_idle_left"|
     "player_idle_back"|
     "player_walk_down"|
     "player_walk_right"|
@@ -93,6 +94,8 @@ export type TextureName =
     "idle2"|
     "idle_right_1"|
     "idle_right_2"|
+    "idle_left_1"|
+    "idle_left_2"|
     "idle_back_1"|
     "idle_back_2"|
     "walk_down_1"|
@@ -232,6 +235,8 @@ const atlas = [
         "idle2",
         "idle_right_1",
         "idle_right_2",
+        "idle_left_1",
+        "idle_left_2",
         "idle_back_1",
         "idle_back_2",
         "walk_down_1",
@@ -253,6 +258,7 @@ const atlas = [
     ], {
         player_idle: ["idle1","idle2"],
         player_idle_right: ["idle_right_1","idle_right_2"],
+        player_idle_left: ["idle_left_1","idle_left_2"],
         player_idle_back: ["idle_back_1","idle_back_2"],
         player_walk_down: ["walk_down_1","walk_down_2","walk_down_3","walk_down_4"],
         player_walk_right: ["walk_right_1","walk_right_2","walk_right_3","walk_right_4"],
