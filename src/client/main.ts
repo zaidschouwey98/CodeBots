@@ -1,9 +1,9 @@
 import {Application} from 'pixi.js';
 
 import {GameEngine} from './game_engine';
-import {CoreStep, Recipe} from "./items/item";
+import {CoreStep, Item, Recipe} from "./items/item";
 import {getSpritesheets} from "./spritesheet_atlas";
-import {Interface} from "./interface/interfaces";
+import {ChestInterface, CoreInterface, CraftingInterface, ItemBar} from "./interface/interfaces";
 
 const exampleRecipes: Recipe[] = [
     {inputs: [{spriteName: "wood_log", quantity: 1}], output: {spriteName: "wood_plank", quantity: 4}},
@@ -38,23 +38,56 @@ const exampleRecipes: Recipe[] = [
     },
 ];
 
-const exampleCoreStep: CoreStep = {
-    stepNumber: 1,
-    items: [
-        {spriteName: "wood_plank", currentGathered: 2500, goal: 2500},
-        {spriteName: "stone", currentGathered: 0, goal: 800},
-        {spriteName: "coal", currentGathered: 1843, goal: 3000},
-        {spriteName: "iron_ore", currentGathered: 0, goal: 5},
-        {spriteName: "iron_ingot", currentGathered: 515, goal: 3000},
-        {spriteName: "nail", currentGathered: 0, goal: 9000},
-        {spriteName: "crate", currentGathered: 0, goal: 50},
-        {spriteName: "furnace_off", currentGathered: 1, goal: 3},
-        {spriteName: "pickaxe", currentGathered: 1, goal: 1},
-        {spriteName: "shovel", currentGathered: 0, goal: 1},
-        {spriteName: "axe", currentGathered: 1, goal: 1},
+const exampleCoreSteps: CoreStep[] = [
+        {
+            stepNumber: 1,
+            items: [
+                {spriteName: "wood_plank", currentGathered: 2500, goal: 2500},
+                {spriteName: "stone", currentGathered: 0, goal: 800},
+                {spriteName: "coal", currentGathered: 1843, goal: 3000},
+                {spriteName: "iron_ore", currentGathered: 0, goal: 5},
+                {spriteName: "iron_ingot", currentGathered: 515, goal: 3000},
+                {spriteName: "nail", currentGathered: 0, goal: 9000},
+                {spriteName: "crate", currentGathered: 0, goal: 50},
+                {spriteName: "furnace_off", currentGathered: 1, goal: 3},
+                {spriteName: "pickaxe", currentGathered: 1, goal: 1},
+                {spriteName: "shovel", currentGathered: 0, goal: 1},
+                {spriteName: "axe", currentGathered: 1, goal: 1},
+            ]
+        },
+    ];
 
-    ]
-};
+const exampleChestItems: Item[] = [
+    {spriteName: "wood_plank", quantity: 32},
+    null,
+    {spriteName: "stone", quantity: 64},
+    {spriteName: "coal", quantity: 16},
+    {spriteName: "iron_ore", quantity: 8},
+    {spriteName: "iron_ingot", quantity: 4},
+    null,
+    {spriteName: "nail", quantity: 128},
+    {spriteName: "crate", quantity: 2},
+    {spriteName: "furnace_off", quantity: 1},
+    {spriteName: "pickaxe", quantity: 1},
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    {spriteName: "pickaxe", quantity: 1},
+    {spriteName: "shovel", quantity: 1},
+    null,
+];
+
+const exampleItemBar: Item[] = [
+    {spriteName: "pickaxe", quantity: 1},
+    {spriteName: "shovel", quantity: 1},
+    null,
+    {spriteName: "stone", quantity: 64},
+    null,
+    null,
+];
 
 (async () => {
     // Create a new application
@@ -80,18 +113,18 @@ const exampleCoreStep: CoreStep = {
     //TODO : adjust guiScale based on screen size (64 is good for 1920x1080)
     const guiScale = 64;
     const spritesheets = await getSpritesheets();
-    const gui = new Interface(app, spritesheets, guiScale);
 
-    //gui.drawCraftingInterface(exampleRecipes);
-    gui.drawCoreInterface(exampleCoreStep);
+    const gui = {
+        itemBar: new ItemBar(app, spritesheets, guiScale, exampleItemBar),
+        chestInterface: new ChestInterface(app, spritesheets, guiScale, exampleChestItems),
+        craftingInterface: new CraftingInterface(app, spritesheets, guiScale, exampleRecipes),
+        coreInterface: new CoreInterface(app, spritesheets, guiScale, exampleCoreSteps),
+    };
 
-    gui.drawItemBar([
-        {spriteName: "pickaxe", quantity: 1},
-        {spriteName: "shovel", quantity: 1},
-        null,
-        {spriteName: "stone", quantity: 64},
-        null,
-        null,
-    ]);
+    //gui.chestInterface.draw();
+    //gui.craftingInterface.draw();
+    gui.coreInterface.draw();
+
+    gui.itemBar.draw();
 
 })();

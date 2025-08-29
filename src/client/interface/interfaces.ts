@@ -150,7 +150,7 @@ export abstract class BaseInterface {
     }
 }
 
-export class InventoryInterface extends BaseInterface {
+export class ChestInterface extends BaseInterface {
     private items: Item[];
 
     constructor(app: Application, spritesheets: Spritesheet[], scale: number, items: Item[]) {
@@ -302,6 +302,16 @@ export class CraftingInterface extends BaseInterface {
                 row.addChild(slotSprite);
             }
         }
+
+        // mask to clip content to viewport rectangle
+        const maskG = new Graphics();
+        maskG.beginFill(0xff0000);
+        maskG.drawRect(0, 0, viewportW, viewportH);
+        maskG.endFill();
+        maskG.x = viewport.x;
+        maskG.y = viewport.y;
+        craftingInterface.addChild(maskG);
+        viewport.mask = maskG;
 
         const scrollbarX = viewport.x + viewportW + 8;
         const scrollbarY = viewport.y;
