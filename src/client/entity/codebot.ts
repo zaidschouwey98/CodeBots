@@ -70,7 +70,10 @@ export class Codebot extends Entity {
     async moveTo(position: Position) {
         this.target = position;
 
-        return new Promise<void>((resolve) => this.onTargetReached = resolve);
+        return new Promise<void>((resolve) => {
+            this.onTargetReached?.();
+            this.onTargetReached = resolve;
+        });
     }
 
     getInventorySize(): number {
@@ -92,6 +95,7 @@ export class Codebot extends Entity {
             this.posY = this.target.y;
             this.target = null;
             this.onTargetReached?.();
+            this.onTargetReached = null;
         } else {
             this.posX += (deltaX / distance) * moveDist;
             this.posY += (deltaY / distance) * moveDist;

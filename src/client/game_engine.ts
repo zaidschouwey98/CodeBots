@@ -70,9 +70,12 @@ export class GameEngine {
         // `);
         codebot.setProgram(`
             wait(1000);
-            var position = find("wood");
+            var position = find("stone");
             goto(position);
         `);
+        // codebot.setProgram(`
+        //     goto({"x": 3, "y": 2});
+        // `);
         codebot.setIsRunning(true);
     }
 
