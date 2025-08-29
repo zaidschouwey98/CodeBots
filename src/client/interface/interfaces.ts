@@ -1,4 +1,3 @@
-// interfaces.ts
 import {Application, Container, ContainerChild, Graphics, NineSliceSprite, Sprite, Spritesheet, Text} from 'pixi.js';
 import {findTexture, TextureName} from "../spritesheet_atlas";
 import {CoreStep, Item, Recipe} from "../items/item";
@@ -93,7 +92,7 @@ export class Interface {
             const quantityText = new Text({
                 text: item.quantity > 1 ? item.quantity.toString() : '',
                 style: {
-                    //fill: '#000000',
+                    fill: '#000000',
                     fontSize: 8,
                     fontFamily: 'Jersey',
                 },
@@ -351,11 +350,10 @@ export class Interface {
         coreInterface.addChild(maskG);
         viewport.mask = maskG;
 
-        // Ajout du container content pour les lignes
+        // holds the list of rows and title
         const content = new Container();
         viewport.addChild(content);
 
-        //add title text at the top of content
         const titleText = new Text({
             text: `Etape ${step.stepNumber}`,
             style: {
