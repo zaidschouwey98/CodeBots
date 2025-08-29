@@ -3,7 +3,7 @@ import {Application} from 'pixi.js';
 import {GameEngine} from './game_engine';
 import {CoreStep, Item, Recipe} from "./items/item";
 import {getSpritesheets} from "./spritesheet_atlas";
-import {ChestInterface, CoreInterface, CraftingInterface, ItemBar} from "./interface/interfaces";
+import {ChestInterface, CoreInterface, CraftingInterface, ItemBar, RobotInterface} from "./interface/interfaces";
 
 const exampleRecipes: Recipe[] = [
     {inputs: [{spriteName: "wood_log", quantity: 1}], output: {spriteName: "wood_plank", quantity: 4}},
@@ -39,23 +39,23 @@ const exampleRecipes: Recipe[] = [
 ];
 
 const exampleCoreSteps: CoreStep[] = [
-        {
-            stepNumber: 1,
-            items: [
-                {spriteName: "wood_plank", currentGathered: 2500, goal: 2500},
-                {spriteName: "stone", currentGathered: 0, goal: 800},
-                {spriteName: "coal", currentGathered: 1843, goal: 3000},
-                {spriteName: "iron_ore", currentGathered: 0, goal: 5},
-                {spriteName: "iron_ingot", currentGathered: 515, goal: 3000},
-                {spriteName: "nail", currentGathered: 0, goal: 9000},
-                {spriteName: "crate", currentGathered: 0, goal: 50},
-                {spriteName: "furnace_off", currentGathered: 1, goal: 3},
-                {spriteName: "pickaxe", currentGathered: 1, goal: 1},
-                {spriteName: "shovel", currentGathered: 0, goal: 1},
-                {spriteName: "axe", currentGathered: 1, goal: 1},
-            ]
-        },
-    ];
+    {
+        stepNumber: 1,
+        items: [
+            {spriteName: "wood_plank", currentGathered: 2500, goal: 2500},
+            {spriteName: "stone", currentGathered: 0, goal: 800},
+            {spriteName: "coal", currentGathered: 1843, goal: 3000},
+            {spriteName: "iron_ore", currentGathered: 0, goal: 5},
+            {spriteName: "iron_ingot", currentGathered: 515, goal: 3000},
+            {spriteName: "nail", currentGathered: 0, goal: 9000},
+            {spriteName: "crate", currentGathered: 0, goal: 50},
+            {spriteName: "furnace_off", currentGathered: 1, goal: 3},
+            {spriteName: "pickaxe", currentGathered: 1, goal: 1},
+            {spriteName: "shovel", currentGathered: 0, goal: 1},
+            {spriteName: "axe", currentGathered: 1, goal: 1},
+        ]
+    },
+];
 
 const exampleChestItems: Item[] = [
     {spriteName: "wood_plank", quantity: 32},
@@ -89,6 +89,27 @@ const exampleItemBar: Item[] = [
     null,
 ];
 
+const exampleCode: string =
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood" +
+    "\nRepeat:\n    go to zone 1\n    cut wood\n    go to chest 1\n    drop wood"
+;
+
 (async () => {
     // Create a new application
     const app = new Application();
@@ -119,11 +140,13 @@ const exampleItemBar: Item[] = [
         chestInterface: new ChestInterface(app, spritesheets, guiScale, exampleChestItems),
         craftingInterface: new CraftingInterface(app, spritesheets, guiScale, exampleRecipes),
         coreInterface: new CoreInterface(app, spritesheets, guiScale, exampleCoreSteps),
+        robotInterface: new RobotInterface(app, spritesheets, guiScale, exampleCode),
     };
 
     //gui.chestInterface.draw();
     //gui.craftingInterface.draw();
-    gui.coreInterface.draw();
+    //gui.coreInterface.draw();
+    gui.robotInterface.draw();
 
     gui.itemBar.draw();
 

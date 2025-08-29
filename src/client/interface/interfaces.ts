@@ -478,3 +478,77 @@ export class ItemBar extends BaseInterface {
     }
 }
 
+export class RobotInterface extends BaseInterface {
+    private code: string;
+
+    constructor(app: Application, spritesheets: Spritesheet[], scale: number, code: string) {
+        super(app, spritesheets, scale);
+        this.code = code;
+    }
+
+    public draw(): void {
+        const width = this.app.screen.width * 0.5;
+        const height = this.app.screen.height * 0.5;
+        const padding = 18;
+        const robotInterface = this.createCenteredContainer(width, height, "dark_frame", 4);
+
+        const scrollbarW = 18;
+        const scrollbarH = height - padding * 2;
+
+        const viewport = new Container();
+        const viewportX = padding;
+        const viewportY = padding;
+        const viewportW = width - padding * 2;
+        const viewportH = height - padding * 2;
+
+        viewport.x = viewportX;
+        viewport.y = viewportY;
+        viewport.width = viewportW;
+        viewport.height = viewportH;
+        robotInterface.addChild(viewport);
+
+        const maskG = new Graphics();
+        maskG.fill(0xff0000);
+        maskG.rect(0, 0, viewportW, viewportH);
+        maskG.fill();
+        maskG.x = viewport.x;
+        maskG.y = viewport.y;
+        robotInterface.addChild(maskG);
+        viewport.mask = maskG;
+
+        //TODO replace with a multiline input box
+        const codeArea = new Graphics();
+        const codeAreaW = viewportW * 0.75;
+        const codeAreaH = viewportH;
+
+        codeArea.x = viewportX;
+        codeArea.y = viewportY;
+        codeArea.width = codeAreaW;
+        codeArea.height = codeAreaH;
+
+        viewport.addChild(codeArea);
+
+        const codeText = new Text({
+            text: this.code,
+            style: {
+                fill: '#ffffff',
+                fontSize: 14,
+                fontFamily: 'Jersey',
+                stroke: '#000000',
+            },
+            resolution: 2,
+        });
+        codeText.x = codeText.y = padding / 4;
+        codeArea.addChild(codeText);
+
+        const contentHeight = codeText.height + padding / 2;
+
+        const scrollbarX = codeArea.x + codeAreaW + scrollbarW + padding / 4;
+        const scrollbarY = padding;
+
+        new ScrollBar(codeArea, contentHeight, codeAreaH, robotInterface, scrollbarX, scrollbarY, scrollbarW, scrollbarH, this.app);
+
+
+    }
+}
+
