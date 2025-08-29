@@ -49,7 +49,7 @@ export default class CustomBuiltins {
                 throw new Error("not implemented");
             }),
             "take": new BuiltinObject(async (...args) => {
-                // (item) => void
+                // (item) => void : dans un coffre
 
                 throw new Error("not implemented");
             }),

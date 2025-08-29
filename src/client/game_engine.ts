@@ -38,8 +38,10 @@ export class GameEngine {
 
     async initialize() {
         await this.renderer.initialize();
-        this.renderer.container.scale.set(this.camera.zoom);
+        this.renderer.gameContainer.scale.set(this.camera.zoom);
         this.app.stage.addChild(this.renderer.container);
+
+        this.renderer.renderPlayerCoordinate(this.player);
 
         // TODO test only
         this.addCodebot();
@@ -53,10 +55,13 @@ export class GameEngine {
         // TODO test only
         codebot.setProgram(`
             var i = 0;
-            var position = [[10, -10], [10, 10], [-10, 10], [-10, -10], [0, 0]];
-            while (i < len(position)) {
+            var position = [[10, -10], [10, 10], [-10, 10], [-10, -10]];
+            while (true) {
                 goto(position[i][0], position[i][1]);
                 var i = i + 1;
+                if (i == len(position)) {
+                    var i = 0;
+                }
             }
         `);
         codebot.setIsRunning(true);
@@ -81,7 +86,7 @@ export class GameEngine {
         }
 
         this.camera.follow(this.player, this.app.screen.width, this.app.screen.height);
-        this.renderer.container.x = this.camera.x;
-        this.renderer.container.y = this.camera.y;
+        this.renderer.gameContainer.x = this.camera.x;
+        this.renderer.gameContainer.y = this.camera.y;
     }
 }

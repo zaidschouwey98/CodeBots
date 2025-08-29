@@ -13,6 +13,7 @@ type EntityState = {
 export abstract class Entity extends Observable<EntityState> {
     private static idCounter = 1;
     public id: string;
+    private inventory: [];
 
     constructor() {
         super({
@@ -32,6 +33,8 @@ export abstract class Entity extends Observable<EntityState> {
     abstract isAnimated(): boolean;
 
     abstract getType(): EntityType;
+
+    abstract getInventorySize(): number;
 
     interact(i: Interactable){
 

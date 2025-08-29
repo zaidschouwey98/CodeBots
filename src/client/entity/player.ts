@@ -1,7 +1,7 @@
 import { AnimationName, TextureName } from "../spritesheet_atlas";
 import { EntityType } from "../types/entity_type";
 import { Entity } from "./entity";
-import {PLAYER_SPEED} from "../constants";
+import {PLAYER_INVENTORY_SIZE, PLAYER_SPEED} from "../constants";
 
 export class Player extends Entity{
     constructor(){
@@ -22,6 +22,10 @@ export class Player extends Entity{
 
     isAnimated(): boolean {
         return true;
+    }
+
+    getInventorySize(): number {
+        return PLAYER_INVENTORY_SIZE;
     }
 
     update(keys: Set<string>, delta: number) {

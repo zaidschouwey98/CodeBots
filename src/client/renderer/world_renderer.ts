@@ -8,10 +8,12 @@ import { DecorationType } from "../types/decoration_type";
 import { ANIMATION_SPEED, RENDER_DISTANCE, TILE_SIZE } from "../constants";
 import { Chunk } from "../world/chunk";
 import { Entity } from "../entity/entity";
+import { Player } from "../entity/player";
 
 
 export class WorldRenderer {
     public container: PIXI.Container;
+    public gameContainer: PIXI.Container;
     private spriteSheet: PIXI.Spritesheet<{
         meta: {
             image: string;
@@ -26,7 +28,7 @@ export class WorldRenderer {
     }>[];
     private tileContainer: PIXI.Container;
     private contentContainer: PIXI.Container;
-    private foregroundContainer: PIXI.Container;
+    public hudContainer: PIXI.Container;
     private entityContainer: PIXI.Container;
     private chunkContent: Map<string, PIXI.Sprite[]> = new Map();
     private currentlyRenderingChunks: Set<string> = new Set();
@@ -36,20 +38,21 @@ export class WorldRenderer {
     constructor(world: World) {
         this.world = world;
         this.container = new PIXI.Container();
+        this.gameContainer = new PIXI.Container();
         this.tileContainer = new PIXI.Container();
         this.contentContainer = new PIXI.Container();
-        this.foregroundContainer = new PIXI.Container();
+        this.hudContainer = new PIXI.Container();
         this.entityContainer = new PIXI.Container();
 
         this.tileContainer.sortableChildren = false;
         this.contentContainer.sortableChildren = true;
-        this.foregroundContainer.sortableChildren = true;
+        this.hudContainer.sortableChildren = true;
 
-        this.container.addChild(this.tileContainer);
-        this.container.addChild(this.contentContainer);
-        this.container.addChild(this.entityContainer);
-        this.container.addChild(this.foregroundContainer);
-
+        this.container.addChild(this.gameContainer);
+        this.container.addChild(this.hudContainer);
+        this.gameContainer.addChild(this.tileContainer);
+        this.gameContainer.addChild(this.contentContainer);
+        this.gameContainer.addChild(this.entityContainer);
     }
 
     async initialize() {
@@ -169,6 +172,36 @@ export class WorldRenderer {
             } else {
                 sprite.stop();
             }
+        });
+    }
+
+    public renderPlayerCoordinate(player: Player) {
+        const getTextFromCoordinate = (player: Player) => `x: ${Math.floor(player.posX)}, y: ${Math.floor(player.posY)}`
+
+        document.fonts.ready.then(() => {
+            const coordinateText = new PIXI.Text({
+                text: getTextFromCoordinate(player),
+                style: {
+                    fontFamily: `"Jersey 10", sans-serif`,
+                    fontWeight: "400",
+                    fontStyle: "normal",
+                    fontSize: 20,
+                    fill: "#73946b",
+                    stroke: {
+                        color: "white",
+                        width: 2,
+                    },
+                },
+            });
+
+            coordinateText.x = 10;
+            coordinateText.y = 10;
+
+            player.observe(() => {
+                coordinateText.text = getTextFromCoordinate(player);
+            });
+
+            this.hudContainer.addChild(coordinateText);
         });
     }
 

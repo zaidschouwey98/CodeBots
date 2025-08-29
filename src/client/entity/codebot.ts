@@ -3,7 +3,7 @@ import CustomBuiltins from "../interpreter/custom_builtins";
 import {Entity} from "./entity";
 import type {AnimationName, TextureName} from "../spritesheet_atlas";
 import {EntityType} from "../types/entity_type";
-import { CODEBOT_SPEED } from "../constants";
+import { CODEBOT_SPEED, CODEBOT_INVENTORY_SIZE } from "../constants";
 
 export class Codebot extends Entity {
     private customBuiltins: CustomBuiltins;
@@ -65,6 +65,10 @@ export class Codebot extends Entity {
         this.targetY = y;
 
         return new Promise<void>((resolve) => this.onTargetReached = resolve);
+    }
+
+    getInventorySize(): number {
+        return CODEBOT_INVENTORY_SIZE;
     }
 
     update(_: Set<string>, delta: number) {
