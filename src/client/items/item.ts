@@ -11,3 +11,14 @@ export type Recipe = {
     output: Item
 }
 
+export type CoreItem = {
+    spriteName: TextureName
+    currentGathered: number
+    goal: number
+}
+
+export type CoreStep = {
+    stepNumber: number,
+    items: CoreItem[]
+}
+
