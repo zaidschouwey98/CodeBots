@@ -81,7 +81,7 @@ export class WorldRenderer {
     }
 
     public renderPlayerCoordinate(player: Player) {
-        const getTextFromCoordinate = (player: Player) => `x: ${Math.floor(player.posX)}, y: ${Math.floor(player.posY)}`
+        const getTextFromCoordinate = (player: Player) => `x: ${Math.round(player.posX)}, y: ${Math.round(player.posY)}`
 
         document.fonts.ready.then(() => {
             const coordinateText = new PIXI.Text({
@@ -118,7 +118,7 @@ export class WorldRenderer {
 
         const sprite = new PIXI.AnimatedSprite(animation);
         sprite.animationSpeed = ANIMATION_SPEED;
-        sprite.anchor.set(0.5, 1);
+        sprite.anchor.set(0, 1);
         sprite.play();
         sprite.zIndex = sprite.y;
 

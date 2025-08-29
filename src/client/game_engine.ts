@@ -37,9 +37,9 @@ export class GameEngine {
     }
 
     async initialize() {
-        await this.renderer.initialize();
         this.renderer.gameContainer.scale.set(this.camera.zoom);
         this.app.stage.addChild(this.renderer.container);
+        await this.renderer.initialize();
         this.player = new Player();
         this.renderer.renderEntity(this.player);
 
@@ -57,25 +57,20 @@ export class GameEngine {
         this.renderer.renderEntity(codebot);
 
         // TODO test only
-        // codebot.setProgram(`
-        //     var i = 0;
-        //     var position = [[10, -10], [10, 10], [-10, 10], [-10, -10]];
-        //     while (true) {
-        //         goto({"x": position[i][0], "y": position[i][1]});
-        //         var i = i + 1;
-        //         if (i == len(position)) {
-        //             var i = 0;
-        //         }
-        //     }
-        // `);
         codebot.setProgram(`
+            wait(1000);
+            var position = find("wood");
+            goto(position);
+            wait(1000);
+            var position = find("iron");
+            goto(position);
             wait(1000);
             var position = find("stone");
             goto(position);
+            wait(1000);
+            var position = find("coal");
+            goto(position);
         `);
-        // codebot.setProgram(`
-        //     goto({"x": 3, "y": 2});
-        // `);
         codebot.setIsRunning(true);
     }
 
