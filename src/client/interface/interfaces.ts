@@ -323,6 +323,10 @@ export class Interface {
         new ScrollBar(content, contentHeight, viewportH, craftingInterface, scrollbarX, scrollbarY, scrollbarW, scrollbarH, this.app);
     }
 
+    /**
+     * Draws the core interface at the center of the screen.
+     * @param step the current core step to be accomplished
+     */
     public drawCoreInterface = (step: CoreStep) => {
         const width = this.app.screen.width * 0.5;
         const height = this.app.screen.height * 0.5;
