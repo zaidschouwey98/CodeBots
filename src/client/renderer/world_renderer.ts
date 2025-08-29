@@ -163,6 +163,12 @@ export class WorldRenderer {
         entity.observe((state) => {
             sprite.x = state.posX;
             sprite.y = state.posY;
+
+            if (entity.isAnimated()) {
+                sprite.play();
+            } else {
+                sprite.stop();
+            }
         });
     }
 

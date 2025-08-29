@@ -25,6 +25,8 @@ export abstract class Entity extends Observable<EntityState> {
         this.id = `entity_${Entity.idCounter++}`;
     }
 
+    abstract getSpeed(): number;
+
     abstract getAnimationName(): AnimationName;
 
     abstract isAnimated(): boolean;

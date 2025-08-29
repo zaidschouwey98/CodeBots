@@ -1,18 +1,19 @@
 import { AnimationName, TextureName } from "../spritesheet_atlas";
 import { EntityType } from "../types/entity_type";
 import { Entity } from "./entity";
+import {PLAYER_SPEED} from "../constants";
 
 export class Player extends Entity{
     constructor(){
         super();
     }
 
-    getTextureName(): TextureName {
-        return "idle1";
-    }
-
     getType(): EntityType {
         return EntityType.PLAYER;
+    }
+
+    getSpeed(): number {
+        return PLAYER_SPEED;
     }
 
     getAnimationName(): AnimationName {
@@ -24,7 +25,7 @@ export class Player extends Entity{
     }
 
     update(keys: Set<string>, delta: number) {
-        const speed = 10;
+        const speed = this.getSpeed();
 
         if (keys.has("w")) this.posY -= speed * delta / 60;
         if (keys.has("s")) this.posY += speed * delta / 60;

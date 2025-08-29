@@ -14,18 +14,21 @@ export default class CustomBuiltins {
     get builtins(): Record<string, BuiltinObject> {
         return {
             "goto": new BuiltinObject(async (...args) => {
-                if (args.length !== 1) {
-                    return new ErrorObject(`wrong arguments amount: received ${args.length}, expected 1`);
+                if (args.length !== 2) {
+                    return new ErrorObject(`wrong arguments amount: received ${args.length}, expected 2`);
                 }
 
-                const [arg] = args;
+                const [x, y] = args;
 
-                if (!(arg instanceof IntegerObject)) {
-                    return new ErrorObject(`unsupported argument type: ${arg.type()}`);
+                if (!(x instanceof IntegerObject)) {
+                    return new ErrorObject(`unsupported argument type: ${x.type()}`);
                 }
 
-                this.codebot.posX += 50;
-                this.codebot.posY += 50;
+                if (!(y instanceof IntegerObject)) {
+                    return new ErrorObject(`unsupported argument type: ${y.type()}`);
+                }
+
+                await this.codebot.moveTo(x.value, y.value);
 
                 return NULL;
             }),

@@ -51,12 +51,20 @@ export class GameEngine {
         this.renderer.renderEntity(codebot);
 
         // TODO test only
-        codebot.setProgram("var i = 0; while (i < 5) { goto(i); wait(1000); var i = i + 1; }");
+        codebot.setProgram(`
+            var i = 0;
+            var position = [[10, -10], [10, 10], [-10, 10], [-10, -10], [0, 0]];
+            while (i < len(position)) {
+                goto(position[i][0], position[i][1]);
+                var i = i + 1;
+            }
+        `);
         codebot.setIsRunning(true);
     }
 
     update(delta: number) {
-        this.player.update(this.keys, delta);
+        const entities = [this.player, ...this.codebots /* , ...robots plus tard */];
+        entities.forEach((entity) => entity.update(this.keys, delta));
 
         const newCX = Math.floor(this.player.posX / CHUNK_SIZE);
         const newCY = Math.floor(this.player.posY / CHUNK_SIZE);
@@ -65,7 +73,6 @@ export class GameEngine {
             this.player.cX = newCX;
             this.player.cY = newCY;
 
-            const entities = [this.player, ...this.codebots /* , ...robots plus tard */];
             this.world.updateLoadedChunks(entities);
 
             // 2. recalcul rendu

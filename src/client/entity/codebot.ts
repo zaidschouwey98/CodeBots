@@ -3,12 +3,16 @@ import CustomBuiltins from "../interpreter/custom_builtins";
 import {Entity} from "./entity";
 import type {AnimationName, TextureName} from "../spritesheet_atlas";
 import {EntityType} from "../types/entity_type";
+import { CODEBOT_SPEED } from "../constants";
 
 export class Codebot extends Entity {
     private customBuiltins: CustomBuiltins;
     private program: string;
     private isRunning: boolean;
     private error: string|null;
+    private targetX: number|null;
+    private targetY: number|null;
+    private onTargetReached: (() => void)|null;
     private static interpreter = new Interpreter();
 
     constructor(){
@@ -17,6 +21,9 @@ export class Codebot extends Entity {
         this.isRunning = false;
         this.error = null;
         this.customBuiltins = new CustomBuiltins(this);
+        this.targetX = null;
+        this.targetY = null;
+        this.onTargetReached = null;
     }
 
     getType(): EntityType {
@@ -41,12 +48,44 @@ export class Codebot extends Entity {
         if (this.isRunning) {
             this.error = await Codebot.interpreter.evaluate(this.program, this.customBuiltins.builtins);
             this.isRunning = false;
+            this.notify();
         }
+    }
+
+    getSpeed(): number {
+        return CODEBOT_SPEED;
     }
 
     isAnimated(): boolean {
         return this.isRunning;
     }
 
-    update(keys: Set<string>, delta: number) {}
+    async moveTo(x: number, y: number) {
+        this.targetX = x;
+        this.targetY = y;
+
+        return new Promise<void>((resolve) => this.onTargetReached = resolve);
+    }
+
+    update(_: Set<string>, delta: number) {
+        if (this.targetX === null || this.targetY === null) {
+            return;
+        }
+
+        const deltaX = this.targetX - this.posX;
+        const deltaY = this.targetY - this.posY;
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        const moveDist = this.getSpeed() * (delta / 60);
+        if (moveDist >= distance) {
+            this.posX = this.targetX;
+            this.posY = this.targetY;
+            this.targetX = null;
+            this.targetY = null;
+            this.onTargetReached?.();
+        } else {
+            this.posX += (deltaX / distance) * moveDist;
+            this.posY += (deltaY / distance) * moveDist;
+        }
+    }
 }
