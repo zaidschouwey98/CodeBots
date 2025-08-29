@@ -23,7 +23,6 @@ export class GameEngine {
         this.renderer = new WorldRenderer(this.world);
         this.camera = new Camera();
         this.camera.zoom = 2;
-        this.player = new Player();
         this.codebots = [];
 
         this.keys = new Set<string>();
@@ -40,6 +39,8 @@ export class GameEngine {
         await this.renderer.initialize();
         this.renderer.gameContainer.scale.set(this.camera.zoom);
         this.app.stage.addChild(this.renderer.container);
+        this.player = new Player();
+        this.renderer.renderEntity(this.player);
 
         this.renderer.renderPlayerCoordinate(this.player);
 
@@ -73,7 +74,6 @@ export class GameEngine {
 
         const newCX = Math.floor(this.player.posX / CHUNK_SIZE);
         const newCY = Math.floor(this.player.posY / CHUNK_SIZE);
-
         if (newCX !== this.player.cX || newCY !== this.player.cY) {
             this.player.cX = newCX;
             this.player.cY = newCY;

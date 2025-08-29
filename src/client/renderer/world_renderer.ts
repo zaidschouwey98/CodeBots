@@ -26,10 +26,11 @@ export class WorldRenderer {
         };
         frames: {};
     }>[];
-    private tileContainer: PIXI.Container;
-    private contentContainer: PIXI.Container;
-    public hudContainer: PIXI.Container;
-    private entityContainer: PIXI.Container;
+    private tileLayer: PIXI.Container;
+    private overTileLayer: PIXI.Container;
+    private middleLayer: PIXI.Container;
+    private foregroundLayer: PIXI.Container;
+    private hudContainer: PIXI.Container;
     private chunkContent: Map<string, PIXI.Sprite[]> = new Map();
     private currentlyRenderingChunks: Set<string> = new Set();
     private world: World;
@@ -39,20 +40,20 @@ export class WorldRenderer {
         this.world = world;
         this.container = new PIXI.Container();
         this.gameContainer = new PIXI.Container();
-        this.tileContainer = new PIXI.Container();
-        this.contentContainer = new PIXI.Container();
+        this.tileLayer = new PIXI.Container();
+        this.overTileLayer = new PIXI.Container();
+        this.middleLayer = new PIXI.Container();
+        this.foregroundLayer = new PIXI.Container();
         this.hudContainer = new PIXI.Container();
-        this.entityContainer = new PIXI.Container();
-
-        this.tileContainer.sortableChildren = false;
-        this.contentContainer.sortableChildren = true;
-        this.hudContainer.sortableChildren = true;
-
+        this.tileLayer.sortableChildren = false;
+        this.middleLayer.sortableChildren = true;
+        this.foregroundLayer.sortableChildren = true;
         this.container.addChild(this.gameContainer);
+        this.gameContainer.addChild(this.tileLayer);
+        this.gameContainer.addChild(this.overTileLayer);
+        this.gameContainer.addChild(this.middleLayer);
+        this.gameContainer.addChild(this.foregroundLayer);
         this.container.addChild(this.hudContainer);
-        this.gameContainer.addChild(this.tileContainer);
-        this.gameContainer.addChild(this.contentContainer);
-        this.gameContainer.addChild(this.entityContainer);
     }
 
     async initialize() {
@@ -70,7 +71,6 @@ export class WorldRenderer {
                 this.currentlyRenderingChunks.delete(key);
             }
         }
-
         // 2. Render ceux qui sont nouveaux
         for (const chunk of chunks) {
             if (!this.currentlyRenderingChunks.has(chunk.key)) {
@@ -78,101 +78,6 @@ export class WorldRenderer {
                 this.renderChunk(chunk);
             }
         }
-    }
-
-    private async unloadChunk(cx: number, cy: Number) {
-        let sprites = this.chunkContent.get(`${cx}_${cy}`);
-        sprites?.map((s) => { s.destroy() });
-        this.chunkContent.delete(`${cx}_${cy}`)
-    }
-
-    private async renderChunk(chunk: Chunk, batchSize = 8): Promise<void> {
-        const spriteArr: PIXI.Sprite[] = [];
-        let y = 0;
-        let x = 0;
-
-        // Fonction pour créer un sprite d’une tile
-        const createTileSprite = async (tile: Tile, tileContainer: PIXI.Container, contentContainer: PIXI.Container, cx: number, cy: number) => {
-            const sprite = await this.getTextureForTile(tile);
-            sprite.anchor.set(0.5, 0.5);
-            sprite.x = (cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
-            sprite.y = (cy * chunk.size + y) * TILE_SIZE + TILE_SIZE / 2;
-            sprite.zIndex = sprite.y;
-            sprite.roundPixels = true;
-            tileContainer.addChild(sprite);
-            spriteArr.push(sprite);
-            // Contenu / décoration
-            if (tile.content) {
-                const occSprite = await this.getTextureForContent(tile);
-                occSprite.anchor.set(0.5, 1);
-                occSprite.x = sprite.x;
-                occSprite.y = (cy * chunk.size + y) * TILE_SIZE + TILE_SIZE;
-                occSprite.zIndex = occSprite.y;
-                contentContainer.addChild(occSprite);
-                spriteArr.push(occSprite);
-            } else if (tile.decoration != null) {
-                const occSprite = await this.getTextureForDecoration(tile);
-                occSprite.anchor.set(0.5, 0.5);
-                occSprite.x = sprite.x;
-                occSprite.y = sprite.y;
-                occSprite.zIndex = occSprite.y;
-                contentContainer.addChild(occSprite);
-                spriteArr.push(occSprite);
-            }
-        };
-
-        // Fonction pour étaler le rendu sur plusieurs frames
-        return new Promise<void>((resolve) => {
-            const step = async () => {
-                let count = 0;
-                while (y < chunk.size) {
-                    while (x < chunk.size) {
-                        await createTileSprite(chunk.tiles[y][x], this.tileContainer, this.contentContainer, chunk.cx, chunk.cy);
-                        count++;
-                        x++;
-                        if (count >= batchSize) {
-                            requestAnimationFrame(step);
-                            return;
-                        }
-                    }
-                    x = 0;
-                    y++;
-                }
-                this.chunkContent.set(chunk.key, spriteArr);
-                resolve(); // tout le chunk est rendu
-            };
-            step();
-        });
-    }
-
-    public renderEntity(entity: Entity) {
-        const animation = findAnimation(this.spriteSheet, entity.getAnimationName());
-        if (!animation) {
-            throw new Error("animation not found");
-        }
-
-        const sprite = new PIXI.AnimatedSprite(animation);
-        sprite.animationSpeed = ANIMATION_SPEED;
-        sprite.play();
-
-        // sprite.anchor.set(0.5, 1); // les pieds posés sur le sol
-        // bas du sprite = bas du tile
-        sprite.zIndex = sprite.y; // pour le tri avec les autres objets
-        sprite.updateTransform({x: entity.posX, y: entity.posY});
-        sprite.x = entity.posX * TILE_SIZE;
-        sprite.y = entity.posY;
-        this.entityContainer.addChild(sprite);
-
-        entity.observe((state) => {
-            sprite.x = state.posX * TILE_SIZE;
-            sprite.y = state.posY * TILE_SIZE;
-
-            if (entity.isAnimated()) {
-                sprite.play();
-            } else {
-                sprite.stop();
-            }
-        });
     }
 
     public renderPlayerCoordinate(player: Player) {
@@ -185,7 +90,7 @@ export class WorldRenderer {
                     fontFamily: `"Jersey 10", sans-serif`,
                     fontWeight: "400",
                     fontStyle: "normal",
-                    fontSize: 20,
+                    fontSize: 40,
                     fill: "#73946b",
                     stroke: {
                         color: "white",
@@ -205,15 +110,74 @@ export class WorldRenderer {
         });
     }
 
-    private async getTextureForTile(tile: Tile): Promise<PIXI.Sprite> {
+    public renderEntity(entity: Entity) {
+        const animation = findAnimation(this.spriteSheet, entity.getAnimationName());
+        if (!animation) {
+            throw new Error("animation not found");
+        }
 
+        const sprite = new PIXI.AnimatedSprite(animation);
+        sprite.animationSpeed = 0.1;
+        sprite.anchor.set(0.5, 1);
+        sprite.play();
+        sprite.zIndex = sprite.y;
+
+        this.middleLayer.addChild(sprite);
+        let animationName = entity.getAnimationName();
+        entity.observe((state) => {
+            sprite.zIndex = sprite.y;
+            if (animationName !== entity.getAnimationName()) {
+                sprite.textures = findAnimation(this.spriteSheet, entity.getAnimationName())!;
+                animationName = entity.getAnimationName();
+            }
+
+            sprite.x = state.posX * TILE_SIZE;
+            sprite.y = state.posY * TILE_SIZE;
+
+            if (entity.isAnimated()) {
+                sprite.play();
+            } else {
+                sprite.stop();
+            }
+        });
+    }
+
+    private async unloadChunk(cx: number, cy: Number) {
+        let sprites = this.chunkContent.get(`${cx}_${cy}`);
+        sprites?.map((s) => { s.destroy() });
+        this.chunkContent.delete(`${cx}_${cy}`)
+    }
+
+    private async renderChunk(chunk: Chunk) {
+
+        if (!this.chunkContent.has(chunk.key)) {
+            this.chunkContent.set(chunk.key, []);
+        }
+
+        for (let y = 0; y < chunk.size; y++) {
+            for (let x = 0; x < chunk.size; x++) {
+                const tile = chunk.tiles[y][x];
+                this.getTextureForTile(tile, chunk, x, y);
+
+                if (tile.content) {
+                    this.getTextureForMiddleLayer(tile, chunk, x, y);
+
+                } else if (tile.decoration != null) {
+                    this.getTextureForDecoration(tile, chunk, x, y);
+                }
+            }
+        }
+    }
+
+    private getTextureForTile(tile: Tile, chunk: Chunk, x: number, y: number) {
+        let sprite: PIXI.Sprite;
         switch (tile.type) {
             case TileType.GRASS: {
                 const grassTypes: TextureName[] = ["grass_1", "grass_2", "grass_3", "grass_4"];
                 const spriteIndex = Math.floor(tile.variation * grassTypes.length);
-                const sprite = new PIXI.Sprite(findTexture(this.spriteSheet, grassTypes[spriteIndex]));
+                sprite = new PIXI.Sprite(findTexture(this.spriteSheet, grassTypes[spriteIndex]));
                 sprite.anchor.set(0.5, 0.5);
-                return sprite;
+                break;
             }
             case TileType.FOREST: {
                 const neighbors = this.world.getTileNeighborsByDirection(tile.absX, tile.absY);
@@ -235,10 +199,6 @@ export class WorldRenderer {
                 else if (neighbors.left?.type !== TileType.FOREST && neighbors.bottom?.type !== TileType.FOREST && neighbors.right?.type !== TileType.FOREST) {
                     textureName = "forest_one_edge"; rotation = 270;
                 } else
-
-
-
-
                     if (neighbors.left?.type !== TileType.FOREST && neighbors.top?.type !== TileType.FOREST) {
                         textureName = "forest_right_edge"; rotation = 0;
                     }
@@ -276,52 +236,102 @@ export class WorldRenderer {
                     }
 
                 const texture = findTexture(this.spriteSheet, textureName);
-                const sprite = new PIXI.Sprite(texture);
+                sprite = new PIXI.Sprite(texture);
 
                 // rotation autour du centre
                 sprite.anchor.set(0.5, 0.5);
                 sprite.rotation = rotation * (Math.PI / 180);
-
-                return sprite;
+                break;
             }
-
-            default: return new PIXI.Sprite(findTexture(this.spriteSheet, "axe"))
         }
+        sprite.roundPixels = true;
+        sprite.x = (chunk.cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
+        sprite.y = (chunk.cy * chunk.size + y) * TILE_SIZE + TILE_SIZE / 2;
+        this.tileLayer.addChild(sprite);
+        this.chunkContent.get(chunk.key)?.push(sprite);
+        sprite.zIndex = sprite.y;
     }
 
-    private async getTextureForContent(tile: Tile): Promise<PIXI.Sprite> {
+    private getTextureForMiddleLayer(tile: Tile, chunk: Chunk, x: number, y: number) {
+        let sprite: PIXI.Sprite;
+        let offsetY = 0;
         switch (tile.content?.tileContentType) {
             case ResourceType.WOOD: {
                 const treeTypes: TextureName[] = ["tree_1", "tree_2", "tree_3", "tree_4"];
                 const spriteIndex = Math.floor(tile.variation * treeTypes.length);
-                const sprite = new PIXI.Sprite(findTexture(this.spriteSheet, treeTypes[spriteIndex]));
-                return sprite;
+                sprite = new PIXI.Sprite(findTexture(this.spriteSheet, treeTypes[spriteIndex]));
+                this.middleLayer.addChild(sprite);
+                sprite.anchor.set(0.5, 1);
+                offsetY = -2;
+                break;
+
             };
-            case ResourceType.STONE: return new PIXI.Sprite(findTexture(this.spriteSheet, "stone"));
-            case ResourceType.COPPER: return new PIXI.Sprite(findTexture(this.spriteSheet, "copper"));
-            case ResourceType.IRON: return new PIXI.Sprite(findTexture(this.spriteSheet, "iron"));
-            default: return new PIXI.Sprite(findTexture(this.spriteSheet, "axe"));
+            case ResourceType.STONE:  {
+                sprite = new PIXI.Sprite(findTexture(this.spriteSheet, "stone"))
+                this.overTileLayer.addChild(sprite);
+                sprite.anchor.set(0.5, 0.5);
+                break;
+            };
+            case ResourceType.COPPER:  {
+                sprite = new PIXI.Sprite(findTexture(this.spriteSheet, "copper"))
+                this.overTileLayer.addChild(sprite);
+                sprite.anchor.set(0.5, 0.5);
+                break;
+            };
+            case ResourceType.IRON:  {
+                sprite = new PIXI.Sprite(findTexture(this.spriteSheet, "iron"))
+                this.overTileLayer.addChild(sprite);
+                sprite.anchor.set(0.5, 0.5);
+                break;
+            };
+            default: {
+                sprite = new PIXI.Sprite(findTexture(this.spriteSheet, "axe"));
+                this.middleLayer.addChild(sprite);
+                sprite.anchor.set(0.5, 0.5);
+                break;
+            }
         }
+
+        sprite.roundPixels = true;
+        sprite.x = (chunk.cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
+        sprite.y = (chunk.cy * chunk.size + y) * TILE_SIZE + TILE_SIZE + offsetY;
+
+        this.chunkContent.get(chunk.key)?.push(sprite);
+        sprite.zIndex = sprite.y;
     }
 
-    private async getTextureForDecoration(tile: Tile): Promise<PIXI.Sprite> {
+
+
+    private getTextureForDecoration(tile: Tile, chunk:Chunk, x:number, y:number){
+        let sprite: PIXI.Sprite;
         switch (tile.decoration) {
             case DecorationType.BUSH: {
                 const bushTypes: TextureName[] = ["bush_1", "bush_2", "bush_3"];
                 const spriteIndex = Math.floor(tile.variation * bushTypes.length);
-                const sprite = new PIXI.Sprite(findTexture(this.spriteSheet, bushTypes[spriteIndex]));
-                sprite.anchor.set(0.5, 0.5);
-                return sprite;
+                sprite = new PIXI.Sprite(findTexture(this.spriteSheet, bushTypes[spriteIndex]));
+                sprite.anchor.set(0.5, 0.7);
+                this.middleLayer.addChild(sprite);
+                break;
             }
             case DecorationType.FLOWER: {
                 const flowerTypes: TextureName[] = ["flower_1", "flower_2", "flower_3"];
                 const spriteIndex = Math.floor(tile.variation * flowerTypes.length);
-                const sprite = new PIXI.Sprite(findTexture(this.spriteSheet, flowerTypes[spriteIndex]));
+                sprite = new PIXI.Sprite(findTexture(this.spriteSheet, flowerTypes[spriteIndex]));
                 sprite.anchor.set(0.5, 0.5);
-                return sprite;
+                this.overTileLayer.addChild(sprite);
+                break;
             }
-            default: return new PIXI.Sprite(findTexture(this.spriteSheet, "axe"));
+            default: {
+                sprite = new PIXI.Sprite(findTexture(this.spriteSheet, "flower_1"));
+                sprite.anchor.set(0.5, 0.5);
+            }
         }
+
+        sprite.roundPixels = true;
+        sprite.x = (chunk.cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
+        sprite.y = (chunk.cy * chunk.size + y) * TILE_SIZE + TILE_SIZE / 2;
+        this.chunkContent.get(chunk.key)?.push(sprite);
+        sprite.zIndex = sprite.y;
     }
 
 

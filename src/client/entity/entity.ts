@@ -114,18 +114,12 @@ export abstract class Entity extends Observable<EntityState> {
         return this.inventory.every((slot) => !slot);
     }
 
-    abstract getSpeed(): number;
+    set cX(newCX: number) {
+        this.state.cX = newCX;
+    }
 
-    abstract getAnimationName(): AnimationName;
-
-    abstract isAnimated(): boolean;
-
-    abstract getType(): EntityType;
-
-    abstract getInventorySize(): number;
-
-    interact(i: Interactable){
-
+    set cY(newCY: number) {
+        this.state.cY = newCY;
     }
 
     get posX(): number {
@@ -152,11 +146,17 @@ export abstract class Entity extends Observable<EntityState> {
         this.state.posY = newPosY;
     }
 
-    set cX(newCX: number) {
-        this.state.cX = newCX;
-    }
+    abstract getSpeed(): number;
 
-    set cY(newCY: number) {
-        this.state.cY = newCY;
+    abstract getAnimationName(): AnimationName;
+
+    abstract isAnimated(): boolean;
+
+    abstract getType(): EntityType;
+
+    abstract getInventorySize(): number;
+
+    interact(i: Interactable){
+
     }
 }

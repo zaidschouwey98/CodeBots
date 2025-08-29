@@ -1,5 +1,18 @@
 import { Assets, Sprite, Spritesheet, Texture } from "pixi.js";
+export type AnimationName =
+    "codebot"|
+    "player_idle"|
+    "player_idle_right"|
+    "player_idle_left"|
+    "player_idle_back"|
+    "player_walk_down"|
+    "player_walk_right"|
+    "player_walk_left"|
+    "player_walk_up";
 
+export const findAnimation = (spriteSheets: Spritesheet[], animation: AnimationName) => {
+    return spriteSheets.find((spritesheet) => spritesheet.animations[animation])?.animations[animation];
+};
 type Dimensions = {
     w: number;
     h: number;
@@ -82,6 +95,8 @@ export type TextureName =
     "idle2"|
     "idle_right_1"|
     "idle_right_2"|
+    "idle_left_1"|
+    "idle_left_2"|
     "idle_back_1"|
     "idle_back_2"|
     "walk_down_1"|
@@ -92,29 +107,21 @@ export type TextureName =
     "walk_right_2"|
     "walk_right_3"|
     "walk_right_4"|
+    "walk_left_1"|
+    "walk_left_2"|
+    "walk_left_3"|
+    "walk_left_4"|
     "walk_up_1"|
     "walk_up_2"|
     "walk_up_3"|
-    "walk_up_4";;
-
-export type AnimationName =
-    "codebot"|
-    "player_idle"|
-    "player_idle_right"|
-    "player_idle_back"|
-    "player_walk_down"|
-    "player_walk_right"|
-    "player_walk_up";
+    "walk_up_4";
+    ;
 
 export const findTexture = (spriteSheets: Spritesheet[], texture: TextureName) => {
     return spriteSheets.find((spritesheet) => spritesheet.textures[texture])?.textures[texture];
 };
 
-export const findAnimation = (spriteSheets: Spritesheet[], animation: AnimationName) => {
-    return spriteSheets.find((spritesheet) => spritesheet.animations[animation])?.animations[animation];
-};
-
-const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: Dimensions, names: TextureName[], animations?: Partial<Record<AnimationName, TextureName[]>>) => {
+const generateAtlas = (file: string, spriteAmount: Dimensions, assetDimensions: Dimensions, names: TextureName[], animations?:Partial<Record<AnimationName,TextureName[]>>) => {
     return {
         meta: {
             image: file,
@@ -227,11 +234,13 @@ const atlas = [
         "scroll",
         "bar",
     ]),
-    generateAtlas("/assets/character.png", { w: 4, h: 5 }, { w: 16, h: 16 }, [
+    generateAtlas("/assets/character.png", { w: 5, h: 5 }, { w: 16, h: 16 }, [
         "idle1",
         "idle2",
         "idle_right_1",
         "idle_right_2",
+        "idle_left_1",
+        "idle_left_2",
         "idle_back_1",
         "idle_back_2",
         "walk_down_1",
@@ -242,6 +251,10 @@ const atlas = [
         "walk_right_2",
         "walk_right_3",
         "walk_right_4",
+        "walk_left_1",
+        "walk_left_2",
+        "walk_left_3",
+        "walk_left_4",
         "walk_up_1",
         "walk_up_2",
         "walk_up_3",
@@ -249,9 +262,11 @@ const atlas = [
     ], {
         player_idle: ["idle1","idle2"],
         player_idle_right: ["idle_right_1","idle_right_2"],
+        player_idle_left: ["idle_left_1","idle_left_2"],
         player_idle_back: ["idle_back_1","idle_back_2"],
         player_walk_down: ["walk_down_1","walk_down_2","walk_down_3","walk_down_4"],
         player_walk_right: ["walk_right_1","walk_right_2","walk_right_3","walk_right_4"],
+        player_walk_left: ["walk_left_1","walk_left_2","walk_left_3","walk_left_4"],
         player_walk_up: ["walk_up_1","walk_up_2","walk_up_3","walk_up_4"]
     }),
 ];
