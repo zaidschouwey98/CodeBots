@@ -71,11 +71,13 @@ const exampleCoreStep: CoreStep = {
         engine.update(delta.deltaTime);
     });
 
+    //TODO : adjust guiScale based on screen size (64 is good for 1920x1080)
+    const guiScale = 64;
     const spritesheets = await getSpritesheets();
-    const gui = new Interface(app, spritesheets, scale);
+    const gui = new Interface(app, spritesheets, guiScale);
 
     gui.drawCraftingInterface(exampleRecipes);
-//gui.drawCoreInterface(exampleCoreStep);
+    //gui.drawCoreInterface(exampleCoreStep);
 
     gui.drawItemBar([
         {spriteName: "pickaxe", quantity: 1},

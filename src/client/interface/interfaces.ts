@@ -2,7 +2,7 @@
 import {Application, Container, ContainerChild, Graphics, NineSliceSprite, Sprite, Spritesheet, Text} from 'pixi.js';
 import {findTexture, TextureName} from "../spritesheet_atlas";
 import {CoreStep, Item, Recipe} from "../items/item";
-import { ScrollBar } from './ScrollBar';
+import {ScrollBar} from "./ScrollBar";
 
 export class Interface {
     constructor(public app: Application, public spritesheets: Spritesheet[], public scale: number) {
@@ -70,7 +70,7 @@ export class Interface {
      * @param container
      * @param drawQty
      */
-    private drawItem = (item: Item, container: ContainerChild, drawQty: boolean = true) => {
+    private drawItem = (item: Item, container: ContainerChild, drawQty: boolean = true, drawNameOnHover: boolean = true) => {
         if (!item) return;
 
         const itemTexture = findTexture(this.spritesheets, item.spriteName);
@@ -87,21 +87,48 @@ export class Interface {
 
         container.addChild(itemSprite);
 
-        if (!drawQty) return;
+        if (drawQty) {
+            const quantityText = new Text({
+                text: item.quantity > 1 ? item.quantity.toString() : '',
+                style: {
+                    //fill: '#000000',
+                    fontSize: 8,
+                    fontFamily: 'Jersey',
+                },
+                resolution: 4,
+            });
 
-        const quantityText = new Text({
-            text: item.quantity > 1 ? item.quantity.toString() : '',
-            style: {
-                //fill: '#000000',
-                fontSize: 8,
-                fontFamily: 'Jersey',
-            },
-            resolution: 4,
-        });
+            quantityText.x = itemSprite.x + itemSprite.width - (quantityText.width * 1.1);
+            quantityText.y = itemSprite.y + itemSprite.height - (quantityText.height * 1.1);
+            container.addChild(quantityText);
+        }
 
-        quantityText.x = itemSprite.x + itemSprite.width - (quantityText.width * 1.1);
-        quantityText.y = itemSprite.y + itemSprite.height - (quantityText.height * 1.1);
-        container.addChild(quantityText);
+        if (drawNameOnHover) {
+            const nameText = new Text({
+                text: item.spriteName.replace(/_/g, ' ').toUpperCase(),
+                style: {
+                    fill: '#ffffff',
+                    fontSize: 8,
+                    fontFamily: 'Jersey',
+                    stroke: '#000000',
+                },
+                resolution: 4,
+            });
+
+            nameText.x = 0
+            nameText.y = bounds.height;
+            nameText.visible = false;
+            container.addChild(nameText);
+
+            container.interactive = true;
+            container.on('mouseover', () => {
+                nameText.visible = true;
+            });
+
+            container.on('mouseout', () => {
+                nameText.visible = false;
+            });
+        }
     }
 
     /**
@@ -132,7 +159,7 @@ export class Interface {
             lightSquare.x = i * (lightSquare.width + spaceBetweenSquares);
             lightSquare.y = 0;
 
-            this.drawItem(items[i], lightSquare);
+            this.drawItem(items[i], lightSquare, true, false);
 
             lightSquare.interactive = true;
             lightSquare.on('pointerdown', () => {
@@ -189,7 +216,6 @@ export class Interface {
     /**
      * Draws a crafting interface at the center of the screen.
      * @param recipes
-     * @param selectedIndex
      */
     public drawCraftingInterface = (recipes: Recipe[]) => {
         const craftingWidth = this.app.screen.width * 0.5;
@@ -198,17 +224,16 @@ export class Interface {
 
         // paddings & layout
         const padding = 18;
-        const rowHeight = Math.max(56, Math.round(this.scale * 1.05)); // vertical space per recipe
+        const rowHeight = Math.max(56, Math.round(this.scale * 1.05)) + 10; // vertical space per recipe (+ 10 to allow displaying item name)
         const vGap = 12;
         const leftOutputSize = Math.round(this.scale * 1.05); // big left output slot
         const smallSlotSize = Math.round(this.scale * 0.85);  // small input slots
-        const maxSmallSlotsPerRow = 4;
         const hGap = 12;
 
         // compute viewport (the visible area that will be clipped)
         const viewportX = padding;
         const viewportY = padding;
-        const viewportW = craftingWidth - padding * 3 - 22; // leave space for scrollbar on right
+        const viewportW = craftingWidth - padding * 3 - 40; // leave space for scrollbar on right
         const viewportH = craftingHeight - padding * 2;
 
         // container that will be the area where rows are shown
@@ -244,7 +269,7 @@ export class Interface {
         //where the small slots begin relative to content (after the output slot)
         const leftStartX = 6 + leftOutputSize + 6;
 
-        for (let i = 0; i < recipes.length; i++) {
+        for (let i = 0; i < recipes.length; ++i) {
             const recipe = recipes[i];
             const row = new Container();
             row.y = i * (rowHeight + vGap);
@@ -256,11 +281,12 @@ export class Interface {
             rowBg.endFill();
             row.addChildAt(rowBg, 0);
 
-            // add darker bg color on hoverd recipe
+            // add darker bg color on hovering recipe
             row.interactive = true;
             row.on('mouseover', () => {
-                stripe.fill(0x000000, 0.1);
-                stripe.rect(0, row.y, viewportW, rowHeight);
+                stripe.clear();
+                stripe.beginFill(0x000000, 0.1);
+                stripe.drawRect(0, row.y + content.y, viewportW, rowHeight);
                 stripe.endFill();
             })
 
@@ -281,58 +307,21 @@ export class Interface {
             row.addChild(outSprite);
             this.drawItem(recipe.output, outSprite);
 
-            // output selection border
-            const outBorder = new Graphics();
-            outBorder.lineStyle(4, 0xd82a2a);
-            outBorder.drawRect(2, 2, outSprite.width - 4, outSprite.height - 4);
-            outBorder.x = outSprite.x;
-            outBorder.y = outSprite.y;
-            outBorder.visible = false;
-            row.addChild(outBorder);
-
             // small input slots
             for (let s = 0; s < recipe.inputs.length; s++) {
                 const slotSprite = new Sprite(findTexture(this.spritesheets, "light_square"));
                 slotSprite.width = smallSlotSize;
                 slotSprite.height = smallSlotSize;
                 slotSprite.x = leftStartX + s * (smallSlotSize + hGap);
-                slotSprite.y = (rowHeight) - smallSlotSize;
+                //align vertically with bottom of output slot
+                slotSprite.y = outSprite.y + outSprite.height - slotSprite.height;
                 slotSprite.interactive = true;
 
                 const item = recipe.inputs[s] ?? null;
                 this.drawItem(item, slotSprite);
 
                 row.addChild(slotSprite);
-
-                // selection border for this slot
-                const border = new Graphics();
-                border.lineStyle(4, 0xd82a2a);
-                border.drawRect(2, 2, slotSprite.width - 4, slotSprite.height - 4);
-                border.x = slotSprite.x;
-                border.y = slotSprite.y;
-                border.visible = false;
-                (border as any).__isBorder = true;
-                row.addChild(border);
-
-                slotSprite.on('pointerdown', () => {
-                    // hide all borders
-                    content.children.forEach((r: any) => {
-                        r.children.forEach((c: any) => {
-                            if (c instanceof Graphics && (c as any).__isBorder) c.visible = false;
-                        });
-                    });
-                    border.visible = true;
-                });
             }
-
-            const nameText = new Text(recipe.output ? recipe.output.spriteName : `Item ${i + 1}`, {
-                fontFamily: 'Jersey',
-                fontSize: 14,
-                fill: 0x1e1514
-            });
-            nameText.x = leftStartX + maxSmallSlotsPerRow * (smallSlotSize + hGap) + 8;
-            nameText.y = (rowHeight / 2) - (nameText.height / 2);
-            row.addChild(nameText);
         }
 
         const scrollbarX = viewport.x + viewportW + 8;
