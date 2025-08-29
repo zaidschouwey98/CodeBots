@@ -64,7 +64,7 @@ export class Codebot extends Entity {
     }
 
     isAnimated(): boolean {
-        return true;
+        return this.isRunning || this.hasError();
     }
 
     async moveTo(position: Position) {

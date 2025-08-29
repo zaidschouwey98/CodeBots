@@ -127,8 +127,6 @@ export class World {
         while (queue.length > 0) {
             const current = queue.shift()!;
 
-            visited.add(getKey(current));
-
             const cX = Math.floor(current.x / CHUNK_SIZE);
             const cY = Math.floor(current.y / CHUNK_SIZE);
 
@@ -156,6 +154,7 @@ export class World {
                 const newCY = Math.floor(newPosition.y / CHUNK_SIZE);
 
                 if (!visited.has(getKey(newPosition)) && this.activeChunks.has(getKey({x: newCX, y: newCY}))) {
+                    visited.add(getKey(newPosition));
                     queue.push(newPosition);
                 }
             }
