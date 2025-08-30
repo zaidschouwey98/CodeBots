@@ -98,14 +98,14 @@ Prérequis :
 
 - Node.js v24+
 
-Lancer le projet en local:
+### Lancer le projet en local:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Comment contribuer:
+### Comment contribuer (et déployer):
 
 - Forker le repo (si pas membre de l'équipe)
 - Créer une branche a partir de dev pour votre feature
