@@ -4,7 +4,7 @@ import { WorldRenderer } from "./renderer/world_renderer";
 import { World } from "./world/world";
 import * as PIXI from "pixi.js";
 import { WorldGenerator } from "./world/world_generator";
-import { CHUNK_SIZE } from "./constants";
+import { CHUNK_SIZE, TILE_SIZE } from "./constants";
 
 export class GameEngine {
     public app: PIXI.Application;
@@ -18,7 +18,8 @@ export class GameEngine {
         this.app = app;
         const generator = new WorldGenerator("seed");
         this.world = new World(generator);
-        this.renderer = new WorldRenderer(this.world);
+        generator.setWorld(this.world);
+        this.renderer = new WorldRenderer(this.world, app);
         this.camera = new Camera();
         this.camera.zoom = 2;
 
@@ -30,13 +31,17 @@ export class GameEngine {
         window.addEventListener("keyup", (e) =>
             this.keys.delete(e.key.toLowerCase())
         );
+
+        window.addEventListener('click', (event) => {
+            this.handleMouseClick(event);
+        });
     }
 
     async initialize() {
         await this.renderer.initialize();
         this.renderer.container.scale.set(this.camera.zoom);
         this.app.stage.addChild(this.renderer.container);
-        this.player = new Player();
+        this.player = new Player(this.world);
         this.renderer.renderEntity(this.player);
     }
 
@@ -60,5 +65,39 @@ export class GameEngine {
         this.camera.follow(this.player, this.app.screen.width, this.app.screen.height);
         this.renderer.container.x = this.camera.x;
         this.renderer.container.y = this.camera.y;
+    }
+
+    private handleMouseClick(event: MouseEvent) {
+
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+
+        this.app.screen.height
+
+        let x = (mouseX - this.camera.x) / (TILE_SIZE * this.camera.zoom),
+            y = (mouseY - this.camera.y) / (TILE_SIZE * this.camera.zoom);
+        // Arrondir aux coordonnées de tile
+        const tileX = Math.floor(x);
+        const tileY = Math.floor(y);
+        let tile = this.world.getTileAt(tileX, tileY);
+        if (tile == null) return;
+        const distance = Math.sqrt(
+            Math.pow(tile.absX - this.player.posX, 2) + Math.pow(tile.absY - this.player.posY, 2)
+        );
+
+        if (distance > 2) {
+            return false;
+        }
+
+        const mined = this.player.interactWithTile(tile);
+        this.renderer.renderMiningEffect(tile.absX, tile.absY);
+        if (mined) {
+            let chunk = tile?.chunk;
+            if (chunk == undefined || tile == null) return;
+            // Rafraîchir le rendu si une ressource a été minée
+            this.renderer.updateTile(chunk, tile);
+            // const visibleChunks = this.world.getChunksInVisibleRange(this.player);
+            // this.renderer.render(visibleChunks);
+        }
     }
 }

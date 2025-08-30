@@ -33,6 +33,10 @@ export class World {
         this.activeChunks = newLoaded;
     }
 
+    saveChunk(chunk: Chunk) {
+        this.savedChunks.set(chunk.key, chunk);
+    }
+
     getChunksInVisibleRange(player: Player): Chunk[] {
         const chunks: Chunk[] = [];
         for (let dx = -RENDER_DISTANCE; dx <= RENDER_DISTANCE; dx++) {
@@ -47,11 +51,21 @@ export class World {
     }
 
     getChunk(cx: number, cy: number): Chunk {
-        const key = `${cx},${cy}`;
-        if (!this.savedChunks.has(key)) {
-            return this.generator.generateChunk(cx, cy, CHUNK_SIZE);
+        const key = `${cx}_${cy}`;
 
-        } else return this.savedChunks.get(key)!;
+        if (this.activeChunks.has(key)) {
+            return this.activeChunks.get(key)!;
+        }
+
+        if (this.savedChunks.has(key)) {
+            const chunk = this.savedChunks.get(key)!;
+            this.activeChunks.set(key, chunk); // Ajouter aux actifs
+            return chunk;
+        }
+
+        const newChunk = this.generator.generateChunk(cx, cy, CHUNK_SIZE);
+        this.activeChunks.set(key, newChunk);
+        return newChunk;
     }
 
     getTileAt(absX: number, absY: number): Tile | null {
@@ -60,8 +74,8 @@ export class World {
         const chunk = this.getChunk(chunkX, chunkY);
         if (!chunk) return null;
 
-        const localX = ((absX % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE;
-        const localY = ((absY % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE;
+        const localX = Math.floor(((absX % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE);
+        const localY = Math.floor(((absY % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE);
 
         return chunk.tiles[localY]?.[localX] ?? null;
     }

@@ -1,12 +1,13 @@
 import { AnimationName } from "../spritesheet_atlas";
 import { EntityType } from "../types/entity_type";
+import { World } from "../world/world";
 import { Entity } from "./entity";
 
 export class Player extends Entity {
     private currentlyDisplayedAnimation: AnimationName;
     private speed: number = 10;
-    constructor() {
-        super();
+    constructor(world:World) {
+        super(world);
         this.currentlyDisplayedAnimation = "player_idle";
     }
 

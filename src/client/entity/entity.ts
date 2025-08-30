@@ -2,6 +2,9 @@ import Observable from "../observer/observable";
 import { AnimationName, TextureName } from "../spritesheet_atlas";
 import { EntityType } from "../types/entity_type";
 import { Interactable } from "../world/interactables/interactable";
+import { Resource } from "../world/resources/resource";
+import Tile from "../world/tile";
+import { World } from "../world/world";
 
 type EntityState = {
     posX: number;
@@ -15,17 +18,38 @@ export abstract class Entity extends Observable<EntityState> {
     private static idCounter = 1;
     public id: string;
     private inventory: [];
+    protected world: World;
+    constructor(world:World) {
 
-    constructor() {
-        let t:Observable<EntityState>;
+        let t: Observable<EntityState>;
         super({
             posX: 0,
             posY: 0,
             cX: -1,
             cY: -1,
         });
-
+        this.world = world;
         this.id = `entity_${Entity.idCounter++}`;
+    }
+
+    interactWithTile(tile:Tile): boolean {
+        if (tile && tile.content instanceof Resource) {
+            // this.lastMineTime = 0;
+            const resource = tile.content.mine();
+
+            if (resource) {
+                // Ressource épuisée
+
+                // Ajouter la ressource à l'inventaire
+                // this.addToInventory(resource);
+                return true;
+            }
+            return true; // Coup porté mais ressource pas encore épuisée
+        } else if (tile && tile.content instanceof Interactable) {
+            // tile.content.interact();
+        }
+
+        return false;
     }
 
     abstract getSpeed(): number;
@@ -38,7 +62,7 @@ export abstract class Entity extends Observable<EntityState> {
 
     abstract getInventorySize(): number;
 
-    interact(i: Interactable){
+    interact(i: Interactable) {
 
     }
 

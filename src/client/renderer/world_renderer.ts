@@ -8,6 +8,7 @@ import { DecorationType } from "../types/decoration_type";
 import { TILE_SIZE } from "../constants";
 import { Chunk } from "../world/chunk";
 import { Entity } from "../entity/entity";
+import { TileRenderer } from "./tile_renderer";
 
 
 export class WorldRenderer {
@@ -28,12 +29,14 @@ export class WorldRenderer {
     private overTileLayer: PIXI.Container;
     private middleLayer: PIXI.Container;
     private foregroundLayer: PIXI.Container;
-    private chunkContent: Map<string, PIXI.Sprite[]> = new Map();
+    private chunkContent: Map<string, Map<String, TileRenderer>> = new Map();
     private currentlyRenderingChunks: Set<string> = new Set();
     private world: World;
+    private app: PIXI.Application;
     spriteMap: Map<Tile, PIXI.Sprite> = new Map();
 
-    constructor(world: World) {
+    constructor(world: World, app: PIXI.Application) {
+        this.app = app;
         this.world = world;
         this.container = new PIXI.Container();
         this.tileLayer = new PIXI.Container();
@@ -53,9 +56,8 @@ export class WorldRenderer {
         this.spriteSheet = await getSpritesheets();
     }
 
-    public async render(chunks: Chunk[]) {
+    public render(chunks: Chunk[]) {
         const newChunkKeys = new Set(chunks.map(c => c.key));
-
         // 1. Unload ceux qui ne sont plus dans newChunkKeys
         for (const key of this.currentlyRenderingChunks) {
             if (!newChunkKeys.has(key)) {
@@ -111,32 +113,78 @@ export class WorldRenderer {
         });
     }
 
+    public renderMiningEffect(tileX: number, tileY: number) {
+        const effect = new PIXI.Graphics();
+        effect.setStrokeStyle({
+            width: 2,
+            color: 0xFFFFFF,
+            alpha: 0.8
+        });
+        effect.circle(
+            tileX * TILE_SIZE + TILE_SIZE / 2,
+            tileY * TILE_SIZE + TILE_SIZE / 2,
+            8
+        );
+        effect.stroke();
+
+        this.foregroundLayer.addChild(effect);
+
+        let alpha = 1;
+        const fade = () => {
+            alpha -= 0.05;
+            effect.alpha = alpha;
+            if (alpha <= 0) {
+                effect.destroy();
+                this.app.ticker.remove(fade);
+            }
+        };
+
+        this.app.ticker.add(fade);
+    }
+
+    public updateTile(chunk: Chunk, tile: Tile) {
+        const sprites = this.chunkContent.get(chunk.key);
+        if (sprites === undefined) throw new Error("Trying to update a tile in a chunk that is not loaded");
+        const tileRenderer = sprites.get(`${tile.absX - chunk.cx * chunk.size}_${tile.absY - chunk.cy * chunk.size}`);
+        if (tileRenderer === undefined) throw new Error("Trying to update a tile that is not rendered");
+        // destroy old sprites
+        tileRenderer.tileSprite?.destroy();
+        tileRenderer.contentSprite?.destroy();
+        tileRenderer.decorationSprite?.destroy();
+        // recreate them
+        this.getTextureForTile(tile, chunk, tile.absX - chunk.cx * chunk.size, tile.absY - chunk.cy * chunk.size);
+        if (tile.content) {
+            this.getTextureForMiddleLayer(tile, chunk, tile.absX - chunk.cx * chunk.size, tile.absY - chunk.cy * chunk.size);
+        }
+    }
+
     private async unloadChunk(cx: number, cy: Number) {
         let sprites = this.chunkContent.get(`${cx}_${cy}`);
-        sprites?.map((s) => { s.destroy() });
+        if (sprites === undefined) throw new Error("Trying to unload a chunk that is not loaded");
+        for (const [key, value] of sprites) {
+            value.tileSprite?.destroy();
+            value.contentSprite?.destroy();
+            value.decorationSprite?.destroy();
+        }
         this.chunkContent.delete(`${cx}_${cy}`)
     }
 
     private async renderChunk(chunk: Chunk) {
 
         if (!this.chunkContent.has(chunk.key)) {
-            this.chunkContent.set(chunk.key, []);
+            this.chunkContent.set(chunk.key, new Map());
         }
 
         for (let y = 0; y < chunk.size; y++) {
             for (let x = 0; x < chunk.size; x++) {
                 const tile = chunk.tiles[y][x];
                 this.getTextureForTile(tile, chunk, x, y);
-
                 if (tile.content) {
                     this.getTextureForMiddleLayer(tile, chunk, x, y);
 
                 } else if (tile.decoration != null) {
                     const occSprite = this.getTextureForDecoration(tile, chunk, x, y);
                 }
-
-
-
             }
         }
     }
@@ -220,7 +268,13 @@ export class WorldRenderer {
         sprite.x = (chunk.cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
         sprite.y = (chunk.cy * chunk.size + y) * TILE_SIZE + TILE_SIZE / 2;
         this.tileLayer.addChild(sprite);
-        this.chunkContent.get(chunk.key)?.push(sprite);
+
+        const tileSprite = this.chunkContent.get(chunk.key)?.get(`${x}_${y}`);
+        if (tileSprite) {
+            tileSprite.tileSprite = sprite;
+        } else {
+            this.chunkContent.get(chunk.key)?.set(`${x}_${y}`, new TileRenderer(sprite, undefined, undefined));
+        }
         sprite.zIndex = sprite.y;
     }
 
@@ -238,19 +292,19 @@ export class WorldRenderer {
                 break;
 
             };
-            case ResourceType.STONE:  {
+            case ResourceType.STONE: {
                 sprite = new PIXI.Sprite(findTexture(this.spriteSheet, "stone"))
                 this.overTileLayer.addChild(sprite);
                 sprite.anchor.set(0.5, 0.5);
                 break;
             };
-            case ResourceType.COPPER:  {
+            case ResourceType.COPPER: {
                 sprite = new PIXI.Sprite(findTexture(this.spriteSheet, "copper"))
                 this.overTileLayer.addChild(sprite);
                 sprite.anchor.set(0.5, 0.5);
                 break;
             };
-            case ResourceType.IRON:  {
+            case ResourceType.IRON: {
                 sprite = new PIXI.Sprite(findTexture(this.spriteSheet, "iron"))
                 this.overTileLayer.addChild(sprite);
                 sprite.anchor.set(0.5, 0.5);
@@ -271,13 +325,19 @@ export class WorldRenderer {
         sprite.x = (chunk.cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
         sprite.y = (chunk.cy * chunk.size + y) * TILE_SIZE + TILE_SIZE + offsetY;
 
-        this.chunkContent.get(chunk.key)?.push(sprite);
+        const tileSprite = this.chunkContent.get(chunk.key)?.get(`${x}_${y}`);
+        if (tileSprite) {
+            tileSprite.contentSprite = sprite;
+        } else {
+            this.chunkContent.get(chunk.key)?.set(`${x}_${y}`, new TileRenderer(undefined, sprite, undefined));
+        }
+
         sprite.zIndex = sprite.y;
     }
 
 
 
-    private getTextureForDecoration(tile: Tile, chunk:Chunk, x:number, y:number){
+    private getTextureForDecoration(tile: Tile, chunk: Chunk, x: number, y: number) {
         let sprite: PIXI.Sprite;
         switch (tile.decoration) {
             case DecorationType.BUSH: {
@@ -305,7 +365,14 @@ export class WorldRenderer {
         sprite.roundPixels = true;
         sprite.x = (chunk.cx * chunk.size + x) * TILE_SIZE + TILE_SIZE / 2;
         sprite.y = (chunk.cy * chunk.size + y) * TILE_SIZE + TILE_SIZE / 2;
-        this.chunkContent.get(chunk.key)?.push(sprite);
+
+        const tileSprite = this.chunkContent.get(chunk.key)?.get(`${x}_${y}`);
+        if (tileSprite) {
+            tileSprite.contentSprite = sprite;
+        } else {
+            this.chunkContent.get(chunk.key)?.set(`${x}_${y}`, new TileRenderer(undefined, undefined, sprite));
+        }
+
         sprite.zIndex = sprite.y;
     }
 
