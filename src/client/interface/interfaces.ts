@@ -1,6 +1,6 @@
 import {Application, Container, ContainerChild, Graphics, NineSliceSprite, Sprite, Spritesheet, Text} from 'pixi.js';
 import {findTexture, TextureName} from "../spritesheet_atlas";
-import {CoreStep, Item, Recipe} from "../items/item";
+import {CoreStep, Item, Recipe} from "../types/item";
 import {ScrollBar} from "./ScrollBar";
 
 export abstract class BaseInterface {
@@ -199,7 +199,7 @@ export class ChestInterface extends BaseInterface {
 }
 
 export class CraftingInterface extends BaseInterface {
-    private recipes: Recipe[];
+    private readonly recipes: Recipe[];
 
     constructor(app: Application, spritesheets: Spritesheet[], scale: number, recipes: Recipe[]) {
         super(app, spritesheets, scale);
@@ -313,7 +313,7 @@ export class CraftingInterface extends BaseInterface {
         craftingInterface.addChild(maskG);
         viewport.mask = maskG;
 
-        const scrollbarX = craftingInterface.width * 0.9 ;
+        const scrollbarX = craftingInterface.width * 0.9;
         const scrollbarY = viewport.y;
         const scrollbarW = 18;
         const scrollbarH = viewportH;
@@ -425,7 +425,7 @@ export class CoreInterface extends BaseInterface {
         }
 
         const contentHeight = content.getLocalBounds().height + padding;
-        const scrollbarX = coreInterface.width * 0.9 ;
+        const scrollbarX = coreInterface.width * 0.9;
         const scrollbarY = padding;
         const scrollbarW = 18;
         const scrollbarH = height - padding * 2;

@@ -1,7 +1,7 @@
 import {Application} from 'pixi.js';
 
 import {GameEngine} from './game_engine';
-import {CoreStep, Item, Recipe} from "./items/item";
+import {CoreStep, Item, Recipe} from "./types/item";
 import {getSpritesheets} from "./spritesheet_atlas";
 import {ChestInterface, CoreInterface, CraftingInterface, ItemBar, RobotInterface} from "./interface/interfaces";
 
