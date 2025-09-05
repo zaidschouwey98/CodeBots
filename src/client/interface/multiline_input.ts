@@ -155,19 +155,14 @@ export class MultilineInput extends Graphics {
             this.addChild(txt);
             this.texts.push(txt);
 
-            const bounds = txt.getLocalBounds();
-            const realH = this.fontSize;
-            // add 1px slack to avoid fractional clipping
-            y += realH + 1;
+            y += this.fontSize;
         }
 
         const old = this.contentHeight;
         this.contentHeight = Math.max(y + this.padding * 2, this.viewportHeight);
 
         // expose logical size (for compatibility)
-        // @ts-ignore
         this.height = this.contentHeight;
-        // @ts-ignore
         this.width = this.viewportWidth;
 
         // redraw background + border to match new size
@@ -226,13 +221,13 @@ export class MultilineInput extends Graphics {
         const x = Math.max(0, localX - this.padding);
         for (let i = 0; i < lineText.length; i++) {
             this.measureText.text = lineText.slice(0, i + 1);
-            if (this.measureText.width >= x) return i + 1;
+            if (this.measureText.width >= x) return i;
         }
         return lineText.length;
     }
 
     private placeCaretFromPoint(localX: number, localY: number) {
-        const lineIdx = Math.floor((localY - this.padding) / this.fallbackLineHeight);
+        const lineIdx = Math.floor((localY - this.padding) / this.fontSize);
         this.cursorLine = Math.min(Math.max(lineIdx, 0), this.lines.length - 1);
         this.cursorChar = this.charIndexFromX(this.lines[this.cursorLine], localX);
         this.updateCaretGraphics();
